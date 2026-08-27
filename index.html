@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>72+ SWING LAB — INLINE RENAME & SLEEK NATIVE TOAST (ZERO POPUP ALERTS)</title>
+    <title>72+ SWING LAB — ONFORM MOBILE NATIVE APP (STUDENT PROFILE: LIBRARY & NOTES ONLY)</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -768,7 +768,7 @@
 <body>
 
     <div id="mobile-container">
-        <!-- SLEEK IOS NATIVE TOAST (REPLACES DISRUPTIVE BROWSER ALERT POPUPS) -->
+        <!-- SLEEK IOS NATIVE TOAST -->
         <div id="native-toast-notification">
             <i class="fa-solid fa-circle-check"></i> <span id="toast-message-text">Thao tác thành công</span>
         </div>
@@ -836,7 +836,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIEW 2: STUDENT DETAIL PROFILE ==================== -->
+        <!-- ==================== VIEW 2: STUDENT DETAIL PROFILE (EXACT ONFORM: LIBRARY & NOTES ONLY) ==================== -->
         <div id="screen-student-profile" class="screen-view">
             <div class="nav-back-bar">
                 <button class="btn-icon-back" onclick="switchView('screen-home')">
@@ -860,13 +860,7 @@
 
             <div style="padding: 16px;">
                 <div class="menu-list-group">
-                    <div class="menu-row-item" onclick="openLiveChatModal()">
-                        <div class="menu-icon-square"><i class="fa-regular fa-comment-dots"></i></div>
-                        <div>
-                            <div class="menu-row-text">Chat</div>
-                            <div class="menu-row-subtext">Trò chuyện trực tiếp HLV & Học viên</div>
-                        </div>
-                    </div>
+                    <!-- EXACT ONFORM ITEM 1: LIBRARY -->
                     <div class="menu-row-item" onclick="openStudentLibrary(activeStudentName)">
                         <div class="menu-icon-square"><i class="fa-solid fa-folder"></i></div>
                         <div>
@@ -874,11 +868,12 @@
                             <div class="menu-row-subtext" id="library-share-counter">0 shared, 1 private</div>
                         </div>
                     </div>
+                    <!-- EXACT ONFORM ITEM 2: NOTES -->
                     <div class="menu-row-item" onclick="openHLVNotesModal()">
                         <div class="menu-icon-square"><i class="fa-solid fa-clipboard-list"></i></div>
                         <div>
                             <div class="menu-row-text">Notes</div>
-                            <div class="menu-row-subtext" id="profile-notes-subtext">Sổ tay ghi chú bài giảng HLV (Private to you)</div>
+                            <div class="menu-row-subtext" id="profile-notes-subtext">Private to you</div>
                         </div>
                     </div>
                 </div>
@@ -1051,26 +1046,6 @@
         </div>
     </div>
 
-    <!-- LIVE CHAT MODAL -->
-    <div id="live-chat-modal" class="modal-mask">
-        <div class="modal-content-card" style="max-height:80vh; height:500px; display:flex; flex-direction:column;">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:12px;">
-                <div style="font-weight:800; font-family:'Raleway'; font-size:1.1rem;" id="chat-header-title">Chat Với Nhungkey Chị</div>
-                <i class="fa-solid fa-xmark" style="cursor:pointer; color:#94A3B8;" onclick="closeModal('live-chat-modal')"></i>
-            </div>
-            <div id="chat-messages-body" style="flex:1; overflow-y:auto; padding:12px 0; display:flex; flex-direction:column; gap:10px;">
-                <div style="background:rgba(255,255,255,0.08); padding:10px 14px; border-radius:12px; max-width:80%; align-self:flex-start;">
-                    <div style="font-size:0.75rem; color:#60A5FA; font-weight:700;">HLV Nguyễn Thái Dương</div>
-                    <div style="font-size:0.9rem; color:#FFFFFF; margin-top:2px;">Chào em, clip swing hôm nay góc xoay hông rất tốt!</div>
-                </div>
-            </div>
-            <div style="display:flex; gap:8px; border-top:1px solid var(--border-color); padding-top:12px;">
-                <input type="text" id="chat-input-field" class="input-form-field" placeholder="Nhập tin nhắn tư vấn..." style="flex:1;">
-                <button class="btn-submit-add" style="width:70px;" onclick="sendChatMessage()">Gửi</button>
-            </div>
-        </div>
-    </div>
-
     <!-- REFERENCE LIBRARY MODAL -->
     <div id="reference-library-modal" class="modal-mask">
         <div class="modal-content-card">
@@ -1167,7 +1142,7 @@
     <input type="file" id="real-file-picker" accept="video/*" style="display:none;" onchange="handleImportedFile(event)">
 
     <script>
-        // MASTER 100% INLINE RENAME & SLEEK IOS NATIVE TOAST (ZERO POPUP ALERTS)
+        // MASTER ONFORM MOBILE APP: STUDENT PROFILE HAS EXACT 2 ITEMS (LIBRARY & NOTES ONLY - NO CHAT)
         let studentList = [{ name: "Nhungkey Chị", initials: "NC", color: "#1375BC" }];
         
         let studentNotesMap = {
@@ -1193,7 +1168,6 @@
         let activeTool = "plane";
         let toastTimeout = null;
 
-        /* SLEEK IOS TOAST ENGINE (REPLACES BROWSER ALERTS) */
         function showToast(msg) {
             const toast = document.getElementById('native-toast-notification');
             document.getElementById('toast-message-text').innerText = msg;
@@ -1216,7 +1190,7 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        /* 1. ULTRA-CLEAN INLINE RENAME ENGINE (NO BULKY MODALS) */
+        /* INLINE EDITABLE STUDENT NAME */
         function focusInlineStudentName() {
             const el = document.getElementById('profile-display-name');
             el.focus();
@@ -1241,13 +1215,11 @@
 
             activeStudentName = newName;
 
-            // Migrate notes map key
             if (studentNotesMap[oldName]) {
                 studentNotesMap[newName] = studentNotesMap[oldName];
                 delete studentNotesMap[oldName];
             }
 
-            // Update student list object
             const stObj = studentList.find(s => s.name === oldName);
             if (stObj) {
                 stObj.name = newName;
@@ -1255,7 +1227,6 @@
                 if (words.length >= 2) stObj.initials = (words[0][0] + words[words.length - 1][0]).toUpperCase();
             }
 
-            // Update DOM labels across all views
             document.getElementById('profile-avatar-badge').innerText = stObj ? stObj.initials : 'NC';
             document.getElementById('home-student-avatar').innerText = stObj ? stObj.initials : 'NC';
             document.getElementById('lib-student-subname').innerText = newName;
@@ -1268,7 +1239,7 @@
             showToast('Đã lưu tên mới: ' + newName);
         }
 
-        /* 2. DYNAMIC HLV NOTES ISOLATED PER STUDENT */
+        /* DYNAMIC HLV NOTES ISOLATED PER STUDENT */
         function openHLVNotesModal() {
             document.getElementById('notes-student-title').innerText = 'Ghi Chú Cho ' + activeStudentName;
             const existingNote = studentNotesMap[activeStudentName] || '';
@@ -1285,12 +1256,12 @@
             if (noteText) {
                 sub.innerText = '✅ Đã lưu ghi chú chuyên môn';
             } else {
-                sub.innerText = 'Sổ tay ghi chú bài giảng HLV (Private to you)';
+                sub.innerText = 'Private to you';
             }
-            showToast('Đã lưu thành công ghi chú cho ' + activeStudentName);
+            showToast('Đã lưu ghi chú cho ' + activeStudentName);
         }
 
-        /* 3. MULTI-SELECT & IMPORT ENGINES */
+        /* MULTI-SELECT & IMPORT ENGINES */
         function toggleMultiSelectMode() {
             isMultiSelectActive = !isMultiSelectActive;
             const btn = document.getElementById('btn-toggle-select');
@@ -1407,7 +1378,7 @@
             showToast('Đã thêm video vào Library');
         }
 
-        /* 4. NAVIGATION & RENDER ENGINES */
+        /* NAVIGATION & RENDER ENGINES */
         function openStudentProfile(name) {
             activeStudentName = name;
             document.getElementById('profile-display-name').innerText = name;
@@ -1420,7 +1391,7 @@
             if (studentNotesMap[name]) {
                 sub.innerText = '✅ Đã lưu ghi chú chuyên môn';
             } else {
-                sub.innerText = 'Sổ tay ghi chú bài giảng HLV (Private to you)';
+                sub.innerText = 'Private to you';
             }
             switchView('screen-student-profile');
         }
@@ -1643,7 +1614,6 @@
                 if (item.type === 'plane') {
                     ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
                 } else if (item.type === 'head') {
-                    const radius = Math.hypot(item.x1, item.y1, item.x2, item.y2);
                     const r = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
                     ctx.beginPath(); ctx.arc(item.x1, item.y1, r, 0, Math.PI * 2); ctx.stroke();
                 } else if (item.type === 'text') {
@@ -1694,25 +1664,6 @@
             document.getElementById('active-facility-label').innerText = facilityName;
             closeModal('account-selector-modal');
             showToast('Đã chọn cơ sở ' + facilityName);
-        }
-
-        function openLiveChatModal() {
-            document.getElementById('chat-header-title').innerText = 'Chat Với ' + activeStudentName;
-            document.getElementById('live-chat-modal').style.display = 'flex';
-        }
-
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input-field');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const body = document.getElementById('chat-messages-body');
-            const msg = document.createElement('div');
-            msg.style.cssText = "background:var(--72-blue); padding:10px 14px; border-radius:12px; max-width:80%; align-self:flex-end;";
-            msg.innerHTML = `<div style="font-size:0.75rem; color:#93C5FD; font-weight:700;">Bạn (HLV)</div><div style="font-size:0.9rem; color:#FFFFFF;">${text}</div>`;
-            body.appendChild(msg);
-            input.value = '';
-            body.scrollTop = body.scrollHeight;
         }
 
         function openReferenceLibraryModal() {
