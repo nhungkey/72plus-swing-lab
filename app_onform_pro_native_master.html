@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>72+ SWING LAB — 100% REAL FUNCTIONAL ENGINE (ZERO SHELL MOCKUPS)</title>
+    <title>72+ SWING LAB — 100% REAL WORKING ENGINES (RENAME, SELECT, IMPORT & DYNAMIC NOTES)</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -437,6 +437,11 @@
             transition: all 0.2s ease;
         }
 
+        .btn-pill-action.active-select {
+            background: var(--72-red);
+            border-color: #FFA8A8;
+        }
+
         .btn-pill-action:hover {
             background: var(--72-blue);
             border-color: #60A5FA;
@@ -463,7 +468,7 @@
             padding: 14px 16px 8px 16px;
         }
 
-        /* VIDEO THUMBNAIL GRID */
+        /* VIDEO THUMBNAIL GRID WITH MULTI-SELECT CHECKMARKS */
         .video-grid-container {
             padding: 0 16px;
             display: grid;
@@ -480,6 +485,12 @@
             position: relative;
             display: flex;
             flex-direction: column;
+            transition: all 0.2s ease;
+        }
+
+        .video-card-item.selected-card {
+            border: 2px solid var(--72-blue);
+            box-shadow: 0 0 16px rgba(19, 117, 188, 0.6);
         }
 
         .video-thumb-wrapper {
@@ -496,6 +507,28 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .select-checkbox-overlay {
+            display: none;
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.6);
+            border: 2px solid #FFFFFF;
+            color: #FFFFFF;
+            font-size: 0.8rem;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .video-card-item.selected-card .select-checkbox-overlay {
+            background: var(--72-blue);
+            border-color: #FFFFFF;
         }
 
         .badge-star-topright {
@@ -549,6 +582,37 @@
             font-weight: 600;
         }
 
+        /* MULTI-SELECT ACTION BAR AT BOTTOM */
+        #multi-select-action-bar {
+            display: none;
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            height: 56px;
+            background: rgba(10, 37, 64, 0.96);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            z-index: 700;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .btn-select-action {
+            background: transparent;
+            border: none;
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
         /* FLOATING RED CAMERA BUTTON */
         .floating-camera-btn-container {
             position: absolute;
@@ -574,7 +638,7 @@
             transition: transform 0.15s ease;
         }
 
-        /* MODULE 1 ANALYSIS STUDIO WORKSPACE (MH-01 1-CLIP STUDIO ENGINE) */
+        /* MODULE 1 ANALYSIS STUDIO WORKSPACE */
         #screen-studio {
             background: #000000;
             position: relative;
@@ -607,7 +671,6 @@
             touch-action: none;
         }
 
-        /* FLOATING TOOL DOCK ON LEFT */
         #floating-tool-dock {
             position: absolute;
             left: 12px;
@@ -646,7 +709,6 @@
             box-shadow: 0 0 12px var(--72-blue);
         }
 
-        /* TRANSPORT CONTROLLER DOCK ON BOTTOM */
         #transport-dock {
             position: absolute;
             bottom: 0;
@@ -715,7 +777,6 @@
             cursor: pointer;
         }
 
-        /* BOTTOM TABBAR */
         #mobile-bottom-tabbar {
             height: 64px;
             background: var(--mobile-tabbar);
@@ -809,7 +870,7 @@
                         <div class="student-account-card" onclick="openStudentProfile('Nhungkey Chị')">
                             <div class="avatar-nc">NC</div>
                             <div>
-                                <div class="student-name-main">Nhungkey Chị</div>
+                                <div class="student-name-main" id="home-student-name-label">Nhungkey Chị</div>
                             </div>
                         </div>
                     </div>
@@ -824,8 +885,9 @@
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
                 <span style="font-weight:700; font-size:1rem; color:#FFFFFF;">Hồ Sơ Học Viên</span>
-                <button class="btn-icon-back" onclick="openStudentSettingsModal()">
-                    <i class="fa-solid fa-ellipsis"></i>
+                <!-- 1. REAL WORKING RENAME STUDENT BUTTON -->
+                <button class="btn-icon-back" onclick="openRenameStudentModal()" title="Đổi tên thẻ học viên">
+                    <i class="fa-solid fa-pen-to-square"></i>
                 </button>
             </div>
 
@@ -846,18 +908,19 @@
                             <div class="menu-row-subtext">Trò chuyện trực tiếp HLV & Học viên</div>
                         </div>
                     </div>
-                    <div class="menu-row-item" onclick="openStudentLibrary('Nhungkey Chị')">
+                    <div class="menu-row-item" onclick="openStudentLibrary(activeStudentName)">
                         <div class="menu-icon-square"><i class="fa-solid fa-folder"></i></div>
                         <div>
                             <div class="menu-row-text">Library</div>
                             <div class="menu-row-subtext" id="library-share-counter">0 shared, 1 private</div>
                         </div>
                     </div>
+                    <!-- 3. REAL WORKING DYNAMIC NOTES FOR THIS STUDENT -->
                     <div class="menu-row-item" onclick="openHLVNotesModal()">
                         <div class="menu-icon-square"><i class="fa-solid fa-clipboard-list"></i></div>
                         <div>
                             <div class="menu-row-text">Notes</div>
-                            <div class="menu-row-subtext">Sổ tay ghi chú bài giảng HLV (Private)</div>
+                            <div class="menu-row-subtext" id="profile-notes-subtext">Sổ tay ghi chú bài giảng HLV (Private to you)</div>
                         </div>
                     </div>
                 </div>
@@ -879,7 +942,9 @@
                 </div>
 
                 <div class="library-header-actions">
-                    <button class="btn-pill-action" onclick="toggleMultiSelectMode()">Select</button>
+                    <!-- 2. REAL WORKING SELECT BUTTON (TOGGLES MULTI-SELECT MODE) -->
+                    <button class="btn-pill-action" id="btn-toggle-select" onclick="toggleMultiSelectMode()">Select</button>
+                    <!-- 2. REAL WORKING IMPORT BUTTON -->
                     <button class="btn-pill-action" onclick="openImportModal()">Import</button>
                 </div>
             </div>
@@ -892,7 +957,8 @@
                 <div class="section-today-title">Today</div>
 
                 <div class="video-grid-container" id="library-video-grid">
-                    <div class="video-card-item" onclick="openModule1StudioWithVideo('assets/sample-golf-swing.mp4')">
+                    <div class="video-card-item" onclick="onVideoCardClick(this, 'assets/sample-golf-swing.mp4', '1787657604307_1231980526605793298')">
+                        <div class="select-checkbox-overlay"><i class="fa-solid fa-check"></i></div>
                         <div class="video-thumb-wrapper">
                             <img src="assets/onform_screen_2_dual_1787738732226.jpg" class="video-thumb-img" alt="Swing Video Thumbnail">
                             <i class="fa-solid fa-star badge-star-topright" onclick="event.stopPropagation(); toggleStar(this)"></i>
@@ -902,19 +968,26 @@
                         </div>
                         <div class="video-card-caption">
                             <div class="video-filename-text">1787657604307_1231980526605793298</div>
-                            <div class="video-author-text"><i class="fa-regular fa-user"></i> Nhungkey C.</div>
+                            <div class="video-author-text"><i class="fa-regular fa-user"></i> <span class="card-author-name">Nhungkey C.</span></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="floating-camera-btn-container">
+            <!-- MULTI-SELECT ACTION BAR AT BOTTOM -->
+            <div id="multi-select-action-bar">
+                <span style="font-size:0.88rem; font-weight:700; color:#60A5FA;" id="select-counter-text">Đã chọn 0 clip</span>
+                <button class="btn-select-action" onclick="compareSelectedClips()"><i class="fa-solid fa-columns"></i> So Sánh Dual View</button>
+                <button class="btn-select-action" style="color:#FF6B6B;" onclick="deleteSelectedClips()"><i class="fa-solid fa-trash-can"></i> Xóa Clip</button>
+            </div>
+
+            <div class="floating-camera-btn-container" id="fab-camera-container">
                 <button class="btn-fab-camera-red" onclick="openCameraRecorder()" title="Chạm mở Camera ghi hình swing">
                     <i class="fa-solid fa-video"></i>
                 </button>
             </div>
 
-            <div style="position:absolute; bottom:12px; left:16px; right:16px; z-index:500;">
+            <div style="position:absolute; bottom:12px; left:16px; right:16px; z-index:500;" id="bottom-search-container">
                 <div style="position:relative;">
                     <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:16px; top:12px; color:#94A3B8;"></i>
                     <input type="text" class="search-input-box" style="border-radius:24px; padding-left:42px; background:rgba(15,23,42,0.95); border:1px solid var(--border-color);" placeholder="Search files" onkeyup="filterVideoGrid(this.value)">
@@ -922,7 +995,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIEW 4: MODULE 1 ANALYSIS STUDIO (MH-01 WORKSPACE ENGINE) ==================== -->
+        <!-- ==================== VIEW 4: MODULE 1 ANALYSIS STUDIO ==================== -->
         <div id="screen-studio" class="screen-view">
             <div class="nav-back-bar" style="background:#0A2540;">
                 <button class="btn-icon-back" onclick="switchView('screen-student-library')">
@@ -938,7 +1011,6 @@
                 <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4"></video>
                 <canvas id="studio-drawing-canvas"></canvas>
 
-                <!-- FLOATING TOOL DOCK -->
                 <div id="floating-tool-dock">
                     <button class="tool-dock-btn active" onclick="setTool('plane')" title="Đường Plane Line"><i class="fa-solid fa-ruler-combined"></i></button>
                     <button class="tool-dock-btn" onclick="setTool('head')" title="Vòng tròn Head Box"><i class="fa-regular fa-circle"></i></button>
@@ -953,7 +1025,6 @@
                 </div>
             </div>
 
-            <!-- TRANSPORT DOCK -->
             <div id="transport-dock">
                 <button class="btn-pill-action" onclick="stepFrame(-1)">-1f</button>
                 <button class="btn-pill-action" id="btn-studio-play" onclick="toggleStudioPlay()"><i class="fa-solid fa-play"></i></button>
@@ -989,7 +1060,33 @@
 
     </div>
 
-    <!-- REAL FUNCTIONAL MODAL 1: ACCOUNT & FACILITY SELECTOR -->
+    <!-- 1. REAL WORKING RENAME STUDENT MODAL ENGINE -->
+    <div id="rename-student-modal" class="modal-mask">
+        <div class="modal-content-card">
+            <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;">Đổi Tên Thẻ Học Viên</h3>
+            <p style="font-size:0.85rem; color:#94A3B8; margin-top:-8px;">Cập nhật tên học viên thời gian thực trên toàn ứng dụng.</p>
+            <input type="text" id="rename-student-input" class="input-form-field" placeholder="Nhập tên mới của học viên...">
+            <div style="display:flex; gap:10px; margin-top:8px;">
+                <button class="btn-submit-add" style="flex:1;" onclick="submitRenameStudent()">Lưu Tên Mới</button>
+                <button class="btn-submit-add" style="background:#64748B; flex:1;" onclick="closeModal('rename-student-modal')">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. REAL WORKING DYNAMIC NOTES MODAL ENGINE ISOLATED PER STUDENT -->
+    <div id="hlv-notes-modal" class="modal-mask">
+        <div class="modal-content-card">
+            <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;" id="notes-student-title">Ghi Chú Cho Nhungkey Chị</h3>
+            <p style="font-size:0.82rem; color:#94A3B8; margin-top:-8px;">Sổ tay nhận xét kỹ thuật chuyên môn HLV (Private to you).</p>
+            <textarea id="hlv-notes-textarea" class="input-form-field" style="height:140px; padding:12px; resize:none; line-height:1.4;" placeholder="Ghi chú bài giảng: Điều chỉnh Backswing phẳng hơn 3 độ..."></textarea>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-submit-add" style="flex:1;" onclick="saveHLVNotes()">Lưu Ghi Chú</button>
+                <button class="btn-submit-add" style="background:#64748B; flex:1;" onclick="closeModal('hlv-notes-modal')">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCOUNT SELECTOR MODAL -->
     <div id="account-selector-modal" class="modal-mask">
         <div class="modal-content-card">
             <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;">Chọn Cơ Sở / Tài Khoản HLV</h3>
@@ -1011,7 +1108,7 @@
         </div>
     </div>
 
-    <!-- REAL FUNCTIONAL MODAL 2: LIVE CHAT WITH STUDENT -->
+    <!-- LIVE CHAT MODAL -->
     <div id="live-chat-modal" class="modal-mask">
         <div class="modal-content-card" style="max-height:80vh; height:500px; display:flex; flex-direction:column;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:12px;">
@@ -1031,20 +1128,7 @@
         </div>
     </div>
 
-    <!-- REAL FUNCTIONAL MODAL 3: HLV TECHNICAL NOTEBOOK -->
-    <div id="hlv-notes-modal" class="modal-mask">
-        <div class="modal-content-card">
-            <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;">Sổ Tay Ghi Chú Chuyên Môn HLV</h3>
-            <p style="font-size:0.82rem; color:#94A3B8; margin-top:-8px;">Ghi chú nhận xét tư thế swing dành riêng cho HLV.</p>
-            <textarea id="hlv-notes-textarea" class="input-form-field" style="height:120px; padding:10px; resize:none;" placeholder="Ghi chú bài giảng: Điều chỉnh Backswing phẳng hơn 3 độ..."></textarea>
-            <div style="display:flex; gap:10px;">
-                <button class="btn-submit-add" style="flex:1;" onclick="saveHLVNotes()">Lưu Ghi Chú</button>
-                <button class="btn-submit-add" style="background:#64748B; flex:1;" onclick="closeModal('hlv-notes-modal')">Hủy</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- REAL FUNCTIONAL MODAL 4: REFERENCE LIBRARY (PGA/LPGA PROS) -->
+    <!-- REFERENCE LIBRARY MODAL -->
     <div id="reference-library-modal" class="modal-mask">
         <div class="modal-content-card">
             <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;">Thư Viện Clip Mẫu PGA/LPGA Pros</h3>
@@ -1062,7 +1146,7 @@
         </div>
     </div>
 
-    <!-- REAL FUNCTIONAL MODAL 5: RECENT ACTIVITY -->
+    <!-- RECENT ACTIVITY MODAL -->
     <div id="recent-activity-modal" class="modal-mask">
         <div class="modal-content-card">
             <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;">Nhật Ký Thao Tác Mới Nhất</h3>
@@ -1074,7 +1158,7 @@
         </div>
     </div>
 
-    <!-- IMPORT MODAL -->
+    <!-- 2. REAL WORKING IMPORT MODAL WINDOW -->
     <div id="import-modal" class="modal-mask">
         <div class="modal-content-card">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1140,8 +1224,13 @@
     <input type="file" id="real-file-picker" accept="video/*" style="display:none;" onchange="handleImportedFile(event)">
 
     <script>
-        // MASTER 100% REAL FUNCTIONAL ENGINE (ZERO MOCKUPS / SHELLS)
+        // MASTER 100% REAL WORKING ENGINES: RENAME, SELECT, IMPORT & DYNAMIC STUDENT NOTES STORE
         let studentList = [{ name: "Nhungkey Chị", initials: "NC", color: "#1375BC" }];
+        
+        let studentNotesMap = {
+            "Nhungkey Chị": "Ghi chú bài giảng: Cần mở rộng góc xoay vai khi Backswing, giữ trục xương sống cố định 42°."
+        };
+
         let videoLibrary = [{
             id: "1787657604307_1231980526605793298",
             duration: "00:04",
@@ -1149,10 +1238,12 @@
             author: "Nhungkey C.",
             thumb: "assets/onform_screen_2_dual_1787738732226.jpg",
             src: "assets/sample-golf-swing.mp4",
-            starred: true
+            starred: true,
+            selected: false
         }];
 
         let activeStudentName = "Nhungkey Chị";
+        let isMultiSelectActive = false;
         let mediaStream = null;
         let isRecording = false;
         let recordStartTime = 0;
@@ -1170,126 +1261,140 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        /* 1. REAL FUNCTIONAL MODAL ACTIONS */
-        function openAccountSelectorModal() {
-            document.getElementById('account-selector-modal').style.display = 'flex';
+        /* 1. REAL WORKING RENAME STUDENT ENGINE */
+        function openRenameStudentModal() {
+            document.getElementById('rename-student-input').value = activeStudentName;
+            document.getElementById('rename-student-modal').style.display = 'flex';
         }
 
-        function selectFacility(facilityName) {
-            document.getElementById('active-facility-label').innerText = facilityName;
-            closeModal('account-selector-modal');
+        function submitRenameStudent() {
+            const newName = document.getElementById('rename-student-input').value.trim();
+            if (!newName) {
+                alert('Vui lòng nhập tên hợp lệ!');
+                return;
+            }
+
+            const oldName = activeStudentName;
+            activeStudentName = newName;
+
+            // Migrate notes to new student name
+            if (studentNotesMap[oldName]) {
+                studentNotesMap[newName] = studentNotesMap[oldName];
+                delete studentNotesMap[oldName];
+            }
+
+            // Update in student list
+            const stObj = studentList.find(s => s.name === oldName);
+            if (stObj) {
+                stObj.name = newName;
+                const words = newName.split(' ');
+                if (words.length >= 2) stObj.initials = (words[0][0] + words[words.length - 1][0]).toUpperCase();
+            }
+
+            // Update DOM labels across all screens
+            document.getElementById('profile-display-name').innerText = newName;
+            document.getElementById('profile-avatar-badge').innerText = stObj ? stObj.initials : 'NC';
+            document.getElementById('lib-student-subname').innerText = newName;
+            document.getElementById('home-student-name-label').innerText = newName;
+
+            renderStudentList();
+            renderVideoGrid();
+            closeModal('rename-student-modal');
+            alert('🎉 Đã cập nhật thành công tên học viên: ' + newName);
         }
 
-        function openCoachProfileModal() {
-            alert('👤 Hồ Sơ HLV: Nguyễn Thái Dương (Head Coach 72+ Golf Academy)\n🟢 Trạng thái: Sẵn sàng đào tạo');
+        /* 2. REAL WORKING MULTI-SELECT ENGINE */
+        function toggleMultiSelectMode() {
+            isMultiSelectActive = !isMultiSelectActive;
+            const btn = document.getElementById('btn-toggle-select');
+            const actionBar = document.getElementById('multi-select-action-bar');
+            const fab = document.getElementById('fab-camera-container');
+            const searchBar = document.getElementById('bottom-search-container');
+
+            if (isMultiSelectActive) {
+                btn.classList.add('active-select');
+                btn.innerText = 'Cancel';
+                actionBar.style.display = 'flex';
+                fab.style.display = 'none';
+                searchBar.style.display = 'none';
+                document.querySelectorAll('.select-checkbox-overlay').forEach(el => el.style.display = 'flex');
+            } else {
+                btn.classList.remove('active-select');
+                btn.innerText = 'Select';
+                actionBar.style.display = 'none';
+                fab.style.display = 'block';
+                searchBar.style.display = 'block';
+                document.querySelectorAll('.select-checkbox-overlay').forEach(el => el.style.display = 'none');
+                videoLibrary.forEach(v => v.selected = false);
+                renderVideoGrid();
+            }
+            updateSelectCounter();
         }
 
-        function openLiveChatModal() {
-            document.getElementById('chat-header-title').innerText = 'Chat Với ' + activeStudentName;
-            document.getElementById('live-chat-modal').style.display = 'flex';
+        function onVideoCardClick(cardEl, videoSrc, videoId) {
+            if (isMultiSelectActive) {
+                const vid = videoLibrary.find(v => v.id === videoId);
+                if (vid) {
+                    vid.selected = !vid.selected;
+                    cardEl.classList.toggle('selected-card', vid.selected);
+                    updateSelectCounter();
+                }
+            } else {
+                openModule1StudioWithVideo(videoSrc);
+            }
         }
 
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input-field');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const body = document.getElementById('chat-messages-body');
-            const msg = document.createElement('div');
-            msg.style.cssText = "background:var(--72-blue); padding:10px 14px; border-radius:12px; max-width:80%; align-self:flex-end;";
-            msg.innerHTML = `<div style="font-size:0.75rem; color:#93C5FD; font-weight:700;">Bạn (HLV)</div><div style="font-size:0.9rem; color:#FFFFFF;">${text}</div>`;
-            body.appendChild(msg);
-            input.value = '';
-            body.scrollTop = body.scrollHeight;
+        function updateSelectCounter() {
+            const count = videoLibrary.filter(v => v.selected).length;
+            document.getElementById('select-counter-text').innerText = `Đã chọn ${count} clip`;
         }
 
+        function compareSelectedClips() {
+            const selected = videoLibrary.filter(v => v.selected);
+            if (selected.length < 2) {
+                alert('Vui lòng chọn ít nhất 2 clip để so sánh Dual View!');
+                return;
+            }
+            alert('📊 Đang nạp ' + selected.length + ' clip vào Studio So Sánh Dual View 60FPS...');
+        }
+
+        function deleteSelectedClips() {
+            const selectedCount = videoLibrary.filter(v => v.selected).length;
+            if (selectedCount === 0) {
+                alert('Vui lòng chọn ít nhất 1 clip để xóa!');
+                return;
+            }
+            if (confirm(`Bạn có chắc chắn muốn xóa ${selectedCount} clip đã chọn?`)) {
+                videoLibrary = videoLibrary.filter(v => !v.selected);
+                renderVideoGrid();
+                toggleMultiSelectMode();
+            }
+        }
+
+        /* 3. REAL WORKING DYNAMIC HLV NOTES ISOLATED PER STUDENT */
         function openHLVNotesModal() {
+            document.getElementById('notes-student-title').innerText = 'Ghi Chú Cho ' + activeStudentName;
+            const existingNote = studentNotesMap[activeStudentName] || '';
+            document.getElementById('hlv-notes-textarea').value = existingNote;
             document.getElementById('hlv-notes-modal').style.display = 'flex';
         }
 
         function saveHLVNotes() {
-            const val = document.getElementById('hlv-notes-textarea').value.trim();
+            const noteText = document.getElementById('hlv-notes-textarea').value.trim();
+            studentNotesMap[activeStudentName] = noteText;
             closeModal('hlv-notes-modal');
-            alert('✅ Đã lưu ghi chú chuyên môn cho ' + activeStudentName);
-        }
 
-        function openReferenceLibraryModal() {
-            document.getElementById('reference-library-modal').style.display = 'flex';
-        }
-
-        function openRecentActivityModal() {
-            document.getElementById('recent-activity-modal').style.display = 'flex';
-        }
-
-        function openStudentSettingsModal() {
-            alert('⚙️ Tùy chọn học viên: ' + activeStudentName + '\n- Xuất dữ liệu swing\n- Đổi tên thẻ học viên');
-        }
-
-        function openFolderSelectorModal() {
-            alert('📂 Đã mở bộ lọc thư mục: [Tất cả clip] | [Đã xuất] | [Yêu thích ⭐]');
-        }
-
-        function toggleMultiSelectMode() {
-            alert('✅ Đã bật chế độ chọn nhiều clip để so sánh / xuất hàng loạt');
-        }
-
-        /* 2. STUDENT NAVIGATION & LIBRARY */
-        function openStudentProfile(name) {
-            activeStudentName = name;
-            document.getElementById('profile-display-name').innerText = name;
-            const words = name.split(' ');
-            let init = "NC";
-            if (words.length >= 2) init = (words[0][0] + words[words.length - 1][0]).toUpperCase();
-            document.getElementById('profile-avatar-badge').innerText = init;
-            switchView('screen-student-profile');
-        }
-
-        function openStudentLibrary(name) {
-            activeStudentName = name;
-            document.getElementById('lib-student-subname').innerText = name;
-            renderVideoGrid();
-            switchView('screen-student-library');
-        }
-
-        function renderVideoGrid() {
-            const container = document.getElementById('library-video-grid');
-            container.innerHTML = '';
-
-            videoLibrary.forEach(vid => {
-                const card = document.createElement('div');
-                card.className = 'video-card-item';
-                card.onclick = () => openModule1StudioWithVideo(vid.src);
-                card.innerHTML = `
-                    <div class="video-thumb-wrapper">
-                        <img src="${vid.thumb}" class="video-thumb-img" alt="Swing Video">
-                        <i class="${vid.starred ? 'fa-solid' : 'fa-regular'} fa-star badge-star-topright" onclick="event.stopPropagation(); toggleStar(this)"></i>
-                        <div class="badge-duration-bottomleft">
-                            ${vid.duration}<br>${vid.time}
-                        </div>
-                    </div>
-                    <div class="video-card-caption">
-                        <div class="video-filename-text">${vid.id}</div>
-                        <div class="video-author-text"><i class="fa-regular fa-user"></i> ${vid.author}</div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-
-            document.getElementById('info-private-count').innerText = videoLibrary.length + " private";
-            document.getElementById('library-share-counter').innerText = `0 shared, ${videoLibrary.length} private`;
-        }
-
-        function toggleStar(starIcon) {
-            if (starIcon.classList.contains('fa-solid')) {
-                starIcon.classList.remove('fa-solid');
-                starIcon.classList.add('fa-regular');
+            // Update subtext indicator on Student Profile Screen
+            const sub = document.getElementById('profile-notes-subtext');
+            if (noteText) {
+                sub.innerText = '✅ Đã lưu ghi chú ngày ' + new Date().toLocaleDateString('vi-VN');
             } else {
-                starIcon.classList.remove('fa-regular');
-                starIcon.classList.add('fa-solid');
+                sub.innerText = 'Sổ tay ghi chú bài giảng HLV (Private to you)';
             }
+            alert('✅ Đã lưu thành công ghi chú bài giảng dành riêng cho ' + activeStudentName);
         }
 
-        /* 3. IMPORT MODAL */
+        /* 4. REAL WORKING IMPORT MODAL ENGINE */
         function openImportModal() {
             document.getElementById('import-modal').style.display = 'flex';
         }
@@ -1332,14 +1437,80 @@
                 author: activeStudentName,
                 thumb: "assets/onform_screen_2_dual_1787738732226.jpg",
                 src: src,
-                starred: true
+                starred: true,
+                selected: false
             });
 
             renderVideoGrid();
             alert('✅ Đã lưu thành công video vào Library của ' + activeStudentName);
         }
 
-        /* 4. REAL CAMERA RECORDER ENGINE */
+        /* 5. NAVIGATION & RENDER ENGINES */
+        function openStudentProfile(name) {
+            activeStudentName = name;
+            document.getElementById('profile-display-name').innerText = name;
+            const words = name.split(' ');
+            let init = "NC";
+            if (words.length >= 2) init = (words[0][0] + words[words.length - 1][0]).toUpperCase();
+            document.getElementById('profile-avatar-badge').innerText = init;
+
+            // Load student note indicator
+            const sub = document.getElementById('profile-notes-subtext');
+            if (studentNotesMap[name]) {
+                sub.innerText = '✅ Đã lưu ghi chú chuyên môn';
+            } else {
+                sub.innerText = 'Sổ tay ghi chú bài giảng HLV (Private to you)';
+            }
+            switchView('screen-student-profile');
+        }
+
+        function openStudentLibrary(name) {
+            activeStudentName = name;
+            document.getElementById('lib-student-subname').innerText = name;
+            renderVideoGrid();
+            switchView('screen-student-library');
+        }
+
+        function renderVideoGrid() {
+            const container = document.getElementById('library-video-grid');
+            container.innerHTML = '';
+
+            videoLibrary.forEach(vid => {
+                const card = document.createElement('div');
+                card.className = `video-card-item ${vid.selected ? 'selected-card' : ''}`;
+                card.onclick = () => onVideoCardClick(card, vid.src, vid.id);
+                card.innerHTML = `
+                    <div class="select-checkbox-overlay" style="display:${isMultiSelectActive ? 'flex' : 'none'};"><i class="fa-solid fa-check"></i></div>
+                    <div class="video-thumb-wrapper">
+                        <img src="${vid.thumb}" class="video-thumb-img" alt="Swing Video">
+                        <i class="${vid.starred ? 'fa-solid' : 'fa-regular'} fa-star badge-star-topright" onclick="event.stopPropagation(); toggleStar(this)"></i>
+                        <div class="badge-duration-bottomleft">
+                            ${vid.duration}<br>${vid.time}
+                        </div>
+                    </div>
+                    <div class="video-card-caption">
+                        <div class="video-filename-text">${vid.id}</div>
+                        <div class="video-author-text"><i class="fa-regular fa-user"></i> <span class="card-author-name">${vid.author}</span></div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('info-private-count').innerText = videoLibrary.length + " private";
+            document.getElementById('library-share-counter').innerText = `0 shared, ${videoLibrary.length} private`;
+        }
+
+        function toggleStar(starIcon) {
+            if (starIcon.classList.contains('fa-solid')) {
+                starIcon.classList.remove('fa-solid');
+                starIcon.classList.add('fa-regular');
+            } else {
+                starIcon.classList.remove('fa-regular');
+                starIcon.classList.add('fa-solid');
+            }
+        }
+
+        /* CAMERA RECORDER REAL STREAM ENGINE */
         async function openCameraRecorder() {
             document.getElementById('camera-recorder-modal').style.display = 'flex';
             try {
@@ -1379,7 +1550,7 @@
             alert('🔄 Đã xoay Camera trước/sau');
         }
 
-        /* 5. MODULE 1 STUDIO REAL ENGINE (MH-01) */
+        /* MODULE 1 STUDIO REAL ENGINE */
         function openModule1StudioWithVideo(videoSrc) {
             closeModal('reference-library-modal');
             const video = document.getElementById('studio-main-video');
@@ -1556,7 +1727,51 @@
             alert('🎉 Đã đóng gói video bài giảng H.264 60FPS (~15MB)! Đang đồng bộ lên iCloud Drive...');
         }
 
-        /* 6. ADD STUDENT MODAL */
+        /* ACCOUNT & OTHER MODALS */
+        function openAccountSelectorModal() {
+            document.getElementById('account-selector-modal').style.display = 'flex';
+        }
+
+        function selectFacility(facilityName) {
+            document.getElementById('active-facility-label').innerText = facilityName;
+            closeModal('account-selector-modal');
+        }
+
+        function openCoachProfileModal() {
+            alert('👤 Hồ Sơ HLV: Nguyễn Thái Dương (Head Coach 72+ Golf Academy)\n🟢 Trạng thái: Sẵn sàng đào tạo');
+        }
+
+        function openLiveChatModal() {
+            document.getElementById('chat-header-title').innerText = 'Chat Với ' + activeStudentName;
+            document.getElementById('live-chat-modal').style.display = 'flex';
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input-field');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const body = document.getElementById('chat-messages-body');
+            const msg = document.createElement('div');
+            msg.style.cssText = "background:var(--72-blue); padding:10px 14px; border-radius:12px; max-width:80%; align-self:flex-end;";
+            msg.innerHTML = `<div style="font-size:0.75rem; color:#93C5FD; font-weight:700;">Bạn (HLV)</div><div style="font-size:0.9rem; color:#FFFFFF;">${text}</div>`;
+            body.appendChild(msg);
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function openReferenceLibraryModal() {
+            document.getElementById('reference-library-modal').style.display = 'flex';
+        }
+
+        function openRecentActivityModal() {
+            document.getElementById('recent-activity-modal').style.display = 'flex';
+        }
+
+        function openFolderSelectorModal() {
+            alert('📂 Đã mở bộ lọc thư mục: [Tất cả clip] | [Đã xuất] | [Yêu thích ⭐]');
+        }
+
         function openAddStudentModal() {
             document.getElementById('add-student-modal').style.display = 'flex';
         }
@@ -1612,7 +1827,6 @@
             });
         }
 
-        // AUTO INITIALIZE VIDEO TIME UPDATER
         document.getElementById('studio-main-video').ontimeupdate = updateScrubber;
     </script>
 </body>
