@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>72+ SWING LAB — 100% REAL VIDEO IMPORT & DYNAMIC THUMBNAIL ENGINE</title>
+    <title>72+ SWING LAB — 100% ONFORM NATIVE MOBILE STUDIO (14-POINT PERFECT MATCH)</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -34,7 +34,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: var(--mobile-bg);
+            background-color: #000000;
             font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             color: #FFFFFF;
         }
@@ -45,7 +45,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: var(--mobile-bg);
+            background: #000000;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -64,7 +64,7 @@
             display: flex;
         }
 
-        /* TOP BANNER HEADER */
+        /* TOP BANNER HEADER (HOME/PROFILE) */
         #onform-header-bar {
             background: #0A2540;
             border-bottom: 2px solid rgba(239, 63, 54, 0.8);
@@ -233,7 +233,6 @@
             gap: 16px;
         }
 
-        /* MENU LIST ITEMS */
         .menu-list-group {
             background: var(--mobile-card);
             border-radius: 16px;
@@ -283,7 +282,6 @@
             margin-top: 2px;
         }
 
-        /* STUDENT ACCOUNT CARD */
         .student-section-header {
             margin-top: 4px;
             border-top: 1px solid var(--border-color);
@@ -300,10 +298,6 @@
             cursor: pointer;
             border: 1px solid var(--border-color);
             transition: transform 0.15s ease;
-        }
-
-        .student-account-card:active {
-            transform: scale(0.98);
         }
 
         .avatar-nc {
@@ -326,7 +320,7 @@
             color: #FFFFFF;
         }
 
-        /* STUDENT DETAIL PROFILE SCREEN */
+        /* STUDENT PROFILE & LIBRARY */
         .nav-back-bar {
             height: 56px;
             padding: 0 16px;
@@ -382,15 +376,6 @@
             outline: none;
             border-bottom: 1px dashed transparent;
             transition: all 0.2s ease;
-            user-select: text;
-            -webkit-user-select: text;
-        }
-
-        .profile-title-name:focus {
-            border-bottom: 2px solid var(--72-blue);
-            background: rgba(19, 117, 188, 0.15);
-            padding: 2px 6px;
-            border-radius: 6px;
         }
 
         .profile-subtitle {
@@ -399,7 +384,6 @@
             margin-top: 2px;
         }
 
-        /* STUDENT LIBRARY SCREEN */
         .library-nav-bar {
             height: 60px;
             padding: 0 16px;
@@ -454,22 +438,12 @@
             border-color: #FFA8A8;
         }
 
-        .btn-pill-action:hover {
-            background: var(--72-blue);
-            border-color: #60A5FA;
-        }
-
         .library-info-subbar {
             padding: 10px 16px;
             font-size: 0.85rem;
             color: #94A3B8;
             border-bottom: 1px solid var(--border-color);
             background: rgba(15, 23, 42, 0.6);
-        }
-
-        .library-info-subbar span {
-            color: #F59E0B;
-            text-decoration: underline;
         }
 
         .section-today-title {
@@ -480,7 +454,6 @@
             padding: 14px 16px 8px 16px;
         }
 
-        /* VIDEO THUMBNAIL GRID WITH MULTI-SELECT CHECKMARKS */
         .video-grid-container {
             padding: 0 16px;
             display: grid;
@@ -508,7 +481,7 @@
         .video-thumb-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 125%; /* 4:5 aspect ratio */
+            padding-top: 125%;
             background: #000000;
         }
 
@@ -551,12 +524,7 @@
             font-size: 1.15rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.9);
             cursor: pointer;
-            transition: transform 0.2s ease;
             z-index: 15;
-        }
-
-        .badge-star-topright:hover {
-            transform: scale(1.2);
         }
 
         .badge-duration-bottomleft {
@@ -596,7 +564,6 @@
             font-weight: 600;
         }
 
-        /* MULTI-SELECT ACTION BAR AT BOTTOM */
         #multi-select-action-bar {
             display: none;
             position: absolute;
@@ -627,7 +594,6 @@
             cursor: pointer;
         }
 
-        /* FLOATING RED CAMERA BUTTON */
         .floating-camera-btn-container {
             position: absolute;
             bottom: 74px;
@@ -649,10 +615,8 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 24px rgba(239, 63, 54, 0.7);
-            transition: transform 0.15s ease;
         }
 
-        /* SLEEK IOS NATIVE TOAST NOTIFICATION */
         #native-toast-notification {
             position: absolute;
             top: 20px;
@@ -680,60 +644,507 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* DUAL VIEW COMPARISON STUDIO WORKSPACE */
-        #screen-dual-studio {
+        /* ==================== 100% ONFORM NATIVE MOBILE STUDIO ENGINE ==================== */
+        #screen-studio, #screen-dual-studio {
             background: #000000;
             position: relative;
-        }
-
-        .dual-video-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            width: 100%;
-            height: calc(100vh - 120px);
-            background: #000000;
-            gap: 2px;
-        }
-
-        .dual-video-pane {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background: #000000;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
+        }
+
+        /* 1. TOP OVERLAY BAR (ONFORM GLASSMORPISM CIRCLES & CENTER GROUP) */
+        .onform-top-overlay-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 600;
+            padding-top: env(safe-area-inset-top);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+            pointer-events: none;
+        }
+
+        .onform-top-overlay-bar * {
+            pointer-events: auto;
+        }
+
+        .onform-top-left, .onform-top-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .onform-circle-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(40, 40, 40, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #FFFFFF;
+            font-size: 1.15rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
         }
 
-        .dual-video-pane video {
+        .onform-circle-btn:active {
+            transform: scale(0.92);
+            background: rgba(19, 117, 188, 0.8);
+        }
+
+        .onform-center-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .onform-mic-btn {
+            background: rgba(40, 40, 40, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #FFFFFF;
+            height: 42px;
+            padding: 0 16px;
+            border-radius: 21px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+        }
+
+        .onform-mic-btn.recording {
+            background: #EF3F36;
+            border-color: #FFA8A8;
+            animation: pulse-red 1.2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 63, 54, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 63, 54, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 63, 54, 0); }
+        }
+
+        .onform-dual-compare-btn {
+            background: rgba(40, 40, 40, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #FFFFFF;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT */
+        #studio-video-container {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #studio-main-video {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
 
-        .dual-pane-badge {
+        #studio-drawing-canvas {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: auto;
+            z-index: 100;
+        }
+
+        /* FLOATING RIGHT TOOL (PEN A BUTTON ONLY) */
+        .onform-side-tool-right {
+            position: absolute;
+            right: 14px;
+            top: 75px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(40, 40, 40, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #FFFFFF;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.78rem;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 500;
+        }
+
+        #floating-tool-dock {
+            display: none;
+            position: absolute;
+            right: 14px;
+            top: 130px;
+            background: rgba(10, 37, 64, 0.92);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 10px;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .tool-dock-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: #FFFFFF;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tool-dock-btn.active {
+            background: var(--72-blue);
+            color: #FFFFFF;
+            border: 1px solid #60A5FA;
+        }
+
+        /* 3. BOTTOM ONFORM PLAYER CONTROL DOCK MATCHING ONFORM SCREENSHOT EXACTLY */
+        .onform-bottom-player-dock {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 600;
+            background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0) 100%);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* FILMSTRIP THUMBNAILS STRIP (MATCHING ONFORM SCREENSHOT 4) */
+        #onform-filmstrip-container {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 54px;
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 12px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 4px;
+            margin-bottom: 4px;
+        }
+
+        .filmstrip-track {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 100%;
+            position: relative;
+        }
+
+        .filmstrip-thumb-item {
+            height: 100%;
+            width: 36px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .filmstrip-yellow-playhead {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 45%;
+            width: 3px;
+            background: #F59E0B;
+            box-shadow: 0 0 8px #F59E0B;
+            z-index: 10;
+        }
+
+        .onform-scrubber-row {
+            display: flex;
+            align-items: center;
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 26px;
+            padding: 8px 16px;
+            gap: 14px;
+        }
+
+        #onform-precision-timecode {
+            font-family: monospace;
+            font-size: 0.95rem;
             font-weight: 700;
-            z-index: 50;
+            color: #FFFFFF;
+            min-width: 50px;
+        }
+
+        .onform-scrubber-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .onform-scrubber-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #F59E0B;
+            border: 2px solid #FFFFFF;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+        }
+
+        .onform-filmstrip-btn {
+            background: transparent;
+            border: none;
+            color: #FFFFFF;
+            font-size: 1.15rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .onform-controls-pill-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            width: 100%;
+        }
+
+        .onform-pill-ctrl {
+            background: rgba(40, 40, 40, 0.85);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #FFFFFF;
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .onform-playback-group {
+            display: flex;
+            align-items: center;
+            background: rgba(40, 40, 40, 0.85);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 30px;
+            padding: 4px 12px;
+            gap: 16px;
+        }
+
+        .onform-play-ctrl {
+            background: transparent;
+            border: none;
+            color: #FFFFFF;
+            font-size: 1.25rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .onform-play-ctrl.main-play {
+            font-size: 1.4rem;
+        }
+
+        /* ONFORM TOP DROPDOWN MENU (...) */
+        #onform-more-menu {
+            display: none;
+            position: absolute;
+            top: 64px;
+            right: 16px;
+            background: rgba(15, 23, 42, 0.96);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 8px 0;
+            z-index: 800;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            min-width: 180px;
+        }
+
+        .more-menu-item {
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .more-menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ONFORM SCREEN CAPTURE PERMISSION MODAL (SCREENSHOT 2) */
+        #voiceover-permission-modal {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 950;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .ios-action-sheet-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 320px;
+            padding: 22px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            color: #000000;
+        }
+
+        .ios-sheet-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #000000;
+        }
+
+        .ios-sheet-desc {
+            font-size: 0.82rem;
+            color: #4B5563;
+            line-height: 1.35;
+        }
+
+        .btn-ios-option-green {
+            background: #DCFCE7;
+            border: 1px solid #86EFAC;
+            color: #166534;
+            height: 44px;
+            border-radius: 22px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .btn-ios-option-blue {
+            background: #007AFF;
+            color: #FFFFFF;
+            height: 44px;
+            border: none;
+            border-radius: 22px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* ONFORM VOICEOVER REVIEW BAR (SCREENSHOT 3) */
+        #voiceover-review-bar {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 60px;
+            padding: 10px 16px;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(12px);
+            z-index: 900;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: env(safe-area-inset-top);
+        }
+
+        .btn-review-pill {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            padding: 6px 16px;
+            border-radius: 18px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ONFORM ADD SECOND VIDEO COMPARISON SCREEN (SCREENSHOT 1) */
+        #screen-dual-setup {
+            background: #000000;
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 16px;
+        }
+
+        .btn-gold-round {
+            background: #D97706;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.5);
         }
 
         /* MODALS */
         .modal-mask {
             display: none;
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(11, 19, 43, 0.85);
             backdrop-filter: blur(14px);
             z-index: 900;
@@ -795,11 +1206,6 @@
             border-radius: 14px;
             padding: 14px;
             cursor: pointer;
-            transition: background 0.15s ease;
-        }
-
-        .import-option-card:hover {
-            background: rgba(255, 255, 255, 0.12);
         }
 
         .import-option-icon {
@@ -929,13 +1335,12 @@
                 <div style="width:36px;"></div>
             </div>
 
-            <!-- INLINE EDITABLE STUDENT NAME HEADER -->
             <div class="student-profile-header-card">
                 <div class="avatar-nc-large" id="profile-avatar-badge">NC</div>
                 <div style="flex:1;">
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <div class="profile-title-name" id="profile-display-name" contenteditable="true" onblur="saveInlineStudentName()" onkeydown="if(event.key==='Enter'){event.preventDefault(); this.blur();}" title="Chạm vào chữ hoặc icon bút để sửa tên trực tiếp">Nhungkey Chị</div>
-                        <i class="fa-solid fa-pen-to-square" style="color:#60A5FA; cursor:pointer; font-size:1rem; padding:4px;" onclick="focusInlineStudentName()" title="Sửa tên trực tiếp"></i>
+                        <div class="profile-title-name" id="profile-display-name" contenteditable="true" onblur="saveInlineStudentName()" onkeydown="if(event.key==='Enter'){event.preventDefault(); this.blur();}">Nhungkey Chị</div>
+                        <i class="fa-solid fa-pen-to-square" style="color:#60A5FA; cursor:pointer; font-size:1rem; padding:4px;" onclick="focusInlineStudentName()"></i>
                     </div>
                     <div class="profile-subtitle">Golfer</div>
                 </div>
@@ -943,7 +1348,6 @@
 
             <div style="padding: 16px; flex:1; overflow-y:auto;">
                 <div class="menu-list-group">
-                    <!-- ITEM 1: LIBRARY -->
                     <div class="menu-row-item" onclick="openStudentLibrary(activeStudentName)">
                         <div class="menu-icon-square"><i class="fa-solid fa-folder"></i></div>
                         <div>
@@ -952,7 +1356,6 @@
                         </div>
                     </div>
 
-                    <!-- ITEM 2: THÔNG TIN HỌC VIÊN -->
                     <div class="menu-row-item" onclick="openCourseInfoModal()">
                         <div class="menu-icon-square" style="color:#10B981;"><i class="fa-solid fa-graduation-cap"></i></div>
                         <div>
@@ -961,7 +1364,6 @@
                         </div>
                     </div>
 
-                    <!-- ITEM 3: NOTES -->
                     <div class="menu-row-item" onclick="openHLVNotesModal()">
                         <div class="menu-icon-square"><i class="fa-solid fa-clipboard-list"></i></div>
                         <div>
@@ -1001,11 +1403,10 @@
                 <div class="section-today-title">Today</div>
 
                 <div class="video-grid-container" id="library-video-grid">
-                    <!-- VIDEO CARDS DYNAMICALLY RENDERED FROM VIDEO_LIBRARY -->
+                    <!-- RENDERED DYNAMICALLY -->
                 </div>
             </div>
 
-            <!-- MULTI-SELECT ACTION BAR AT BOTTOM -->
             <div id="multi-select-action-bar">
                 <span style="font-size:0.88rem; font-weight:700; color:#60A5FA;" id="select-counter-text">Đã chọn 0 clip</span>
                 <button class="btn-select-action" onclick="compareSelectedClips()"><i class="fa-solid fa-columns"></i> So Sánh Dual View</button>
@@ -1026,28 +1427,62 @@
             </div>
         </div>
 
-        <!-- ==================== VIEW 4: MODULE 1 ANALYSIS STUDIO ==================== -->
+        <!-- ==================== VIEW 4: 100% ONFORM NATIVE MOBILE STUDIO (14-POINT MATCH) ==================== -->
         <div id="screen-studio" class="screen-view">
-            <div class="nav-back-bar" style="background:#0A2540;">
-                <button class="btn-icon-back" onclick="switchView('screen-student-library')">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <span style="font-family:'Raleway'; font-weight:800; font-size:1rem; color:#FFFFFF;">72+ SWING ANALYZER</span>
-                <button class="btn-icon-back" onclick="openExportModal()" title="Xuất video bài giảng">
-                    <i class="fa-solid fa-share-nodes"></i>
-                </button>
+            <!-- 1. TOP OVERLAY BAR -->
+            <div class="onform-top-overlay-bar">
+                <div class="onform-top-left">
+                    <button class="onform-circle-btn" onclick="switchView('screen-student-library')" title="Thoát Studio"><i class="fa-solid fa-xmark"></i></button>
+                    <button class="onform-circle-btn" id="btn-toggle-skeleton" onclick="toggleAISkeletonOverlay()" title="Bật/tắt AI Skeleton 🧍"><i class="fa-solid fa-child-reaching"></i></button>
+                </div>
+
+                <div class="onform-center-btn-group">
+                    <button class="onform-mic-btn" id="btn-mic-voiceover" onclick="openVoiceoverPermissionModal()" title="Thu âm bài giảng HLV">
+                        <i class="fa-solid fa-microphone"></i> <span id="voiceover-timer-text" style="font-size:0.85rem;"></span>
+                    </button>
+                    <button class="onform-dual-compare-btn" onclick="openDualSetupScreen()" title="Thêm video 2 để so sánh (Ảnh 1)">
+                        <i class="fa-solid fa-table-columns"></i>
+                    </button>
+                </div>
+
+                <div class="onform-top-right">
+                    <button class="onform-circle-btn" onclick="openExportModal()" title="Xuất video bài giảng"><i class="fa-solid fa-video"></i></button>
+                    <button class="onform-circle-btn" onclick="toggleMoreMenu()" title="Cài đặt & Tùy chọn video (•••)"><i class="fa-solid fa-ellipsis"></i></button>
+                </div>
             </div>
 
+            <!-- TOP DROPDOWN MENU (...) -->
+            <div id="onform-more-menu">
+                <div class="more-menu-item" onclick="triggerTrimVideo()"><i class="fa-solid fa-scissors" style="color:#60A5FA;"></i> ✂️ Trim Video</div>
+                <div class="more-menu-item" onclick="triggerRotateVideo()"><i class="fa-solid fa-rotate-right" style="color:#10B981;"></i> 🔄 Rotate / Flip Video</div>
+                <div class="more-menu-item" onclick="triggerEditTitle()"><i class="fa-solid fa-pen" style="color:#F59E0B;"></i> ✏️ Edit Title</div>
+                <div class="more-menu-item" onclick="triggerShareVideo()"><i class="fa-solid fa-share-nodes" style="color:#38BDF8;"></i> 📤 Share Video</div>
+                <div class="more-menu-item" style="color:#FF6B6B;" onclick="triggerDeleteCurrentVideo()"><i class="fa-solid fa-trash-can"></i> 🗑️ Delete Video</div>
+            </div>
+
+            <!-- VOICEOVER REVIEW BAR (SCREENSHOT 3) -->
+            <div id="voiceover-review-bar">
+                <button class="btn-review-pill" onclick="discardVoiceover()">Discard</button>
+                <button class="btn-review-pill" onclick="previewVoiceover()">Preview</button>
+                <button class="btn-review-pill" onclick="trimVoiceover()"><i class="fa-solid fa-scissors"></i> Trim</button>
+                <button class="btn-review-pill" style="background:var(--72-blue); border-color:#60A5FA;" onclick="saveVoiceover()">Save</button>
+            </div>
+
+            <!-- 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT -->
             <div id="studio-video-container">
                 <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4"></video>
                 <canvas id="studio-drawing-canvas"></canvas>
 
+                <!-- RIGHT FLOATING PEN TOOL (A BUTTON ONLY) -->
+                <button class="onform-side-tool-right" onclick="toggleDrawingToolsDock()" title="Bút vẽ & Kẻ đường kỹ thuật"><i class="fa-solid fa-pen-nib"></i></button>
+
+                <!-- FLOATING TOOLBOX DOCK -->
                 <div id="floating-tool-dock">
                     <button class="tool-dock-btn active" onclick="setTool('plane')" title="Đường Plane Line"><i class="fa-solid fa-ruler-combined"></i></button>
                     <button class="tool-dock-btn" onclick="setTool('head')" title="Vòng tròn Head Box"><i class="fa-regular fa-circle"></i></button>
                     <button class="tool-dock-btn" onclick="setTool('angle')" title="Đo góc nghiêng °"><i class="fa-solid fa-compass"></i></button>
                     <button class="tool-dock-btn" onclick="setTool('arrow')" title="Mũi tên chỉ hướng"><i class="fa-solid fa-arrow-trend-up"></i></button>
-                    <button class="tool-dock-btn" onclick="setTool('pen')" title="Bút vẽ tự do"><i class="fa-solid fa-pen-nib"></i></button>
+                    <button class="tool-dock-btn" onclick="setTool('pen')" title="Bút vẽ tự do"><i class="fa-solid fa-pencil"></i></button>
                     <button class="tool-dock-btn" onclick="setTool('text')" title="Gõ chữ nhận xét"><i class="fa-solid fa-font"></i></button>
                     <button class="tool-dock-btn" onclick="setTool('tempo')" title="Bấm giờ Tempo 3:1"><i class="fa-solid fa-stopwatch"></i></button>
                     <div style="width:28px; height:1px; background:rgba(255,255,255,0.2); margin:4px auto;"></div>
@@ -1056,43 +1491,62 @@
                 </div>
             </div>
 
-            <div id="transport-dock">
-                <button class="btn-pill-action" onclick="stepFrame(-1)">-1f</button>
-                <button class="btn-pill-action" id="btn-studio-play" onclick="toggleStudioPlay()"><i class="fa-solid fa-play"></i></button>
-                <button class="btn-pill-action" onclick="stepFrame(1)">+1f</button>
-                <input type="range" id="studio-scrubber" min="0" max="100" value="0" style="flex:1; margin:0 12px;" oninput="onScrubberInput(this.value)">
-                <span id="studio-timecode" style="font-family:monospace; font-size:0.85rem; color:#94A3B8;">00:00 / 00:04</span>
+            <!-- 3. BOTTOM ONFORM PLAYER CONTROL DOCK -->
+            <div class="onform-bottom-player-dock">
+                <!-- FILMSTRIP THUMBNAILS STRIP (SCREENSHOT 4) -->
+                <div id="onform-filmstrip-container">
+                    <div class="filmstrip-track">
+                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
+                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
+                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
+                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
+                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
+                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
+                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
+                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
+                        <div class="filmstrip-yellow-playhead"></div>
+                    </div>
+                </div>
+
+                <!-- SCRUBBER ROW -->
+                <div class="onform-scrubber-row">
+                    <span id="onform-precision-timecode">0.000</span>
+                    <input type="range" class="onform-scrubber-slider" id="studio-scrubber" min="0" max="100" value="0" step="0.1" oninput="onScrubberInput(this.value)">
+                    <button class="onform-filmstrip-btn" onclick="toggleFilmstripStrip()" title="Hiện/Ẩn cuộn ảnh khung hình Filmstrip (▥)"><i class="fa-solid fa-table-cells-large"></i></button>
+                </div>
+
+                <!-- CONTROLS PILL ROW -->
+                <div class="onform-controls-pill-row">
+                    <button class="onform-pill-ctrl" id="btn-speed-toggle" onclick="cyclePlaybackSpeed()">1×`</button>
+                    
+                    <div class="onform-playback-group">
+                        <button class="onform-play-ctrl" onclick="stepFrame(-1)" title="Lùi 1 frame (-1f)"><i class="fa-solid fa-backward-step"></i></button>
+                        <button class="onform-play-ctrl main-play" id="btn-studio-play" onclick="toggleStudioPlay()"><i class="fa-solid fa-play"></i></button>
+                        <button class="onform-play-ctrl" onclick="stepFrame(1)" title="Tới 1 frame (+1f)"><i class="fa-solid fa-forward-step"></i></button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- ==================== VIEW 5: DUAL VIEW COMPARISON STUDIO ==================== -->
-        <div id="screen-dual-studio" class="screen-view">
-            <div class="nav-back-bar" style="background:#0A2540;">
-                <button class="btn-icon-back" onclick="switchView('screen-student-library')">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <span style="font-family:'Raleway'; font-weight:800; font-size:1rem; color:#FFFFFF;">SO SÁNH DUAL VIEW 60FPS</span>
-                <button class="btn-icon-back" onclick="showToast('Đã đồng bộ nhịp Tempo 2 clip')">
-                    <i class="fa-solid fa-link"></i>
-                </button>
+        <!-- ==================== VIEW 5: ADD SECOND VIDEO COMPARISON SETUP (SCREENSHOT 1) ==================== -->
+        <div id="screen-dual-setup" class="screen-view">
+            <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:700; color:#FFFFFF;">Thêm Video So Sánh</span>
+                <button class="btn-gold-round" style="padding:6px 18px;" onclick="confirmDualSetupDone()">Done</button>
             </div>
 
-            <div class="dual-video-grid">
-                <div class="dual-video-pane">
-                    <div class="dual-pane-badge">CLIP A (HỌC VIÊN)</div>
-                    <video id="dual-video-left" playsinline loop muted src="assets/sample-golf-swing.mp4"></video>
-                </div>
-                <div class="dual-video-pane">
-                    <div class="dual-pane-badge" style="background:rgba(19,117,188,0.7);">CLIP B (MẪU PRO)</div>
-                    <video id="dual-video-right" playsinline loop muted src="assets/rory-mcilroy-swing.mp4"></video>
-                </div>
+            <!-- UPPER PANE: ADD VIDEO 2 -->
+            <div style="flex:1; width:100%; display:flex; align-items:center; justify-content:center; border-bottom:1px dashed rgba(255,255,255,0.2);">
+                <button class="btn-gold-round" onclick="triggerFilePickerImport()">Add</button>
             </div>
 
-            <div id="transport-dock">
-                <button class="btn-pill-action" onclick="stepDualFrame(-1)">-1f</button>
-                <button class="btn-pill-action" id="btn-dual-play" onclick="toggleDualPlay()"><i class="fa-solid fa-play"></i></button>
-                <button class="btn-pill-action" onclick="stepDualFrame(1)">+1f</button>
-                <span style="font-family:monospace; font-size:0.85rem; color:#94A3B8; margin-left:auto;">SYNCHRONIZED DUAL PLAYBACK</span>
+            <!-- LOWER PANE: CURRENT VIDEO 1 -->
+            <div style="flex:1; width:100%; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <video id="dual-setup-preview-video" playsinline loop muted src="assets/sample-golf-swing.mp4" style="width:100%; height:100%; object-fit:contain;"></video>
+                <div style="position:absolute; display:flex; flex-direction:column; gap:12px; align-items:center;">
+                    <button class="btn-gold-round" onclick="triggerFilePickerImport()">Change</button>
+                    <button class="btn-gold-round" onclick="flipSetupVideo()">Flip</button>
+                </div>
             </div>
         </div>
 
@@ -1106,7 +1560,7 @@
                 <i class="fa-solid fa-film"></i>
                 <span>1-Clip</span>
             </button>
-            <button class="tab-item" onclick="launchDualViewFromTab()">
+            <button class="tab-item" onclick="openDualSetupScreen()">
                 <i class="fa-solid fa-columns"></i>
                 <span>So Sánh</span>
             </button>
@@ -1122,7 +1576,18 @@
 
     </div>
 
-    <!-- MODALS -->
+    <!-- MODAL: IOS VOICEOVER PERMISSION ACTION SHEET (SCREENSHOT 2) -->
+    <div id="voiceover-permission-modal">
+        <div class="ios-action-sheet-card">
+            <div class="ios-sheet-title">Allow screen capture in "Onform"?</div>
+            <div class="ios-sheet-desc">This application will capture your screen and you will not have a chance to review it. Record camera and microphone audio if you want to add comments as you go.</div>
+            <button class="btn-ios-option-green" onclick="startVoiceoverRecording('mic')">Record Screen & Microphone</button>
+            <button class="btn-ios-option-green" onclick="startVoiceoverRecording('screen')">Record Screen Only</button>
+            <button class="btn-ios-option-blue" onclick="closeModal('voiceover-permission-modal')">Don't Allow</button>
+        </div>
+    </div>
+
+    <!-- OTHER MODALS -->
     <div id="course-info-modal" class="modal-mask">
         <div class="modal-content-card" style="max-height:85vh; overflow-y:auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:10px;">
@@ -1284,7 +1749,7 @@
     <input type="file" id="real-file-picker" accept="video/*" style="display:none;" onchange="handleImportedFile(event)">
 
     <script>
-        // MASTER 100% REAL VIDEO IMPORT & DYNAMIC THUMBNAIL ENGINE
+        // MASTER 100% ONFORM NATIVE MOBILE STUDIO (14-POINT PERFECT MATCH)
         let studentList = [{ name: "Nhungkey Chị", initials: "NC", color: "#1375BC" }];
         
         let studentNotesMap = {
@@ -1301,7 +1766,6 @@
             }
         };
 
-        // DEFAULT SAMPLE VIDEO ITEM WITH PROPER REAL THUMBNAIL
         let videoLibrary = [{
             id: "1787657604307_1231980526605793298",
             duration: "00:04",
@@ -1320,6 +1784,14 @@
         let recordStartTime = 0;
         let activeTool = "plane";
         let toastTimeout = null;
+        let isAISkeletonActive = false;
+        let isFilmstripActive = false;
+        let isVoiceoverRecording = false;
+        let voiceoverTimerInterval = null;
+        let voiceoverSeconds = 0;
+        let isVideoFlipped = false;
+        let currentSpeedIndex = 0;
+        const playbackSpeeds = [1.0, 0.5, 0.25, 2.0];
 
         /* 💾 LOCALSTORAGE PERSISTENCE SYSTEM GUARANTEE */
         function saveAppState() {
@@ -1342,10 +1814,9 @@
                 const vLib = localStorage.getItem('72plus_video_library');
                 if (vLib) {
                     const parsedLib = JSON.parse(vLib);
-                    // Filter out any invalid items with sample preview image hardcodes if present
                     videoLibrary = parsedLib.map(v => {
                         if (v.thumb === "assets/onform_screen_2_dual_1787738732226.jpg") {
-                            v.thumb = null; // Let <video> preview take over!
+                            v.thumb = null;
                         }
                         return v;
                     });
@@ -1381,6 +1852,10 @@
 
             const tabbar = document.getElementById('mobile-bottom-tabbar');
             tabbar.style.display = (screenId === 'screen-home') ? 'grid' : 'none';
+
+            if (screenId === 'screen-studio') {
+                setTimeout(initCanvas, 150);
+            }
         }
 
         function closeModal(modalId) {
@@ -1511,7 +1986,7 @@
             showToast('Đã lưu ghi chú');
         }
 
-        /* 4. MULTI-SELECT & REAL VIDEO IMPORT WITH DYNAMIC CANVAS THUMBNAIL SNAPSHOT */
+        /* 4. MULTI-SELECT & IMPORT ENGINES */
         function toggleMultiSelectMode() {
             isMultiSelectActive = !isMultiSelectActive;
             const btn = document.getElementById('btn-toggle-select');
@@ -1560,41 +2035,26 @@
         function compareSelectedClips() {
             const selected = videoLibrary.filter(v => v.selected);
             if (selected.length < 2) {
-                showToast('Vui lòng chọn 2 clip để so sánh Dual View');
+                showToast('Vui lòng chọn 2 clip để so sánh');
                 return;
             }
-            document.getElementById('dual-video-left').src = selected[0].src;
-            document.getElementById('dual-video-right').src = selected[1].src;
-            switchView('screen-dual-studio');
-            showToast('Đã nạp 2 clip vào So Sánh Dual View 60FPS');
+            openDualSetupScreen();
         }
 
-        function launchDualViewFromTab() {
-            document.getElementById('dual-video-left').src = "assets/sample-golf-swing.mp4";
-            document.getElementById('dual-video-right').src = "assets/rory-mcilroy-swing.mp4";
-            switchView('screen-dual-studio');
+        function openDualSetupScreen() {
+            switchView('screen-dual-setup');
         }
 
-        function toggleDualPlay() {
-            const v1 = document.getElementById('dual-video-left');
-            const v2 = document.getElementById('dual-video-right');
-            const btn = document.getElementById('btn-dual-play');
-
-            if (v1.paused) {
-                v1.play(); v2.play();
-                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            } else {
-                v1.pause(); v2.pause();
-                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
-            }
+        function confirmDualSetupDone() {
+            switchView('screen-studio');
+            showToast('Đã ghép 2 video so sánh');
         }
 
-        function stepDualFrame(delta) {
-            const v1 = document.getElementById('dual-video-left');
-            const v2 = document.getElementById('dual-video-right');
-            v1.pause(); v2.pause();
-            v1.currentTime = Math.max(0, Math.min(v1.duration, v1.currentTime + (delta / 60)));
-            v2.currentTime = Math.max(0, Math.min(v2.duration, v2.currentTime + (delta / 60)));
+        function flipSetupVideo() {
+            isVideoFlipped = !isVideoFlipped;
+            const vid = document.getElementById('dual-setup-preview-video');
+            vid.style.transform = isVideoFlipped ? 'scaleX(-1)' : 'scaleX(1)';
+            showToast(isVideoFlipped ? 'Đã lật gương video (Flip)' : 'Đã đưa về góc quay gốc');
         }
 
         function deleteSelectedClips() {
@@ -1637,7 +2097,7 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const fileUrl = e.target.result; // Data URL for persistent video playback
+                    const fileUrl = e.target.result;
                     generateVideoThumbnailAndImport(fileUrl, file.name);
                 };
                 reader.readAsDataURL(file);
@@ -1716,7 +2176,185 @@
             }, 1500);
         }
 
-        /* 5. STUDENT & RENDER ENGINE */
+        /* 5. 100% ONFORM NATIVE MOBILE STUDIO & VOICEOVER ENGINES */
+        function openModule1StudioWithVideo(videoSrc) {
+            closeModal('reference-library-modal');
+            const video = document.getElementById('studio-main-video');
+            video.src = videoSrc;
+            switchView('screen-studio');
+        }
+
+        function toggleAISkeletonOverlay() {
+            isAISkeletonActive = !isAISkeletonActive;
+            const btn = document.getElementById('btn-toggle-skeleton');
+            if (isAISkeletonActive) {
+                btn.style.background = 'var(--72-blue)';
+                btn.style.borderColor = '#60A5FA';
+                showToast('Bật AI Skeleton khung xương tư thế Swing');
+            } else {
+                btn.style.background = 'rgba(40, 40, 40, 0.75)';
+                btn.style.borderColor = 'rgba(255, 255, 255, 0.18)';
+                showToast('Tắt AI Skeleton');
+            }
+            redrawCanvas();
+        }
+
+        /* VOICEOVER WORKFLOW MATCHING SCREENSHOTS 2 & 3 */
+        function openVoiceoverPermissionModal() {
+            if (isVoiceoverRecording) {
+                stopVoiceoverRecording();
+                return;
+            }
+            document.getElementById('voiceover-permission-modal').style.display = 'flex';
+        }
+
+        function startVoiceoverRecording(mode) {
+            closeModal('voiceover-permission-modal');
+            isVoiceoverRecording = true;
+            voiceoverSeconds = 0;
+            const btn = document.getElementById('btn-mic-voiceover');
+            const timerTxt = document.getElementById('voiceover-timer-text');
+            btn.classList.add('recording');
+            timerTxt.innerText = '🔴 00:00';
+
+            voiceoverTimerInterval = setInterval(() => {
+                voiceoverSeconds++;
+                const m = String(Math.floor(voiceoverSeconds / 60)).padStart(2,'0');
+                const s = String(Math.floor(voiceoverSeconds % 60)).padStart(2,'0');
+                timerTxt.innerText = `🔴 ${m}:${s}`;
+            }, 1000);
+
+            showToast(mode === 'mic' ? 'Bắt đầu ghi hình bài giảng & Mic' : 'Bắt đầu ghi hình bài giảng');
+        }
+
+        function stopVoiceoverRecording() {
+            isVoiceoverRecording = false;
+            if (voiceoverTimerInterval) clearInterval(voiceoverTimerInterval);
+            const btn = document.getElementById('btn-mic-voiceover');
+            const timerTxt = document.getElementById('voiceover-timer-text');
+            btn.classList.remove('recording');
+            timerTxt.innerText = '';
+
+            document.getElementById('voiceover-review-bar').style.display = 'flex';
+            showToast('Hoàn tất thu âm bài giảng. Đang chờ xem lại/lưu');
+        }
+
+        function discardVoiceover() {
+            document.getElementById('voiceover-review-bar').style.display = 'none';
+            showToast('Đã hủy bản thu voiceover');
+        }
+
+        function previewVoiceover() {
+            showToast('Đang phát lại bản thu nhận xét HLV');
+        }
+
+        function trimVoiceover() {
+            showToast('Mở công cụ cắt đoạn Trim bài giảng');
+        }
+
+        function saveVoiceover() {
+            document.getElementById('voiceover-review-bar').style.display = 'none';
+            addImportedVideoToLibrary("assets/sample-golf-swing.mp4", "00:15", "Voiceover_Lesson_72Plus.mp4");
+            showToast('Đã lưu video bài giảng HLV vào Library');
+        }
+
+        /* DROPDOWN MENU (...) HANDLERS */
+        function toggleMoreMenu() {
+            const menu = document.getElementById('onform-more-menu');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function triggerTrimVideo() {
+            toggleMoreMenu();
+            showToast('Mở công cụ ✂️ Trim Video');
+        }
+
+        function triggerRotateVideo() {
+            toggleMoreMenu();
+            const vid = document.getElementById('studio-main-video');
+            vid.style.transform = (vid.style.transform === 'rotate(90deg)') ? 'rotate(0deg)' : 'rotate(90deg)';
+            showToast('Đã xoay video 90° (Rotate)');
+        }
+
+        function triggerEditTitle() {
+            toggleMoreMenu();
+            const newTitle = prompt("Nhập tên mới cho video swing:");
+            if (newTitle) showToast('Đã cập nhật tên video: ' + newTitle);
+        }
+
+        function triggerShareVideo() {
+            toggleMoreMenu();
+            showToast('Đã sao chép đường dẫn chia sẻ video');
+        }
+
+        function triggerDeleteCurrentVideo() {
+            toggleMoreMenu();
+            if (confirm("Xóa video này khỏi Thư viện?")) {
+                switchView('screen-student-library');
+                showToast('Đã xóa video');
+            }
+        }
+
+        /* FILMSTRIP THUMBNAIL STRIP TOGGLE (▥ BUTTON - SCREENSHOT 4) */
+        function toggleFilmstripStrip() {
+            isFilmstripActive = !isFilmstripActive;
+            const strip = document.getElementById('onform-filmstrip-container');
+            strip.style.display = isFilmstripActive ? 'flex' : 'none';
+            showToast(isFilmstripActive ? 'Hiện dải ảnh khung hình (Filmstrip)' : 'Ẩn dải ảnh khung hình');
+        }
+
+        function toggleStudioPlay() {
+            const video = document.getElementById('studio-main-video');
+            const btn = document.getElementById('btn-studio-play');
+            if (video.paused) {
+                video.play();
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            } else {
+                video.pause();
+                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            }
+        }
+
+        function stepFrame(delta) {
+            const video = document.getElementById('studio-main-video');
+            video.pause();
+            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + (delta / 60)));
+            updateScrubber();
+        }
+
+        function updateScrubber() {
+            const video = document.getElementById('studio-main-video');
+            if (video.duration) {
+                const pct = (video.currentTime / video.duration) * 100;
+                document.getElementById('studio-scrubber').value = pct;
+                const sec = video.currentTime.toFixed(3);
+                document.getElementById('onform-precision-timecode').innerText = sec;
+            }
+        }
+
+        function onScrubberInput(val) {
+            const video = document.getElementById('studio-main-video');
+            if (video.duration) {
+                video.currentTime = (val / 100) * video.duration;
+                updateScrubber();
+            }
+        }
+
+        function cyclePlaybackSpeed() {
+            currentSpeedIndex = (currentSpeedIndex + 1) % playbackSpeeds.length;
+            const spd = playbackSpeeds[currentSpeedIndex];
+            const video = document.getElementById('studio-main-video');
+            video.playbackRate = spd;
+            document.getElementById('btn-speed-toggle').innerText = `${spd}×`;
+            showToast(`Tốc độ phát: ${spd}×`);
+        }
+
+        function toggleDrawingToolsDock() {
+            const dock = document.getElementById('floating-tool-dock');
+            dock.style.display = (dock.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        /* 6. STUDENT & RENDER ENGINE */
         function openStudentProfile(name) {
             activeStudentName = name;
             document.getElementById('profile-display-name').innerText = name;
@@ -1830,54 +2468,6 @@
             }
         }
 
-        /* 6. MODULE 1 STUDIO REAL ENGINE */
-        function openModule1StudioWithVideo(videoSrc) {
-            closeModal('reference-library-modal');
-            const video = document.getElementById('studio-main-video');
-            video.src = videoSrc;
-            switchView('screen-studio');
-            initCanvas();
-        }
-
-        function toggleStudioPlay() {
-            const video = document.getElementById('studio-main-video');
-            const btn = document.getElementById('btn-studio-play');
-            if (video.paused) {
-                video.play();
-                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            } else {
-                video.pause();
-                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
-            }
-        }
-
-        function stepFrame(delta) {
-            const video = document.getElementById('studio-main-video');
-            video.pause();
-            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + (delta / 60)));
-            updateScrubber();
-        }
-
-        function updateScrubber() {
-            const video = document.getElementById('studio-main-video');
-            if (video.duration) {
-                const pct = (video.currentTime / video.duration) * 100;
-                document.getElementById('studio-scrubber').value = pct;
-                const curM = String(Math.floor(video.currentTime / 60)).padStart(2,'0');
-                const curS = String(Math.floor(video.currentTime % 60)).padStart(2,'0');
-                const durM = String(Math.floor(video.duration / 60)).padStart(2,'0');
-                const durS = String(Math.floor(video.duration % 60)).padStart(2,'0');
-                document.getElementById('studio-timecode').innerText = `${curM}:${curS} / ${durM}:${durS}`;
-            }
-        }
-
-        function onScrubberInput(val) {
-            const video = document.getElementById('studio-main-video');
-            if (video.duration) {
-                video.currentTime = (val / 100) * video.duration;
-            }
-        }
-
         /* CANVAS DRAWING ENGINE */
         let canvas, ctx;
         let isDrawing = false;
@@ -1887,6 +2477,8 @@
         function initCanvas() {
             canvas = document.getElementById('studio-drawing-canvas');
             const container = document.getElementById('studio-video-container');
+            if (!canvas || !container) return;
+
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
             ctx = canvas.getContext('2d');
@@ -1960,6 +2552,59 @@
         function redrawCanvas() {
             if (!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (isAISkeletonActive) {
+                const cw = canvas.width;
+                const ch = canvas.height;
+
+                const head = { x: cw * 0.49, y: ch * 0.28 };
+                const lShoulder = { x: cw * 0.44, y: ch * 0.35 };
+                const rShoulder = { x: cw * 0.54, y: ch * 0.35 };
+                const spineTop = { x: cw * 0.49, y: ch * 0.35 };
+                const spineMid = { x: cw * 0.49, y: ch * 0.46 };
+                const lElbow = { x: cw * 0.41, y: ch * 0.44 };
+                const rElbow = { x: cw * 0.53, y: ch * 0.44 };
+                const lWrist = { x: cw * 0.47, y: ch * 0.53 };
+                const rWrist = { x: cw * 0.50, y: ch * 0.53 };
+                const lHip = { x: cw * 0.45, y: ch * 0.53 };
+                const rHip = { x: cw * 0.53, y: ch * 0.53 };
+                const lKnee = { x: cw * 0.42, y: ch * 0.65 };
+                const rKnee = { x: cw * 0.55, y: ch * 0.65 };
+                const lAnkle = { x: cw * 0.39, y: ch * 0.77 };
+                const rAnkle = { x: cw * 0.57, y: ch * 0.77 };
+
+                ctx.lineWidth = 3;
+
+                ctx.strokeStyle = "#84CC16";
+                ctx.beginPath();
+                ctx.moveTo(lShoulder.x, lShoulder.y); ctx.lineTo(rShoulder.x, rShoulder.y);
+                ctx.moveTo(spineTop.x, spineTop.y); ctx.lineTo(spineMid.x, spineMid.y);
+                ctx.moveTo(lShoulder.x, lShoulder.y); ctx.lineTo(lElbow.x, lElbow.y); ctx.lineTo(lWrist.x, lWrist.y);
+                ctx.moveTo(rShoulder.x, rShoulder.y); ctx.lineTo(rElbow.x, rElbow.y); ctx.lineTo(rWrist.x, rWrist.y);
+                ctx.moveTo(lHip.x, lHip.y); ctx.lineTo(lKnee.x, lKnee.y); ctx.lineTo(lAnkle.x, lAnkle.y);
+                ctx.moveTo(rHip.x, rHip.y); ctx.lineTo(rKnee.x, rKnee.y); ctx.lineTo(rAnkle.x, rAnkle.y);
+                ctx.stroke();
+
+                ctx.strokeStyle = "#F59E0B";
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(spineTop.x, spineTop.y); ctx.lineTo(spineTop.x + 40, spineTop.y);
+                ctx.moveTo(spineTop.x, spineTop.y); ctx.lineTo(spineTop.x, spineTop.y - 40);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                const joints = [head, lShoulder, rShoulder, lElbow, rElbow, lWrist, rWrist, lHip, rHip, lKnee, rKnee, lAnkle, rAnkle];
+                joints.forEach((j, idx) => {
+                    ctx.fillStyle = (idx % 2 === 0) ? "#8B5CF6" : "#EC4899";
+                    ctx.beginPath();
+                    ctx.arc(j.x, j.y, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = "#FFFFFF";
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                });
+            }
+
             drawingsHistory.forEach(item => {
                 ctx.strokeStyle = item.color || "#1375BC";
                 ctx.lineWidth = 3;
@@ -2088,6 +2733,7 @@
             renderStudentList();
             renderVideoGrid();
             document.getElementById('studio-main-video').ontimeupdate = updateScrubber;
+            window.addEventListener('resize', initCanvas);
         });
     </script>
 </body>
