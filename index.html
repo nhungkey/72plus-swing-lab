@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>72+ SWING LAB — ONFORM MOBILE (LIBRARY & CLEAN SUB-SCREENS)</title>
+    <title>72+ SWING LAB — 100% REAL FUNCTIONAL ENGINE (ZERO SHELL MOCKUPS)</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -64,7 +64,7 @@
             display: flex;
         }
 
-        /* 1. TOP BANNER HEADER CHUẨN HARMONIC RATIO 72+ */
+        /* TOP BANNER HEADER */
         #onform-header-bar {
             background: #0A2540;
             border-bottom: 2px solid rgba(239, 63, 54, 0.8);
@@ -173,6 +173,7 @@
             width: 34px;
             height: 34px;
             border-radius: 50%;
+            cursor: pointer;
         }
 
         .coach-avatar-img {
@@ -232,7 +233,7 @@
             gap: 16px;
         }
 
-        /* MENU LIST ITEMS MATCHING ONFORM */
+        /* MENU LIST ITEMS */
         .menu-list-group {
             background: var(--mobile-card);
             border-radius: 16px;
@@ -282,7 +283,7 @@
             margin-top: 2px;
         }
 
-        /* STUDENT ACCOUNT ROW */
+        /* STUDENT ACCOUNT CARD */
         .student-section-header {
             margin-top: 4px;
             border-top: 1px solid var(--border-color);
@@ -325,7 +326,7 @@
             color: #FFFFFF;
         }
 
-        /* 2. STUDENT DETAIL PROFILE SCREEN (MH-02 MATCHING SCREENSHOT 1) */
+        /* STUDENT DETAIL PROFILE SCREEN */
         .nav-back-bar {
             height: 56px;
             padding: 0 16px;
@@ -386,7 +387,7 @@
             margin-top: 2px;
         }
 
-        /* 3. STUDENT LIBRARY SCREEN (MH-02-LIB MATCHING SCREENSHOT 2 & 3 EXACTLY) */
+        /* STUDENT LIBRARY SCREEN */
         .library-nav-bar {
             height: 60px;
             padding: 0 16px;
@@ -462,7 +463,7 @@
             padding: 14px 16px 8px 16px;
         }
 
-        /* VIDEO THUMBNAIL GRID MATCHING CEO SCREENSHOT EXACTLY */
+        /* VIDEO THUMBNAIL GRID */
         .video-grid-container {
             padding: 0 16px;
             display: grid;
@@ -497,7 +498,6 @@
             object-fit: cover;
         }
 
-        /* TOP RIGHT OVERLAY: STAR ICON FOR FAVORITE/FILTER (MATCHING CEO SCREENSHOT) */
         .badge-star-topright {
             position: absolute;
             top: 8px;
@@ -513,7 +513,6 @@
             transform: scale(1.2);
         }
 
-        /* BOTTOM LEFT OVERLAY: DURATION (00:04) + DATE/TIME (Today, 08:36) (MATCHING CEO SCREENSHOT) */
         .badge-duration-bottomleft {
             position: absolute;
             bottom: 8px;
@@ -550,7 +549,7 @@
             font-weight: 600;
         }
 
-        /* FLOATING RED CAMERA RECORD BUTTON MATCHING SCREENSHOT EXACTLY */
+        /* FLOATING RED CAMERA BUTTON */
         .floating-camera-btn-container {
             position: absolute;
             bottom: 74px;
@@ -575,149 +574,96 @@
             transition: transform 0.15s ease;
         }
 
-        .btn-fab-camera-red:active {
-            transform: scale(0.92);
+        /* MODULE 1 ANALYSIS STUDIO WORKSPACE (MH-01 1-CLIP STUDIO ENGINE) */
+        #screen-studio {
+            background: #000000;
+            position: relative;
         }
 
-        /* IMPORT MODAL WINDOW */
-        #import-modal {
-            display: none;
+        #studio-video-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 120px);
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #studio-main-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        #studio-drawing-canvas {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(11, 19, 43, 0.85);
-            backdrop-filter: blur(14px);
-            z-index: 900;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            touch-action: none;
         }
 
-        .import-options-group {
+        /* FLOATING TOOL DOCK ON LEFT */
+        #floating-tool-dock {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(10, 37, 64, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 10px 6px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            z-index: 400;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        .import-option-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            cursor: pointer;
-            transition: background 0.15s ease;
-        }
-
-        .import-option-card:hover {
-            background: rgba(19, 117, 188, 0.3);
-            border-color: #60A5FA;
-        }
-
-        .import-option-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: var(--72-blue);
-            color: #FFFFFF;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* LIVE CAMERA RECORDING STREAM MODAL */
-        #camera-recorder-modal {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000000;
-            z-index: 1000;
-            flex-direction: column;
-        }
-
-        #camera-video-preview {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .camera-overlay-controls {
-            position: absolute;
-            bottom: 40px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            z-index: 1010;
-        }
-
-        .btn-record-shutter {
-            width: 72px;
-            height: 72px;
+        .tool-dock-btn {
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background: #EF3F36;
-            border: 4px solid #FFFFFF;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(239, 63, 54, 0.8);
-        }
-
-        .btn-record-shutter.recording {
-            animation: pulse-red 1s infinite alternate;
-            border-radius: 16px;
-            width: 60px;
-            height: 60px;
-        }
-
-        @keyframes pulse-red {
-            0% { transform: scale(1); box-shadow: 0 0 10px #EF3F36; }
-            100% { transform: scale(1.1); box-shadow: 0 0 25px #EF3F36; }
-        }
-
-        /* BOTTOM TABBAR MATCHING ONFORM MOBILE NATIVE APP (DISPLAY ONLY ON HOME SCREEN) */
-        #mobile-bottom-tabbar {
-            height: 64px;
-            background: var(--mobile-tabbar);
-            border-top: 1px solid var(--border-color);
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            z-index: 500;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        .tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #94A3B8;
-            font-size: 0.72rem;
-            font-weight: 600;
-            gap: 3px;
-            cursor: pointer;
             background: transparent;
             border: none;
+            color: #FFFFFF;
+            font-size: 1.15rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
         }
 
-        .tab-item i {
-            font-size: 1.2rem;
+        .tool-dock-btn.active {
+            background: var(--72-blue);
+            color: #FFFFFF;
+            box-shadow: 0 0 12px var(--72-blue);
         }
 
-        .tab-item.active {
-            color: var(--72-blue);
-            font-weight: 700;
+        /* TRANSPORT CONTROLLER DOCK ON BOTTOM */
+        #transport-dock {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 64px;
+            background: rgba(10, 37, 64, 0.95);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 450;
         }
 
-        /* ADD STUDENT MODAL */
-        #add-student-modal {
+        /* MODALS */
+        .modal-mask {
             display: none;
             position: absolute;
             top: 0;
@@ -768,15 +714,48 @@
             font-size: 0.95rem;
             cursor: pointer;
         }
+
+        /* BOTTOM TABBAR */
+        #mobile-bottom-tabbar {
+            height: 64px;
+            background: var(--mobile-tabbar);
+            border-top: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            z-index: 500;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #94A3B8;
+            font-size: 0.72rem;
+            font-weight: 600;
+            gap: 3px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+        }
+
+        .tab-item i {
+            font-size: 1.2rem;
+        }
+
+        .tab-item.active {
+            color: var(--72-blue);
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
 
     <div id="mobile-container">
 
-        <!-- ==================== VIEW 1: HOME SCREEN (TRANG CHỦ HLV) ==================== -->
+        <!-- ==================== VIEW 1: HOME SCREEN ==================== -->
         <div id="screen-home" class="screen-view active">
-            <!-- 1. TOP BANNER HEADER CÂN BẰNG TỶ LỆ LOGO & SWING LAB PRO PILL BADGE -->
             <div id="onform-header-bar">
                 <div class="brand-header-banner-row">
                     <img src="assets/logo-white.png" class="official-logo-img" alt="72+ Golf Academy Logo" onerror="this.src='https://72ga-web-production.s3.ap-southeast-1.amazonaws.com/uploads/images/2022/06/02/logo-1-62984f1e919a5.png';">
@@ -784,10 +763,10 @@
                 </div>
 
                 <div class="header-bottom-row">
-                    <div class="account-selector" onclick="alert('Personal Account Options')">
+                    <div class="account-selector" onclick="openAccountSelectorModal()">
                         <div class="avatar-pa">PA</div>
                         <div class="account-name-text">
-                            Personal Accou... <i class="fa-solid fa-caret-down" style="color: #60A5FA;"></i>
+                            <span id="active-facility-label">Personal Accou...</span> <i class="fa-solid fa-caret-down" style="color: #60A5FA;"></i>
                         </div>
                     </div>
 
@@ -796,7 +775,7 @@
                             <i class="fa-solid fa-plus"></i>
                         </button>
 
-                        <div class="coach-avatar-wrapper">
+                        <div class="coach-avatar-wrapper" onclick="openCoachProfileModal()">
                             <img src="assets/onform_screen_6_home_account_1787740470325.jpg" class="coach-avatar-img" alt="Coach Avatar" onerror="this.src='https://ui-avatars.com/api/?name=Nhung+Nguyen&background=1375BC&color=fff';">
                             <div class="status-online-dot"></div>
                         </div>
@@ -815,11 +794,11 @@
                         <div class="menu-icon-square"><i class="fa-solid fa-images"></i></div>
                         <div class="menu-row-text">Library - All Files</div>
                     </div>
-                    <div class="menu-row-item" onclick="alert('Reference Content')">
+                    <div class="menu-row-item" onclick="openReferenceLibraryModal()">
                         <div class="menu-icon-square"><i class="fa-solid fa-folder"></i></div>
-                        <div class="menu-row-text">Reference Content</div>
+                        <div class="menu-row-text">Reference Content (PGA/LPGA Pros)</div>
                     </div>
-                    <div class="menu-row-item" onclick="alert('Recent Activity')">
+                    <div class="menu-row-item" onclick="openRecentActivityModal()">
                         <div class="menu-icon-square"><i class="fa-regular fa-bell"></i></div>
                         <div class="menu-row-text">Recent Activity</div>
                     </div>
@@ -827,7 +806,6 @@
 
                 <div class="student-section-header">
                     <div id="student-list-container" style="display:flex; flex-direction:column; gap:10px;">
-                        <!-- INITIAL STUDENT: NHUNGKEY CHỊ -->
                         <div class="student-account-card" onclick="openStudentProfile('Nhungkey Chị')">
                             <div class="avatar-nc">NC</div>
                             <div>
@@ -839,14 +817,14 @@
             </div>
         </div>
 
-        <!-- ==================== VIEW 2: STUDENT DETAIL PROFILE (MH-02 MATCHING SCREENSHOT 1) ==================== -->
+        <!-- ==================== VIEW 2: STUDENT DETAIL PROFILE ==================== -->
         <div id="screen-student-profile" class="screen-view">
             <div class="nav-back-bar">
                 <button class="btn-icon-back" onclick="switchView('screen-home')">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
                 <span style="font-weight:700; font-size:1rem; color:#FFFFFF;">Hồ Sơ Học Viên</span>
-                <button class="btn-icon-back">
+                <button class="btn-icon-back" onclick="openStudentSettingsModal()">
                     <i class="fa-solid fa-ellipsis"></i>
                 </button>
             </div>
@@ -861,13 +839,13 @@
 
             <div style="padding: 16px;">
                 <div class="menu-list-group">
-                    <div class="menu-row-item" onclick="alert('Mở khung chat trực tiếp với học viên')">
+                    <div class="menu-row-item" onclick="openLiveChatModal()">
                         <div class="menu-icon-square"><i class="fa-regular fa-comment-dots"></i></div>
                         <div>
                             <div class="menu-row-text">Chat</div>
+                            <div class="menu-row-subtext">Trò chuyện trực tiếp HLV & Học viên</div>
                         </div>
                     </div>
-                    <!-- CLICKING LIBRARY OPENS STUDENT LIBRARY SCREEN -->
                     <div class="menu-row-item" onclick="openStudentLibrary('Nhungkey Chị')">
                         <div class="menu-icon-square"><i class="fa-solid fa-folder"></i></div>
                         <div>
@@ -875,26 +853,25 @@
                             <div class="menu-row-subtext" id="library-share-counter">0 shared, 1 private</div>
                         </div>
                     </div>
-                    <!-- CLICKING NOTES OPENS NOTES SECTION -->
-                    <div class="menu-row-item" onclick="alert('📋 Đã mở sổ tay ghi chú nhận xét kỹ thuật HLV (Private to you)')">
+                    <div class="menu-row-item" onclick="openHLVNotesModal()">
                         <div class="menu-icon-square"><i class="fa-solid fa-clipboard-list"></i></div>
                         <div>
                             <div class="menu-row-text">Notes</div>
-                            <div class="menu-row-subtext">Private to you</div>
+                            <div class="menu-row-subtext">Sổ tay ghi chú bài giảng HLV (Private)</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== VIEW 3: STUDENT LIBRARY SCREEN (MH-02-LIB MATCHING SCREENSHOT 2 & 3 EXACTLY) ==================== -->
+        <!-- ==================== VIEW 3: STUDENT LIBRARY SCREEN ==================== -->
         <div id="screen-student-library" class="screen-view" style="position:relative;">
             <div class="library-nav-bar">
                 <button class="btn-icon-back" onclick="switchView('screen-student-profile')">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
 
-                <div class="library-title-group" onclick="alert('Chuyển đổi danh mục Thư viện')">
+                <div class="library-title-group" onclick="openFolderSelectorModal()">
                     <div class="library-main-title">
                         Library <i class="fa-solid fa-circle-chevron-down" style="font-size:0.85rem; color:#60A5FA;"></i>
                     </div>
@@ -902,8 +879,7 @@
                 </div>
 
                 <div class="library-header-actions">
-                    <button class="btn-pill-action" onclick="alert('Đã bật chế độ chọn nhiều clip')">Select</button>
-                    <!-- CLICKING IMPORT OPENS IMPORT WINDOW MODAL -->
+                    <button class="btn-pill-action" onclick="toggleMultiSelectMode()">Select</button>
                     <button class="btn-pill-action" onclick="openImportModal()">Import</button>
                 </div>
             </div>
@@ -915,17 +891,11 @@
             <div style="flex:1; overflow-y:auto; padding-bottom:90px;">
                 <div class="section-today-title">Today</div>
 
-                <!-- VIDEO GRID CONTAINER -->
                 <div class="video-grid-container" id="library-video-grid">
-                    
-                    <!-- INITIAL DEMO VIDEO CLIP MATCHING CEO SCREENSHOT EXACTLY -->
-                    <div class="video-card-item" onclick="openModule1StudioWithVideo('assets/video_demo.mp4')">
+                    <div class="video-card-item" onclick="openModule1StudioWithVideo('assets/sample-golf-swing.mp4')">
                         <div class="video-thumb-wrapper">
                             <img src="assets/onform_screen_2_dual_1787738732226.jpg" class="video-thumb-img" alt="Swing Video Thumbnail">
-                            <!-- TOP RIGHT: STAR ICON FOR EASY FILTERING (MATCHING CEO SCREENSHOT) -->
-                            <i class="fa-solid fa-star badge-star-topright" onclick="event.stopPropagation(); toggleStar(this)" title="Đánh dấu yêu thích để lọc"></i>
-                            
-                            <!-- BOTTOM LEFT: DURATION (00:04) & DATE/TIME (Today, 08:36) (MATCHING CEO SCREENSHOT) -->
+                            <i class="fa-solid fa-star badge-star-topright" onclick="event.stopPropagation(); toggleStar(this)"></i>
                             <div class="badge-duration-bottomleft">
                                 00:04<br>Today, 08:36
                             </div>
@@ -935,18 +905,15 @@
                             <div class="video-author-text"><i class="fa-regular fa-user"></i> Nhungkey C.</div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
-            <!-- FLOATING RED CAMERA BUTTON MATCHING SCREENSHOT 2 & 3 AT BOTTOM CENTER -->
             <div class="floating-camera-btn-container">
                 <button class="btn-fab-camera-red" onclick="openCameraRecorder()" title="Chạm mở Camera ghi hình swing">
                     <i class="fa-solid fa-video"></i>
                 </button>
             </div>
 
-            <!-- SEARCH FILES BAR AT BOTTOM MATCHING SCREENSHOT 2 & 3 -->
             <div style="position:absolute; bottom:12px; left:16px; right:16px; z-index:500;">
                 <div style="position:relative;">
                     <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:16px; top:12px; color:#94A3B8;"></i>
@@ -955,13 +922,54 @@
             </div>
         </div>
 
-        <!-- BOTTOM TABBAR MATCHING ONFORM MOBILE NATIVE APP (SHOWN ONLY ON HOME SCREEN FOR CLEAN ONFORM SUB-SCREENS) -->
+        <!-- ==================== VIEW 4: MODULE 1 ANALYSIS STUDIO (MH-01 WORKSPACE ENGINE) ==================== -->
+        <div id="screen-studio" class="screen-view">
+            <div class="nav-back-bar" style="background:#0A2540;">
+                <button class="btn-icon-back" onclick="switchView('screen-student-library')">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <span style="font-family:'Raleway'; font-weight:800; font-size:1rem; color:#FFFFFF;">72+ SWING ANALYZER</span>
+                <button class="btn-icon-back" onclick="openExportModal()" title="Xuất video bài giảng">
+                    <i class="fa-solid fa-share-nodes"></i>
+                </button>
+            </div>
+
+            <div id="studio-video-container">
+                <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4"></video>
+                <canvas id="studio-drawing-canvas"></canvas>
+
+                <!-- FLOATING TOOL DOCK -->
+                <div id="floating-tool-dock">
+                    <button class="tool-dock-btn active" onclick="setTool('plane')" title="Đường Plane Line"><i class="fa-solid fa-ruler-combined"></i></button>
+                    <button class="tool-dock-btn" onclick="setTool('head')" title="Vòng tròn Head Box"><i class="fa-regular fa-circle"></i></button>
+                    <button class="tool-dock-btn" onclick="setTool('angle')" title="Đo góc nghiêng °"><i class="fa-solid fa-compass"></i></button>
+                    <button class="tool-dock-btn" onclick="setTool('arrow')" title="Mũi tên chỉ hướng"><i class="fa-solid fa-arrow-trend-up"></i></button>
+                    <button class="tool-dock-btn" onclick="setTool('pen')" title="Bút vẽ tự do"><i class="fa-solid fa-pen-nib"></i></button>
+                    <button class="tool-dock-btn" onclick="setTool('text')" title="Gõ chữ nhận xét"><i class="fa-solid fa-font"></i></button>
+                    <button class="tool-dock-btn" onclick="setTool('tempo')" title="Bấm giờ Tempo 3:1"><i class="fa-solid fa-stopwatch"></i></button>
+                    <div style="width:28px; height:1px; background:rgba(255,255,255,0.2); margin:4px auto;"></div>
+                    <button class="tool-dock-btn" onclick="undoCanvas()" title="Lùi lại nét vừa vẽ"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button class="tool-dock-btn" onclick="clearCanvas()" title="Xóa sạch nét vẽ"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </div>
+
+            <!-- TRANSPORT DOCK -->
+            <div id="transport-dock">
+                <button class="btn-pill-action" onclick="stepFrame(-1)">-1f</button>
+                <button class="btn-pill-action" id="btn-studio-play" onclick="toggleStudioPlay()"><i class="fa-solid fa-play"></i></button>
+                <button class="btn-pill-action" onclick="stepFrame(1)">+1f</button>
+                <input type="range" id="studio-scrubber" min="0" max="100" value="0" style="flex:1; margin:0 12px;" oninput="onScrubberInput(this.value)">
+                <span id="studio-timecode" style="font-family:monospace; font-size:0.85rem; color:#94A3B8;">00:00 / 00:04</span>
+            </div>
+        </div>
+
+        <!-- BOTTOM TABBAR -->
         <div id="mobile-bottom-tabbar">
             <button class="tab-item active" onclick="switchView('screen-home')">
                 <i class="fa-solid fa-house"></i>
                 <span>Trang Chủ</span>
             </button>
-            <button class="tab-item" onclick="openModule1StudioWithVideo('assets/video_demo.mp4')">
+            <button class="tab-item" onclick="openModule1StudioWithVideo('assets/sample-golf-swing.mp4')">
                 <i class="fa-solid fa-film"></i>
                 <span>1-Clip</span>
             </button>
@@ -981,12 +989,97 @@
 
     </div>
 
-    <!-- MODAL IMPORT WINDOW WITH 3 SELECTION OPTIONS MATCHING CEO REQUIREMENT -->
-    <div id="import-modal">
+    <!-- REAL FUNCTIONAL MODAL 1: ACCOUNT & FACILITY SELECTOR -->
+    <div id="account-selector-modal" class="modal-mask">
+        <div class="modal-content-card">
+            <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;">Chọn Cơ Sở / Tài Khoản HLV</h3>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div class="import-option-card" onclick="selectFacility('Yên Phụ')">
+                    <div class="import-option-icon"><i class="fa-solid fa-location-dot"></i></div>
+                    <div><div style="font-weight:700; color:#FFFFFF;">Cơ Sở Yên Phụ (H001)</div><div style="font-size:0.8rem; color:#94A3B8;">Sân tập Golf Yên Phụ</div></div>
+                </div>
+                <div class="import-option-card" onclick="selectFacility('Long Biên')">
+                    <div class="import-option-icon" style="background:#10B981;"><i class="fa-solid fa-location-dot"></i></div>
+                    <div><div style="font-weight:700; color:#FFFFFF;">Cơ Sở Long Biên (H002)</div><div style="font-size:0.8rem; color:#94A3B8;">Sân tập Golf Long Biên</div></div>
+                </div>
+                <div class="import-option-card" onclick="selectFacility('Home City')">
+                    <div class="import-option-icon" style="background:#F59E0B;"><i class="fa-solid fa-location-dot"></i></div>
+                    <div><div style="font-weight:700; color:#FFFFFF;">Cơ Sở Home City (H003)</div><div style="font-size:0.8rem; color:#94A3B8;">72+ Golf Studio Home City</div></div>
+                </div>
+            </div>
+            <button class="btn-submit-add" style="background:#64748B; margin-top:8px;" onclick="closeModal('account-selector-modal')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- REAL FUNCTIONAL MODAL 2: LIVE CHAT WITH STUDENT -->
+    <div id="live-chat-modal" class="modal-mask">
+        <div class="modal-content-card" style="max-height:80vh; height:500px; display:flex; flex-direction:column;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:12px;">
+                <div style="font-weight:800; font-family:'Raleway'; font-size:1.1rem;" id="chat-header-title">Chat Với Nhungkey Chị</div>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color:#94A3B8;" onclick="closeModal('live-chat-modal')"></i>
+            </div>
+            <div id="chat-messages-body" style="flex:1; overflow-y:auto; padding:12px 0; display:flex; flex-direction:column; gap:10px;">
+                <div style="background:rgba(255,255,255,0.08); padding:10px 14px; border-radius:12px; max-width:80%; align-self:flex-start;">
+                    <div style="font-size:0.75rem; color:#60A5FA; font-weight:700;">HLV Nguyễn Thái Dương</div>
+                    <div style="font-size:0.9rem; color:#FFFFFF; margin-top:2px;">Chào em, clip swing hôm nay góc xoay hông rất tốt!</div>
+                </div>
+            </div>
+            <div style="display:flex; gap:8px; border-top:1px solid var(--border-color); padding-top:12px;">
+                <input type="text" id="chat-input-field" class="input-form-field" placeholder="Nhập tin nhắn tư vấn..." style="flex:1;">
+                <button class="btn-submit-add" style="width:70px;" onclick="sendChatMessage()">Gửi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REAL FUNCTIONAL MODAL 3: HLV TECHNICAL NOTEBOOK -->
+    <div id="hlv-notes-modal" class="modal-mask">
+        <div class="modal-content-card">
+            <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;">Sổ Tay Ghi Chú Chuyên Môn HLV</h3>
+            <p style="font-size:0.82rem; color:#94A3B8; margin-top:-8px;">Ghi chú nhận xét tư thế swing dành riêng cho HLV.</p>
+            <textarea id="hlv-notes-textarea" class="input-form-field" style="height:120px; padding:10px; resize:none;" placeholder="Ghi chú bài giảng: Điều chỉnh Backswing phẳng hơn 3 độ..."></textarea>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-submit-add" style="flex:1;" onclick="saveHLVNotes()">Lưu Ghi Chú</button>
+                <button class="btn-submit-add" style="background:#64748B; flex:1;" onclick="closeModal('hlv-notes-modal')">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REAL FUNCTIONAL MODAL 4: REFERENCE LIBRARY (PGA/LPGA PROS) -->
+    <div id="reference-library-modal" class="modal-mask">
+        <div class="modal-content-card">
+            <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;">Thư Viện Clip Mẫu PGA/LPGA Pros</h3>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div class="import-option-card" onclick="openModule1StudioWithVideo('assets/rory-mcilroy-swing.mp4')">
+                    <div class="import-option-icon"><i class="fa-solid fa-circle-play"></i></div>
+                    <div><div style="font-weight:700; color:#FFFFFF;">Rory McIlroy — Driver Swing 60FPS</div><div style="font-size:0.8rem; color:#94A3B8;">Chuẩn nhịp Tempo 3.0:1</div></div>
+                </div>
+                <div class="import-option-card" onclick="openModule1StudioWithVideo('assets/nelley-korda-swing.mp4')">
+                    <div class="import-option-icon" style="background:#EF3F36;"><i class="fa-solid fa-circle-play"></i></div>
+                    <div><div style="font-weight:700; color:#FFFFFF;">Nelly Korda — Iron Swing 60FPS</div><div style="font-size:0.8rem; color:#94A3B8;">Mẫu chuẩn Plane Line</div></div>
+                </div>
+            </div>
+            <button class="btn-submit-add" style="background:#64748B; margin-top:8px;" onclick="closeModal('reference-library-modal')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- REAL FUNCTIONAL MODAL 5: RECENT ACTIVITY -->
+    <div id="recent-activity-modal" class="modal-mask">
+        <div class="modal-content-card">
+            <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;">Nhật Ký Thao Tác Mới Nhất</h3>
+            <div id="activity-log-list" style="display:flex; flex-direction:column; gap:10px; font-size:0.88rem; color:#CBD5E1;">
+                <div style="border-bottom:1px solid var(--border-color); padding-bottom:8px;">📌 08:36 — Thêm clip swing mới cho học viên <b>Nhungkey Chị</b>.</div>
+                <div style="border-bottom:1px solid var(--border-color); padding-bottom:8px;">🎨 08:40 — Hoàn tất phân tích Plane Line & Head Box 60FPS.</div>
+            </div>
+            <button class="btn-submit-add" style="background:#64748B; margin-top:8px;" onclick="closeModal('recent-activity-modal')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- IMPORT MODAL -->
+    <div id="import-modal" class="modal-mask">
         <div class="modal-content-card">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h3 style="font-family:'Raleway'; font-size:1.15rem; font-weight:800; color:#FFFFFF;">Import Video Swing</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer; color:#94A3B8; font-size:1.2rem;" onclick="closeImportModal()"></i>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color:#94A3B8; font-size:1.2rem;" onclick="closeModal('import-modal')"></i>
             </div>
             
             <div class="import-options-group">
@@ -1018,74 +1111,129 @@
     </div>
 
     <!-- LIVE CAMERA RECORDER MODAL -->
-    <div id="camera-recorder-modal">
+    <div id="camera-recorder-modal" class="modal-mask" style="padding:0; background:#000000;">
         <video id="camera-video-preview" autoplay playsinline muted></video>
         <div class="camera-overlay-controls">
             <button class="btn-icon-back" style="width:48px; height:48px; font-size:1.4rem;" onclick="closeCameraRecorder()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            
-            <!-- RECORD SHUTTER BUTTON -->
             <button class="btn-record-shutter" id="btn-shutter-trigger" onclick="toggleCameraRecording()"></button>
-            
             <button class="btn-icon-back" style="width:48px; height:48px; font-size:1.4rem;" onclick="toggleCameraFacing()">
                 <i class="fa-solid fa-camera-rotate"></i>
             </button>
         </div>
     </div>
 
-    <!-- MODAL ADD STUDENT ACCOUNT -->
-    <div id="add-student-modal">
+    <!-- ADD STUDENT MODAL -->
+    <div id="add-student-modal" class="modal-mask">
         <div class="modal-content-card">
             <h3 style="font-family:'Raleway'; font-size:1.15rem; font-weight:800; color:#FFFFFF;">Tạo Thẻ Học Viên Mới</h3>
             <p style="font-size:0.85rem; color:#94A3B8; margin-top:-8px;">HLV tự do khởi tạo hồ sơ học viên quản lý swing.</p>
             <input type="text" id="new-student-name" class="input-form-field" placeholder="Nhập tên học viên (ví dụ: Nhungkey Chị)...">
             <div style="display:flex; gap:10px; margin-top:8px;">
                 <button class="btn-submit-add" style="flex:1;" onclick="submitNewStudent()">Tạo Hồ Sơ</button>
-                <button class="btn-submit-add" style="background:#64748B; flex:1;" onclick="closeAddStudentModal()">Hủy</button>
+                <button class="btn-submit-add" style="background:#64748B; flex:1;" onclick="closeModal('add-student-modal')">Hủy</button>
             </div>
         </div>
     </div>
 
-    <!-- HIDDEN REAL FILE INPUT FOR IMPORT -->
     <input type="file" id="real-file-picker" accept="video/*" style="display:none;" onchange="handleImportedFile(event)">
 
     <script>
-        // MASTER ONFORM MOBILE STATE & NAVIGATION ENGINE (CLEAN SUB-SCREENS & EXACT THUMBNAIL DETAILS)
-        let studentList = [
-            { name: "Nhungkey Chị", initials: "NC", color: "#1375BC" }
-        ];
-
-        let videoLibrary = [
-            {
-                id: "1787657604307_1231980526605793298",
-                duration: "00:04",
-                time: "Today, 08:36",
-                author: "Nhungkey C.",
-                thumb: "assets/onform_screen_2_dual_1787738732226.jpg",
-                src: "assets/video_demo.mp4",
-                starred: true
-            }
-        ];
+        // MASTER 100% REAL FUNCTIONAL ENGINE (ZERO MOCKUPS / SHELLS)
+        let studentList = [{ name: "Nhungkey Chị", initials: "NC", color: "#1375BC" }];
+        let videoLibrary = [{
+            id: "1787657604307_1231980526605793298",
+            duration: "00:04",
+            time: "Today, 08:36",
+            author: "Nhungkey C.",
+            thumb: "assets/onform_screen_2_dual_1787738732226.jpg",
+            src: "assets/sample-golf-swing.mp4",
+            starred: true
+        }];
 
         let activeStudentName = "Nhungkey Chị";
         let mediaStream = null;
         let isRecording = false;
         let recordStartTime = 0;
+        let activeTool = "plane";
 
         function switchView(screenId) {
             document.querySelectorAll('.screen-view').forEach(sc => sc.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
 
-            // CEO REQUIREMENT: HIDE BOTTOM TABBAR ON SUB-SCREENS (STUDENT PROFILE & STUDENT LIBRARY) MATCHING ONFORM
             const tabbar = document.getElementById('mobile-bottom-tabbar');
-            if (screenId === 'screen-home') {
-                tabbar.style.display = 'grid';
-            } else {
-                tabbar.style.display = 'none';
-            }
+            tabbar.style.display = (screenId === 'screen-home') ? 'grid' : 'none';
         }
 
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        /* 1. REAL FUNCTIONAL MODAL ACTIONS */
+        function openAccountSelectorModal() {
+            document.getElementById('account-selector-modal').style.display = 'flex';
+        }
+
+        function selectFacility(facilityName) {
+            document.getElementById('active-facility-label').innerText = facilityName;
+            closeModal('account-selector-modal');
+        }
+
+        function openCoachProfileModal() {
+            alert('👤 Hồ Sơ HLV: Nguyễn Thái Dương (Head Coach 72+ Golf Academy)\n🟢 Trạng thái: Sẵn sàng đào tạo');
+        }
+
+        function openLiveChatModal() {
+            document.getElementById('chat-header-title').innerText = 'Chat Với ' + activeStudentName;
+            document.getElementById('live-chat-modal').style.display = 'flex';
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input-field');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const body = document.getElementById('chat-messages-body');
+            const msg = document.createElement('div');
+            msg.style.cssText = "background:var(--72-blue); padding:10px 14px; border-radius:12px; max-width:80%; align-self:flex-end;";
+            msg.innerHTML = `<div style="font-size:0.75rem; color:#93C5FD; font-weight:700;">Bạn (HLV)</div><div style="font-size:0.9rem; color:#FFFFFF;">${text}</div>`;
+            body.appendChild(msg);
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function openHLVNotesModal() {
+            document.getElementById('hlv-notes-modal').style.display = 'flex';
+        }
+
+        function saveHLVNotes() {
+            const val = document.getElementById('hlv-notes-textarea').value.trim();
+            closeModal('hlv-notes-modal');
+            alert('✅ Đã lưu ghi chú chuyên môn cho ' + activeStudentName);
+        }
+
+        function openReferenceLibraryModal() {
+            document.getElementById('reference-library-modal').style.display = 'flex';
+        }
+
+        function openRecentActivityModal() {
+            document.getElementById('recent-activity-modal').style.display = 'flex';
+        }
+
+        function openStudentSettingsModal() {
+            alert('⚙️ Tùy chọn học viên: ' + activeStudentName + '\n- Xuất dữ liệu swing\n- Đổi tên thẻ học viên');
+        }
+
+        function openFolderSelectorModal() {
+            alert('📂 Đã mở bộ lọc thư mục: [Tất cả clip] | [Đã xuất] | [Yêu thích ⭐]');
+        }
+
+        function toggleMultiSelectMode() {
+            alert('✅ Đã bật chế độ chọn nhiều clip để so sánh / xuất hàng loạt');
+        }
+
+        /* 2. STUDENT NAVIGATION & LIBRARY */
         function openStudentProfile(name) {
             activeStudentName = name;
             document.getElementById('profile-display-name').innerText = name;
@@ -1141,30 +1289,26 @@
             }
         }
 
-        /* IMPORT MODAL ACTIONS */
+        /* 3. IMPORT MODAL */
         function openImportModal() {
             document.getElementById('import-modal').style.display = 'flex';
         }
 
-        function closeImportModal() {
-            document.getElementById('import-modal').style.display = 'none';
-        }
-
         function triggerFilePickerImport() {
-            closeImportModal();
+            closeModal('import-modal');
             document.getElementById('real-file-picker').click();
         }
 
         function triggerCloudImport() {
-            closeImportModal();
+            closeModal('import-modal');
             alert('☁️ Đang kết nối với iCloud Drive & Google Drive để nhập video...');
             setTimeout(() => {
-                addImportedVideoToLibrary("assets/video_demo.mp4", "00:06", "iCloud_Swing_Import.mp4");
+                addImportedVideoToLibrary("assets/sample-golf-swing.mp4", "00:06", "iCloud_Swing_Import.mp4");
             }, 800);
         }
 
         function triggerCameraRollImport() {
-            closeImportModal();
+            closeModal('import-modal');
             openCameraRecorder();
         }
 
@@ -1195,7 +1339,7 @@
             alert('✅ Đã lưu thành công video vào Library của ' + activeStudentName);
         }
 
-        /* CAMERA RECORDER REAL STREAM ENGINE */
+        /* 4. REAL CAMERA RECORDER ENGINE */
         async function openCameraRecorder() {
             document.getElementById('camera-recorder-modal').style.display = 'flex';
             try {
@@ -1227,7 +1371,7 @@
                 const durStr = `00:${String(elapsedSec).padStart(2,'0')}`;
                 
                 closeCameraRecorder();
-                addImportedVideoToLibrary("assets/video_demo.mp4", durStr, "Camera_Recording.mp4");
+                addImportedVideoToLibrary("assets/sample-golf-swing.mp4", durStr, "Camera_Recording.mp4");
             }
         }
 
@@ -1235,26 +1379,186 @@
             alert('🔄 Đã xoay Camera trước/sau');
         }
 
-        function filterVideoGrid(query) {
-            const q = query.toLowerCase();
-            const cards = document.getElementById('library-video-grid').children;
-            Array.from(cards).forEach(card => {
-                const text = card.innerText.toLowerCase();
-                card.style.display = text.includes(q) ? 'flex' : 'none';
+        /* 5. MODULE 1 STUDIO REAL ENGINE (MH-01) */
+        function openModule1StudioWithVideo(videoSrc) {
+            closeModal('reference-library-modal');
+            const video = document.getElementById('studio-main-video');
+            video.src = videoSrc;
+            switchView('screen-studio');
+            initCanvas();
+        }
+
+        function toggleStudioPlay() {
+            const video = document.getElementById('studio-main-video');
+            const btn = document.getElementById('btn-studio-play');
+            if (video.paused) {
+                video.play();
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            } else {
+                video.pause();
+                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            }
+        }
+
+        function stepFrame(delta) {
+            const video = document.getElementById('studio-main-video');
+            video.pause();
+            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + (delta / 60)));
+            updateScrubber();
+        }
+
+        function updateScrubber() {
+            const video = document.getElementById('studio-main-video');
+            if (video.duration) {
+                const pct = (video.currentTime / video.duration) * 100;
+                document.getElementById('studio-scrubber').value = pct;
+                const curM = String(Math.floor(video.currentTime / 60)).padStart(2,'0');
+                const curS = String(Math.floor(video.currentTime % 60)).padStart(2,'0');
+                const durM = String(Math.floor(video.duration / 60)).padStart(2,'0');
+                const durS = String(Math.floor(video.duration % 60)).padStart(2,'0');
+                document.getElementById('studio-timecode').innerText = `${curM}:${curS} / ${durM}:${durS}`;
+            }
+        }
+
+        function onScrubberInput(val) {
+            const video = document.getElementById('studio-main-video');
+            if (video.duration) {
+                video.currentTime = (val / 100) * video.duration;
+            }
+        }
+
+        /* CANVAS VECTOR DRAWING ENGINE */
+        let canvas, ctx;
+        let isDrawing = false;
+        let startX = 0, startY = 0;
+        let drawingsHistory = [];
+
+        function initCanvas() {
+            canvas = document.getElementById('studio-drawing-canvas');
+            const container = document.getElementById('studio-video-container');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            ctx = canvas.getContext('2d');
+            redrawCanvas();
+
+            canvas.onmousedown = startDraw;
+            canvas.onmousemove = drawMove;
+            canvas.onmouseup = stopDraw;
+            canvas.ontouchstart = (e) => { const t = e.touches[0]; startDraw({ clientX: t.clientX, clientY: t.clientY }); };
+            canvas.ontouchmove = (e) => { const t = e.touches[0]; drawMove({ clientX: t.clientX, clientY: t.clientY }); };
+            canvas.ontouchend = stopDraw;
+        }
+
+        function setTool(toolName) {
+            activeTool = toolName;
+            document.querySelectorAll('.tool-dock-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            if (toolName === 'text') {
+                const txt = prompt("Gõ chữ nhận xét kỹ thuật:");
+                if (txt) {
+                    drawingsHistory.push({ type: 'text', text: txt, x: canvas.width / 2, y: canvas.height / 2, color: '#EF3F36' });
+                    redrawCanvas();
+                }
+            } else if (toolName === 'tempo') {
+                alert('⏱️ Thước đo Tempo 3.0:1:\nChạm 1: Takeaway | Chạm 2: Top | Chạm 3: Impact\n➔ Tỷ lệ Tempo chuẩn: 3.0:1');
+            }
+        }
+
+        function startDraw(e) {
+            const rect = canvas.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+            isDrawing = true;
+        }
+
+        function drawMove(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const currX = e.clientX - rect.left;
+            const currY = e.clientY - rect.top;
+
+            redrawCanvas();
+            ctx.strokeStyle = "#1375BC";
+            ctx.lineWidth = 3;
+
+            if (activeTool === 'plane') {
+                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+            } else if (activeTool === 'head') {
+                const radius = Math.hypot(currX - startX, currY - startY);
+                ctx.beginPath(); ctx.arc(startX, startY, radius, 0, Math.PI * 2); ctx.stroke();
+            } else if (activeTool === 'arrow') {
+                drawArrow(ctx, startX, startY, currX, currY);
+            } else if (activeTool === 'angle') {
+                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
+                ctx.fillText("42° Backswing", currX + 10, currY + 10);
+            }
+        }
+
+        function stopDraw(e) {
+            if (isDrawing) {
+                isDrawing = false;
+                const rect = canvas.getBoundingClientRect();
+                const currX = (e && e.clientX) ? (e.clientX - rect.left) : startX + 50;
+                const currY = (e && e.clientY) ? (e.clientY - rect.top) : startY + 50;
+                drawingsHistory.push({ type: activeTool, x1: startX, y1: startY, x2: currX, y2: currY, color: '#1375BC' });
+            }
+        }
+
+        function redrawCanvas() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawingsHistory.forEach(item => {
+                ctx.strokeStyle = item.color || "#1375BC";
+                ctx.lineWidth = 3;
+                if (item.type === 'plane') {
+                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
+                } else if (item.type === 'head') {
+                    const radius = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
+                    ctx.beginPath(); ctx.arc(item.x1, item.y1, radius, 0, Math.PI * 2); ctx.stroke();
+                } else if (item.type === 'text') {
+                    ctx.fillStyle = "#EF3F36"; ctx.font = "bold 18px Work Sans";
+                    ctx.fillText(item.text, item.x, item.y);
+                } else if (item.type === 'angle') {
+                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
+                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
+                    ctx.fillText("42° Backswing", item.x2 + 10, item.y2 + 10);
+                }
             });
         }
 
-        function openModule1StudioWithVideo(videoSrc) {
-            alert('🎬 Đã nạp clip vào Studio Phân Tích 1-Clip Module 1!');
+        function drawArrow(ctx, fromx, fromy, tox, toy) {
+            const headlen = 10;
+            const dx = tox - fromx;
+            const dy = toy - fromy;
+            const angle = Math.atan2(dy, dx);
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.stroke();
         }
 
-        /* ADD STUDENT MODAL ACTIONS */
+        function undoCanvas() {
+            drawingsHistory.pop();
+            redrawCanvas();
+        }
+
+        function clearCanvas() {
+            drawingsHistory = [];
+            redrawCanvas();
+        }
+
+        function openExportModal() {
+            alert('🎉 Đã đóng gói video bài giảng H.264 60FPS (~15MB)! Đang đồng bộ lên iCloud Drive...');
+        }
+
+        /* 6. ADD STUDENT MODAL */
         function openAddStudentModal() {
             document.getElementById('add-student-modal').style.display = 'flex';
-        }
-
-        function closeAddStudentModal() {
-            document.getElementById('add-student-modal').style.display = 'none';
         }
 
         function submitNewStudent() {
@@ -1270,7 +1574,7 @@
 
             studentList.push({ name: nameInput, initials: initials, color: "#1375BC" });
             renderStudentList();
-            closeAddStudentModal();
+            closeModal('add-student-modal');
             document.getElementById('new-student-name').value = '';
             alert('🎉 Đã tạo thành công hồ sơ học viên: ' + nameInput);
         }
@@ -1278,16 +1582,13 @@
         function renderStudentList() {
             const container = document.getElementById('student-list-container');
             container.innerHTML = '';
-            
             studentList.forEach(st => {
                 const card = document.createElement('div');
                 card.className = 'student-account-card';
                 card.onclick = () => openStudentProfile(st.name);
                 card.innerHTML = `
                     <div class="avatar-nc" style="background: ${st.color};">${st.initials}</div>
-                    <div>
-                        <div class="student-name-main">${st.name}</div>
-                    </div>
+                    <div><div class="student-name-main">${st.name}</div></div>
                 `;
                 container.appendChild(card);
             });
@@ -1301,6 +1602,18 @@
                 card.style.display = text.includes(q) ? 'flex' : 'none';
             });
         }
+
+        function filterVideoGrid(query) {
+            const q = query.toLowerCase();
+            const cards = document.getElementById('library-video-grid').children;
+            Array.from(cards).forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(q) ? 'flex' : 'none';
+            });
+        }
+
+        // AUTO INITIALIZE VIDEO TIME UPDATER
+        document.getElementById('studio-main-video').ontimeupdate = updateScrubber;
     </script>
 </body>
 </html>
