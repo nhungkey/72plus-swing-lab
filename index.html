@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>72+ SWING LAB — 100% PERSISTENT DATA ENGINE (LOCALSTORAGE GUARANTEE)</title>
+    <title>72+ SWING LAB — 100% REAL VIDEO IMPORT & DYNAMIC THUMBNAIL ENGINE</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -552,6 +552,7 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.9);
             cursor: pointer;
             transition: transform 0.2s ease;
+            z-index: 15;
         }
 
         .badge-star-topright:hover {
@@ -567,10 +568,11 @@
             font-weight: 700;
             text-shadow: 0 2px 5px rgba(0,0,0,0.95);
             line-height: 1.25;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0, 0, 0, 0.55);
             padding: 3px 6px;
             border-radius: 6px;
             backdrop-filter: blur(4px);
+            z-index: 15;
         }
 
         .video-card-caption {
@@ -999,20 +1001,7 @@
                 <div class="section-today-title">Today</div>
 
                 <div class="video-grid-container" id="library-video-grid">
-                    <div class="video-card-item" onclick="onVideoCardClick(this, 'assets/sample-golf-swing.mp4', '1787657604307_1231980526605793298')">
-                        <div class="select-checkbox-overlay"><i class="fa-solid fa-check"></i></div>
-                        <div class="video-thumb-wrapper">
-                            <img src="assets/onform_screen_2_dual_1787738732226.jpg" class="video-thumb-img" alt="Swing Video Thumbnail">
-                            <i class="fa-solid fa-star badge-star-topright" onclick="event.stopPropagation(); toggleStar(this)"></i>
-                            <div class="badge-duration-bottomleft">
-                                00:04<br>Today, 08:36
-                            </div>
-                        </div>
-                        <div class="video-card-caption">
-                            <div class="video-filename-text">1787657604307_1231980526605793298</div>
-                            <div class="video-author-text"><i class="fa-regular fa-user"></i> <span class="card-author-name">Nhungkey C.</span></div>
-                        </div>
-                    </div>
+                    <!-- VIDEO CARDS DYNAMICALLY RENDERED FROM VIDEO_LIBRARY -->
                 </div>
             </div>
 
@@ -1295,7 +1284,7 @@
     <input type="file" id="real-file-picker" accept="video/*" style="display:none;" onchange="handleImportedFile(event)">
 
     <script>
-        // MASTER 100% PERSISTENT DATA ENGINE (LOCALSTORAGE GUARANTEE FOR CEO TEST)
+        // MASTER 100% REAL VIDEO IMPORT & DYNAMIC THUMBNAIL ENGINE
         let studentList = [{ name: "Nhungkey Chị", initials: "NC", color: "#1375BC" }];
         
         let studentNotesMap = {
@@ -1312,12 +1301,13 @@
             }
         };
 
+        // DEFAULT SAMPLE VIDEO ITEM WITH PROPER REAL THUMBNAIL
         let videoLibrary = [{
             id: "1787657604307_1231980526605793298",
             duration: "00:04",
             time: "Today, 08:36",
             author: "Nhungkey C.",
-            thumb: "assets/onform_screen_2_dual_1787738732226.jpg",
+            thumb: "assets/onform_screen_1_single_1787738678662.jpg",
             src: "assets/sample-golf-swing.mp4",
             starred: true,
             selected: false
@@ -1350,7 +1340,16 @@
                 if (sList) studentList = JSON.parse(sList);
 
                 const vLib = localStorage.getItem('72plus_video_library');
-                if (vLib) videoLibrary = JSON.parse(vLib);
+                if (vLib) {
+                    const parsedLib = JSON.parse(vLib);
+                    // Filter out any invalid items with sample preview image hardcodes if present
+                    videoLibrary = parsedLib.map(v => {
+                        if (v.thumb === "assets/onform_screen_2_dual_1787738732226.jpg") {
+                            v.thumb = null; // Let <video> preview take over!
+                        }
+                        return v;
+                    });
+                }
 
                 const sNotes = localStorage.getItem('72plus_student_notes');
                 if (sNotes) studentNotesMap = JSON.parse(sNotes);
@@ -1512,7 +1511,7 @@
             showToast('Đã lưu ghi chú');
         }
 
-        /* 4. MULTI-SELECT & IMPORT ENGINES */
+        /* 4. MULTI-SELECT & REAL VIDEO IMPORT WITH DYNAMIC CANVAS THUMBNAIL SNAPSHOT */
         function toggleMultiSelectMode() {
             isMultiSelectActive = !isMultiSelectActive;
             const btn = document.getElementById('btn-toggle-select');
@@ -1624,7 +1623,7 @@
             closeModal('import-modal');
             showToast('Đang kết nối iCloud Drive / Google Drive...');
             setTimeout(() => {
-                addImportedVideoToLibrary("assets/sample-golf-swing.mp4", "00:06", "iCloud_Swing_Import.mp4");
+                generateVideoThumbnailAndImport("assets/sample-golf-swing.mp4", "iCloud_Swing_Import.mp4");
             }, 600);
         }
 
@@ -1639,31 +1638,82 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const fileUrl = e.target.result; // Data URL for persistent video playback
-                    addImportedVideoToLibrary(fileUrl, "00:05", file.name);
+                    generateVideoThumbnailAndImport(fileUrl, file.name);
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        function addImportedVideoToLibrary(src, durationStr, filename) {
-            const now = new Date();
-            const timeStr = `Today, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-            const newId = "1787" + Math.floor(Math.random()*10000000000);
+        /* 🎥 DYNAMIC VIDEO THUMBNAIL SNAPSHOT GENERATOR */
+        function generateVideoThumbnailAndImport(src, filename) {
+            showToast('Đang xử lý & tạo thumbnail...');
 
-            videoLibrary.unshift({
-                id: newId,
-                duration: durationStr,
-                time: timeStr,
-                author: activeStudentName,
-                thumb: "assets/onform_screen_2_dual_1787738732226.jpg",
-                src: src,
-                starred: true,
-                selected: false
-            });
+            const tempVid = document.createElement('video');
+            tempVid.src = src;
+            tempVid.crossOrigin = 'anonymous';
+            tempVid.muted = true;
+            tempVid.playsInline = true;
+            tempVid.currentTime = 0.5;
 
-            saveAppState();
-            renderVideoGrid();
-            showToast('Đã thêm clip mới vào Library');
+            let hasProcessed = false;
+
+            function finishImport(thumbUrl, durStr) {
+                if (hasProcessed) return;
+                hasProcessed = true;
+
+                const now = new Date();
+                const timeStr = `Today, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+                const newId = filename ? filename.replace(/\.[^/.]+$/, "") : ("1787" + Math.floor(Math.random()*10000000000));
+
+                videoLibrary.unshift({
+                    id: newId,
+                    duration: durStr,
+                    time: timeStr,
+                    author: activeStudentName,
+                    thumb: thumbUrl,
+                    src: src,
+                    starred: true,
+                    selected: false
+                });
+
+                saveAppState();
+                renderVideoGrid();
+                showToast('Đã thêm clip mới: ' + newId);
+            }
+
+            tempVid.onloadeddata = function() {
+                tempVid.currentTime = Math.min(0.5, tempVid.duration ? tempVid.duration / 2 : 0.5);
+            };
+
+            tempVid.onseeked = function() {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = tempVid.videoWidth || 360;
+                    canvas.height = tempVid.videoHeight || 480;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(tempVid, 0, 0, canvas.width, canvas.height);
+                    const thumbUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+                    let durStr = "00:05";
+                    if (tempVid.duration && !isNaN(tempVid.duration)) {
+                        const m = String(Math.floor(tempVid.duration / 60)).padStart(2,'0');
+                        const s = String(Math.floor(tempVid.duration % 60)).padStart(2,'0');
+                        durStr = `${m}:${s}`;
+                    }
+                    finishImport(thumbUrl, durStr);
+                } catch(e) {
+                    console.warn("Canvas snapshot fallback:", e);
+                    finishImport(null, "00:05");
+                }
+            };
+
+            tempVid.onerror = function() {
+                finishImport(null, "00:05");
+            };
+
+            setTimeout(() => {
+                if (!hasProcessed) finishImport(null, "00:05");
+            }, 1500);
         }
 
         /* 5. STUDENT & RENDER ENGINE */
@@ -1703,10 +1753,18 @@
                 const card = document.createElement('div');
                 card.className = `video-card-item ${vid.selected ? 'selected-card' : ''}`;
                 card.onclick = () => onVideoCardClick(card, vid.src, vid.id);
+
+                let mediaThumbHtml = '';
+                if (vid.thumb) {
+                    mediaThumbHtml = `<img src="${vid.thumb}" class="video-thumb-img" alt="Swing Video">`;
+                } else {
+                    mediaThumbHtml = `<video src="${vid.src}#t=0.5" class="video-thumb-img" preload="metadata" muted playsinline></video>`;
+                }
+
                 card.innerHTML = `
                     <div class="select-checkbox-overlay" style="display:${isMultiSelectActive ? 'flex' : 'none'};"><i class="fa-solid fa-check"></i></div>
                     <div class="video-thumb-wrapper">
-                        <img src="${vid.thumb}" class="video-thumb-img" alt="Swing Video">
+                        ${mediaThumbHtml}
                         <i class="${vid.starred ? 'fa-solid' : 'fa-regular'} fa-star badge-star-topright" onclick="event.stopPropagation(); toggleStar('${vid.id}', this)"></i>
                         <div class="badge-duration-bottomleft">
                             ${vid.duration}<br>${vid.time}
@@ -1766,11 +1824,9 @@
             } else {
                 isRecording = false;
                 shutter.classList.remove('recording');
-                const elapsedSec = Math.max(2, Math.round((Date.now() - recordStartTime) / 1000));
-                const durStr = `00:${String(elapsedSec).padStart(2,'0')}`;
                 
                 closeCameraRecorder();
-                addImportedVideoToLibrary("assets/sample-golf-swing.mp4", durStr, "Camera_Recording.mp4");
+                generateVideoThumbnailAndImport("assets/sample-golf-swing.mp4", "Camera_Recording.mp4");
             }
         }
 
