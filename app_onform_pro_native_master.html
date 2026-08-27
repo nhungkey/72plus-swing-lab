@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>72+ SWING LAB — ONFORM MOBILE (LIBRARY & CLEAN SUB-SCREENS)</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700;800;900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --72-blue: #1375BC;
+            --72-red: #EF3F36;
+            --72-navy: #0A2540;
+            --72-green: #10B981;
+            --72-gold: #F59E0B;
+            --mobile-bg: #0B132B;
+            --mobile-card: #1C2541;
+            --mobile-tabbar: rgba(10, 37, 64, 0.98);
+            --border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--mobile-bg);
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #FFFFFF;
+        }
+
+        #mobile-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--mobile-bg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* SCREEN VIEWS MANAGER */
+        .screen-view {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .screen-view.active {
+            display: flex;
+        }
+
+        /* 1. TOP BANNER HEADER CHUẨN HARMONIC RATIO 72+ */
+        #onform-header-bar {
+            background: #0A2540;
+            border-bottom: 2px solid rgba(239, 63, 54, 0.8);
+            padding: 10px 16px 10px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 500;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            padding-top: env(safe-area-inset-top);
+        }
+
+        .brand-header-banner-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .official-logo-img {
+            height: 30px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .swing-lab-pro-pill-badge {
+            background: rgba(239, 63, 54, 0.18);
+            border: 1.5px solid var(--72-red);
+            color: #FF6B6B;
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.76rem;
+            font-weight: 900;
+            letter-spacing: 0.6px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(239, 63, 54, 0.3);
+        }
+
+        .header-bottom-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 8px 12px;
+        }
+
+        .account-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .avatar-pa {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #543D0A;
+            color: #FDE047;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(253, 224, 71, 0.4);
+        }
+
+        .account-name-text {
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-plus-add {
+            background: var(--72-blue);
+            border: 1px solid #60A5FA;
+            color: #FFFFFF;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(19, 117, 188, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .coach-avatar-wrapper {
+            position: relative;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+        }
+
+        .coach-avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #FFFFFF;
+        }
+
+        .status-online-dot {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #22C55E;
+            border: 2px solid #0A2540;
+        }
+
+        /* SEARCH BAR */
+        .search-bar-wrapper {
+            padding: 12px 16px;
+            background: var(--mobile-bg);
+            position: relative;
+        }
+
+        .search-input-box {
+            width: 100%;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0 14px 0 40px;
+            font-size: 0.92rem;
+            color: #FFFFFF;
+            outline: none;
+        }
+
+        .search-icon-pos {
+            position: absolute;
+            left: 30px;
+            top: 25px;
+            color: #94A3B8;
+            font-size: 0.95rem;
+            z-index: 10;
+        }
+
+        /* CONTENT VIEWPORT */
+        #mobile-home-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 16px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* MENU LIST ITEMS MATCHING ONFORM */
+        .menu-list-group {
+            background: var(--mobile-card);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .menu-row-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .menu-row-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-row-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-icon-square {
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            color: #60A5FA;
+        }
+
+        .menu-row-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+
+        .menu-row-subtext {
+            font-size: 0.85rem;
+            color: #94A3B8;
+            margin-top: 2px;
+        }
+
+        /* STUDENT ACCOUNT ROW */
+        .student-section-header {
+            margin-top: 4px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .student-account-card {
+            background: var(--mobile-card);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: transform 0.15s ease;
+        }
+
+        .student-account-card:active {
+            transform: scale(0.98);
+        }
+
+        .avatar-nc {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--72-blue);
+            color: #FFFFFF;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .student-name-main {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        /* 2. STUDENT DETAIL PROFILE SCREEN (MH-02 MATCHING SCREENSHOT 1) */
+        .nav-back-bar {
+            height: 56px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--mobile-card);
+        }
+
+        .btn-icon-back {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: #FFFFFF;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .student-profile-header-card {
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .avatar-nc-large {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            background: var(--72-blue);
+            color: #FFFFFF;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 900;
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(19, 117, 188, 0.4);
+        }
+
+        .profile-title-name {
+            font-family: 'Raleway', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #FFFFFF;
+        }
+
+        .profile-subtitle {
+            font-size: 0.9rem;
+            color: #94A3B8;
+            margin-top: 2px;
+        }
+
+        /* 3. STUDENT LIBRARY SCREEN (MH-02-LIB MATCHING SCREENSHOT 2 & 3 EXACTLY) */
+        .library-nav-bar {
+            height: 60px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--mobile-card);
+        }
+
+        .library-title-group {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .library-main-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .library-sub-student {
+            font-size: 0.82rem;
+            color: #94A3B8;
+        }
+
+        .library-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-pill-action {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            color: #FFFFFF;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-pill-action:hover {
+            background: var(--72-blue);
+            border-color: #60A5FA;
+        }
+
+        .library-info-subbar {
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            color: #94A3B8;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .library-info-subbar span {
+            color: #F59E0B;
+            text-decoration: underline;
+        }
+
+        .section-today-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #FFFFFF;
+            padding: 14px 16px 8px 16px;
+        }
+
+        /* VIDEO THUMBNAIL GRID MATCHING CEO SCREENSHOT EXACTLY */
+        .video-grid-container {
+            padding: 0 16px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .video-card-item {
+            background: var(--mobile-card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-thumb-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 125%; /* 4:5 aspect ratio */
+            background: #000000;
+        }
+
+        .video-thumb-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* TOP RIGHT OVERLAY: STAR ICON FOR FAVORITE/FILTER (MATCHING CEO SCREENSHOT) */
+        .badge-star-topright {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: #F59E0B;
+            font-size: 1.15rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .badge-star-topright:hover {
+            transform: scale(1.2);
+        }
+
+        /* BOTTOM LEFT OVERLAY: DURATION (00:04) + DATE/TIME (Today, 08:36) (MATCHING CEO SCREENSHOT) */
+        .badge-duration-bottomleft {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            font-size: 0.78rem;
+            color: #FFFFFF;
+            font-weight: 700;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.95);
+            line-height: 1.25;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 3px 6px;
+            border-radius: 6px;
+            backdrop-filter: blur(4px);
+        }
+
+        .video-card-caption {
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .video-filename-text {
+            font-size: 0.72rem;
+            color: #CBD5E1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .video-author-text {
+            font-size: 0.78rem;
+            color: #94A3B8;
+            font-weight: 600;
+        }
+
+        /* FLOATING RED CAMERA RECORD BUTTON MATCHING SCREENSHOT EXACTLY */
+        .floating-camera-btn-container {
+            position: absolute;
+            bottom: 74px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 600;
+        }
+
+        .btn-fab-camera-red {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #EF3F36 0%, #DC2626 100%);
+            border: 3px solid #FFFFFF;
+            color: #FFFFFF;
+            font-size: 1.6rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(239, 63, 54, 0.7);
+            transition: transform 0.15s ease;
+        }
+
+        .btn-fab-camera-red:active {
+            transform: scale(0.92);
+        }
+
+        /* IMPORT MODAL WINDOW */
+        #import-modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(11, 19, 43, 0.85);
+            backdrop-filter: blur(14px);
+            z-index: 900;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .import-options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .import-option-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .import-option-card:hover {
+            background: rgba(19, 117, 188, 0.3);
+            border-color: #60A5FA;
+        }
+
+        .import-option-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--72-blue);
+            color: #FFFFFF;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* LIVE CAMERA RECORDING STREAM MODAL */
+        #camera-recorder-modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        #camera-video-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camera-overlay-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            z-index: 1010;
+        }
+
+        .btn-record-shutter {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: #EF3F36;
+            border: 4px solid #FFFFFF;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(239, 63, 54, 0.8);
+        }
+
+        .btn-record-shutter.recording {
+            animation: pulse-red 1s infinite alternate;
+            border-radius: 16px;
+            width: 60px;
+            height: 60px;
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(1); box-shadow: 0 0 10px #EF3F36; }
+            100% { transform: scale(1.1); box-shadow: 0 0 25px #EF3F36; }
+        }
+
+        /* BOTTOM TABBAR MATCHING ONFORM MOBILE NATIVE APP (DISPLAY ONLY ON HOME SCREEN) */
+        #mobile-bottom-tabbar {
+            height: 64px;
+            background: var(--mobile-tabbar);
+            border-top: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            z-index: 500;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #94A3B8;
+            font-size: 0.72rem;
+            font-weight: 600;
+            gap: 3px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+        }
+
+        .tab-item i {
+            font-size: 1.2rem;
+        }
+
+        .tab-item.active {
+            color: var(--72-blue);
+            font-weight: 700;
+        }
+
+        /* ADD STUDENT MODAL */
+        #add-student-modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(11, 19, 43, 0.85);
+            backdrop-filter: blur(14px);
+            z-index: 900;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content-card {
+            background: var(--mobile-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .input-form-field {
+            width: 100%;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0 14px;
+            font-size: 0.95rem;
+            color: #FFFFFF;
+            outline: none;
+        }
+
+        .btn-submit-add {
+            background: var(--72-blue);
+            color: #FFFFFF;
+            height: 44px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mobile-container">
+
+        <!-- ==================== VIEW 1: HOME SCREEN (TRANG CHỦ HLV) ==================== -->
+        <div id="screen-home" class="screen-view active">
+            <!-- 1. TOP BANNER HEADER CÂN BẰNG TỶ LỆ LOGO & SWING LAB PRO PILL BADGE -->
+            <div id="onform-header-bar">
+                <div class="brand-header-banner-row">
+                    <img src="assets/logo-white.png" class="official-logo-img" alt="72+ Golf Academy Logo" onerror="this.src='https://72ga-web-production.s3.ap-southeast-1.amazonaws.com/uploads/images/2022/06/02/logo-1-62984f1e919a5.png';">
+                    <div class="swing-lab-pro-pill-badge">SWING LAB PRO</div>
+                </div>
+
+                <div class="header-bottom-row">
+                    <div class="account-selector" onclick="alert('Personal Account Options')">
+                        <div class="avatar-pa">PA</div>
+                        <div class="account-name-text">
+                            Personal Accou... <i class="fa-solid fa-caret-down" style="color: #60A5FA;"></i>
+                        </div>
+                    </div>
+
+                    <div class="header-actions">
+                        <button class="btn-plus-add" onclick="openAddStudentModal()" title="Thêm tài khoản học viên mới">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+
+                        <div class="coach-avatar-wrapper">
+                            <img src="assets/onform_screen_6_home_account_1787740470325.jpg" class="coach-avatar-img" alt="Coach Avatar" onerror="this.src='https://ui-avatars.com/api/?name=Nhung+Nguyen&background=1375BC&color=fff';">
+                            <div class="status-online-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-bar-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-icon-pos"></i>
+                <input type="text" class="search-input-box" placeholder="Search" onkeyup="filterStudentList(this.value)">
+            </div>
+
+            <div id="mobile-home-content">
+                <div class="menu-list-group">
+                    <div class="menu-row-item" onclick="openStudentLibrary('Nhungkey Chị')">
+                        <div class="menu-icon-square"><i class="fa-solid fa-images"></i></div>
+                        <div class="menu-row-text">Library - All Files</div>
+                    </div>
+                    <div class="menu-row-item" onclick="alert('Reference Content')">
+                        <div class="menu-icon-square"><i class="fa-solid fa-folder"></i></div>
+                        <div class="menu-row-text">Reference Content</div>
+                    </div>
+                    <div class="menu-row-item" onclick="alert('Recent Activity')">
+                        <div class="menu-icon-square"><i class="fa-regular fa-bell"></i></div>
+                        <div class="menu-row-text">Recent Activity</div>
+                    </div>
+                </div>
+
+                <div class="student-section-header">
+                    <div id="student-list-container" style="display:flex; flex-direction:column; gap:10px;">
+                        <!-- INITIAL STUDENT: NHUNGKEY CHỊ -->
+                        <div class="student-account-card" onclick="openStudentProfile('Nhungkey Chị')">
+                            <div class="avatar-nc">NC</div>
+                            <div>
+                                <div class="student-name-main">Nhungkey Chị</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIEW 2: STUDENT DETAIL PROFILE (MH-02 MATCHING SCREENSHOT 1) ==================== -->
+        <div id="screen-student-profile" class="screen-view">
+            <div class="nav-back-bar">
+                <button class="btn-icon-back" onclick="switchView('screen-home')">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <span style="font-weight:700; font-size:1rem; color:#FFFFFF;">Hồ Sơ Học Viên</span>
+                <button class="btn-icon-back">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
+            </div>
+
+            <div class="student-profile-header-card">
+                <div class="avatar-nc-large" id="profile-avatar-badge">NC</div>
+                <div>
+                    <div class="profile-title-name" id="profile-display-name">Nhungkey Chị</div>
+                    <div class="profile-subtitle">Golfer</div>
+                </div>
+            </div>
+
+            <div style="padding: 16px;">
+                <div class="menu-list-group">
+                    <div class="menu-row-item" onclick="alert('Mở khung chat trực tiếp với học viên')">
+                        <div class="menu-icon-square"><i class="fa-regular fa-comment-dots"></i></div>
+                        <div>
+                            <div class="menu-row-text">Chat</div>
+                        </div>
+                    </div>
+                    <!-- CLICKING LIBRARY OPENS STUDENT LIBRARY SCREEN -->
+                    <div class="menu-row-item" onclick="openStudentLibrary('Nhungkey Chị')">
+                        <div class="menu-icon-square"><i class="fa-solid fa-folder"></i></div>
+                        <div>
+                            <div class="menu-row-text">Library</div>
+                            <div class="menu-row-subtext" id="library-share-counter">0 shared, 1 private</div>
+                        </div>
+                    </div>
+                    <!-- CLICKING NOTES OPENS NOTES SECTION -->
+                    <div class="menu-row-item" onclick="alert('📋 Đã mở sổ tay ghi chú nhận xét kỹ thuật HLV (Private to you)')">
+                        <div class="menu-icon-square"><i class="fa-solid fa-clipboard-list"></i></div>
+                        <div>
+                            <div class="menu-row-text">Notes</div>
+                            <div class="menu-row-subtext">Private to you</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIEW 3: STUDENT LIBRARY SCREEN (MH-02-LIB MATCHING SCREENSHOT 2 & 3 EXACTLY) ==================== -->
+        <div id="screen-student-library" class="screen-view" style="position:relative;">
+            <div class="library-nav-bar">
+                <button class="btn-icon-back" onclick="switchView('screen-student-profile')">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+                <div class="library-title-group" onclick="alert('Chuyển đổi danh mục Thư viện')">
+                    <div class="library-main-title">
+                        Library <i class="fa-solid fa-circle-chevron-down" style="font-size:0.85rem; color:#60A5FA;"></i>
+                    </div>
+                    <div class="library-sub-student" id="lib-student-subname">Nhungkey Chị</div>
+                </div>
+
+                <div class="library-header-actions">
+                    <button class="btn-pill-action" onclick="alert('Đã bật chế độ chọn nhiều clip')">Select</button>
+                    <!-- CLICKING IMPORT OPENS IMPORT WINDOW MODAL -->
+                    <button class="btn-pill-action" onclick="openImportModal()">Import</button>
+                </div>
+            </div>
+
+            <div class="library-info-subbar">
+                Files: <span id="info-shared-count">0 shared</span>, <span id="info-private-count">1 private</span>. This library is default <span>private</span>.
+            </div>
+
+            <div style="flex:1; overflow-y:auto; padding-bottom:90px;">
+                <div class="section-today-title">Today</div>
+
+                <!-- VIDEO GRID CONTAINER -->
+                <div class="video-grid-container" id="library-video-grid">
+                    
+                    <!-- INITIAL DEMO VIDEO CLIP MATCHING CEO SCREENSHOT EXACTLY -->
+                    <div class="video-card-item" onclick="openModule1StudioWithVideo('assets/video_demo.mp4')">
+                        <div class="video-thumb-wrapper">
+                            <img src="assets/onform_screen_2_dual_1787738732226.jpg" class="video-thumb-img" alt="Swing Video Thumbnail">
+                            <!-- TOP RIGHT: STAR ICON FOR EASY FILTERING (MATCHING CEO SCREENSHOT) -->
+                            <i class="fa-solid fa-star badge-star-topright" onclick="event.stopPropagation(); toggleStar(this)" title="Đánh dấu yêu thích để lọc"></i>
+                            
+                            <!-- BOTTOM LEFT: DURATION (00:04) & DATE/TIME (Today, 08:36) (MATCHING CEO SCREENSHOT) -->
+                            <div class="badge-duration-bottomleft">
+                                00:04<br>Today, 08:36
+                            </div>
+                        </div>
+                        <div class="video-card-caption">
+                            <div class="video-filename-text">1787657604307_1231980526605793298</div>
+                            <div class="video-author-text"><i class="fa-regular fa-user"></i> Nhungkey C.</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- FLOATING RED CAMERA BUTTON MATCHING SCREENSHOT 2 & 3 AT BOTTOM CENTER -->
+            <div class="floating-camera-btn-container">
+                <button class="btn-fab-camera-red" onclick="openCameraRecorder()" title="Chạm mở Camera ghi hình swing">
+                    <i class="fa-solid fa-video"></i>
+                </button>
+            </div>
+
+            <!-- SEARCH FILES BAR AT BOTTOM MATCHING SCREENSHOT 2 & 3 -->
+            <div style="position:absolute; bottom:12px; left:16px; right:16px; z-index:500;">
+                <div style="position:relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:16px; top:12px; color:#94A3B8;"></i>
+                    <input type="text" class="search-input-box" style="border-radius:24px; padding-left:42px; background:rgba(15,23,42,0.95); border:1px solid var(--border-color);" placeholder="Search files" onkeyup="filterVideoGrid(this.value)">
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM TABBAR MATCHING ONFORM MOBILE NATIVE APP (SHOWN ONLY ON HOME SCREEN FOR CLEAN ONFORM SUB-SCREENS) -->
+        <div id="mobile-bottom-tabbar">
+            <button class="tab-item active" onclick="switchView('screen-home')">
+                <i class="fa-solid fa-house"></i>
+                <span>Trang Chủ</span>
+            </button>
+            <button class="tab-item" onclick="openModule1StudioWithVideo('assets/video_demo.mp4')">
+                <i class="fa-solid fa-film"></i>
+                <span>1-Clip</span>
+            </button>
+            <button class="tab-item" onclick="alert('So Sánh Dual View')">
+                <i class="fa-solid fa-columns"></i>
+                <span>So Sánh</span>
+            </button>
+            <button class="tab-item" onclick="alert('Thư Viện Folder')">
+                <i class="fa-solid fa-folder-tree"></i>
+                <span>Thư Viện</span>
+            </button>
+            <button class="tab-item" onclick="alert('Tài Khoản HLV')">
+                <i class="fa-solid fa-user-gear"></i>
+                <span>Cá Nhân</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- MODAL IMPORT WINDOW WITH 3 SELECTION OPTIONS MATCHING CEO REQUIREMENT -->
+    <div id="import-modal">
+        <div class="modal-content-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-family:'Raleway'; font-size:1.15rem; font-weight:800; color:#FFFFFF;">Import Video Swing</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color:#94A3B8; font-size:1.2rem;" onclick="closeImportModal()"></i>
+            </div>
+            
+            <div class="import-options-group">
+                <div class="import-option-card" onclick="triggerFilePickerImport()">
+                    <div class="import-option-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                    <div>
+                        <div style="font-weight:700; color:#FFFFFF;">Tải từ Thư Viện iPad / iPhone</div>
+                        <div style="font-size:0.8rem; color:#94A3B8;">Chọn clip có sẵn từ Photos & Files</div>
+                    </div>
+                </div>
+
+                <div class="import-option-card" onclick="triggerCloudImport()">
+                    <div class="import-option-icon" style="background:#0EA5E9;"><i class="fa-solid fa-cloud"></i></div>
+                    <div>
+                        <div style="font-weight:700; color:#FFFFFF;">Nhập từ Cloud Storage</div>
+                        <div style="font-size:0.8rem; color:#94A3B8;">Đồng bộ từ iCloud Drive / Google Drive</div>
+                    </div>
+                </div>
+
+                <div class="import-option-card" onclick="triggerCameraRollImport()">
+                    <div class="import-option-icon" style="background:#EF3F36;"><i class="fa-solid fa-camera"></i></div>
+                    <div>
+                        <div style="font-weight:700; color:#FFFFFF;">Nhập từ Camera Cuộn</div>
+                        <div style="font-size:0.8rem; color:#94A3B8;">Quay trực tiếp và đưa ngay vào Library</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIVE CAMERA RECORDER MODAL -->
+    <div id="camera-recorder-modal">
+        <video id="camera-video-preview" autoplay playsinline muted></video>
+        <div class="camera-overlay-controls">
+            <button class="btn-icon-back" style="width:48px; height:48px; font-size:1.4rem;" onclick="closeCameraRecorder()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <!-- RECORD SHUTTER BUTTON -->
+            <button class="btn-record-shutter" id="btn-shutter-trigger" onclick="toggleCameraRecording()"></button>
+            
+            <button class="btn-icon-back" style="width:48px; height:48px; font-size:1.4rem;" onclick="toggleCameraFacing()">
+                <i class="fa-solid fa-camera-rotate"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL ADD STUDENT ACCOUNT -->
+    <div id="add-student-modal">
+        <div class="modal-content-card">
+            <h3 style="font-family:'Raleway'; font-size:1.15rem; font-weight:800; color:#FFFFFF;">Tạo Thẻ Học Viên Mới</h3>
+            <p style="font-size:0.85rem; color:#94A3B8; margin-top:-8px;">HLV tự do khởi tạo hồ sơ học viên quản lý swing.</p>
+            <input type="text" id="new-student-name" class="input-form-field" placeholder="Nhập tên học viên (ví dụ: Nhungkey Chị)...">
+            <div style="display:flex; gap:10px; margin-top:8px;">
+                <button class="btn-submit-add" style="flex:1;" onclick="submitNewStudent()">Tạo Hồ Sơ</button>
+                <button class="btn-submit-add" style="background:#64748B; flex:1;" onclick="closeAddStudentModal()">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIDDEN REAL FILE INPUT FOR IMPORT -->
+    <input type="file" id="real-file-picker" accept="video/*" style="display:none;" onchange="handleImportedFile(event)">
+
+    <script>
+        // MASTER ONFORM MOBILE STATE & NAVIGATION ENGINE (CLEAN SUB-SCREENS & EXACT THUMBNAIL DETAILS)
+        let studentList = [
+            { name: "Nhungkey Chị", initials: "NC", color: "#1375BC" }
+        ];
+
+        let videoLibrary = [
+            {
+                id: "1787657604307_1231980526605793298",
+                duration: "00:04",
+                time: "Today, 08:36",
+                author: "Nhungkey C.",
+                thumb: "assets/onform_screen_2_dual_1787738732226.jpg",
+                src: "assets/video_demo.mp4",
+                starred: true
+            }
+        ];
+
+        let activeStudentName = "Nhungkey Chị";
+        let mediaStream = null;
+        let isRecording = false;
+        let recordStartTime = 0;
+
+        function switchView(screenId) {
+            document.querySelectorAll('.screen-view').forEach(sc => sc.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+
+            // CEO REQUIREMENT: HIDE BOTTOM TABBAR ON SUB-SCREENS (STUDENT PROFILE & STUDENT LIBRARY) MATCHING ONFORM
+            const tabbar = document.getElementById('mobile-bottom-tabbar');
+            if (screenId === 'screen-home') {
+                tabbar.style.display = 'grid';
+            } else {
+                tabbar.style.display = 'none';
+            }
+        }
+
+        function openStudentProfile(name) {
+            activeStudentName = name;
+            document.getElementById('profile-display-name').innerText = name;
+            const words = name.split(' ');
+            let init = "NC";
+            if (words.length >= 2) init = (words[0][0] + words[words.length - 1][0]).toUpperCase();
+            document.getElementById('profile-avatar-badge').innerText = init;
+            switchView('screen-student-profile');
+        }
+
+        function openStudentLibrary(name) {
+            activeStudentName = name;
+            document.getElementById('lib-student-subname').innerText = name;
+            renderVideoGrid();
+            switchView('screen-student-library');
+        }
+
+        function renderVideoGrid() {
+            const container = document.getElementById('library-video-grid');
+            container.innerHTML = '';
+
+            videoLibrary.forEach(vid => {
+                const card = document.createElement('div');
+                card.className = 'video-card-item';
+                card.onclick = () => openModule1StudioWithVideo(vid.src);
+                card.innerHTML = `
+                    <div class="video-thumb-wrapper">
+                        <img src="${vid.thumb}" class="video-thumb-img" alt="Swing Video">
+                        <i class="${vid.starred ? 'fa-solid' : 'fa-regular'} fa-star badge-star-topright" onclick="event.stopPropagation(); toggleStar(this)"></i>
+                        <div class="badge-duration-bottomleft">
+                            ${vid.duration}<br>${vid.time}
+                        </div>
+                    </div>
+                    <div class="video-card-caption">
+                        <div class="video-filename-text">${vid.id}</div>
+                        <div class="video-author-text"><i class="fa-regular fa-user"></i> ${vid.author}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('info-private-count').innerText = videoLibrary.length + " private";
+            document.getElementById('library-share-counter').innerText = `0 shared, ${videoLibrary.length} private`;
+        }
+
+        function toggleStar(starIcon) {
+            if (starIcon.classList.contains('fa-solid')) {
+                starIcon.classList.remove('fa-solid');
+                starIcon.classList.add('fa-regular');
+            } else {
+                starIcon.classList.remove('fa-regular');
+                starIcon.classList.add('fa-solid');
+            }
+        }
+
+        /* IMPORT MODAL ACTIONS */
+        function openImportModal() {
+            document.getElementById('import-modal').style.display = 'flex';
+        }
+
+        function closeImportModal() {
+            document.getElementById('import-modal').style.display = 'none';
+        }
+
+        function triggerFilePickerImport() {
+            closeImportModal();
+            document.getElementById('real-file-picker').click();
+        }
+
+        function triggerCloudImport() {
+            closeImportModal();
+            alert('☁️ Đang kết nối với iCloud Drive & Google Drive để nhập video...');
+            setTimeout(() => {
+                addImportedVideoToLibrary("assets/video_demo.mp4", "00:06", "iCloud_Swing_Import.mp4");
+            }, 800);
+        }
+
+        function triggerCameraRollImport() {
+            closeImportModal();
+            openCameraRecorder();
+        }
+
+        function handleImportedFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const fileUrl = URL.createObjectURL(file);
+                addImportedVideoToLibrary(fileUrl, "00:05", file.name);
+            }
+        }
+
+        function addImportedVideoToLibrary(src, durationStr, filename) {
+            const now = new Date();
+            const timeStr = `Today, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            const newId = "1787" + Math.floor(Math.random()*10000000000);
+
+            videoLibrary.unshift({
+                id: newId,
+                duration: durationStr,
+                time: timeStr,
+                author: activeStudentName,
+                thumb: "assets/onform_screen_2_dual_1787738732226.jpg",
+                src: src,
+                starred: true
+            });
+
+            renderVideoGrid();
+            alert('✅ Đã lưu thành công video vào Library của ' + activeStudentName);
+        }
+
+        /* CAMERA RECORDER REAL STREAM ENGINE */
+        async function openCameraRecorder() {
+            document.getElementById('camera-recorder-modal').style.display = 'flex';
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+                document.getElementById('camera-video-preview').srcObject = mediaStream;
+            } catch (err) {
+                console.warn("Camera fallback active:", err);
+            }
+        }
+
+        function closeCameraRecorder() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(tr => tr.stop());
+                mediaStream = null;
+            }
+            document.getElementById('camera-recorder-modal').style.display = 'none';
+        }
+
+        function toggleCameraRecording() {
+            const shutter = document.getElementById('btn-shutter-trigger');
+            if (!isRecording) {
+                isRecording = true;
+                shutter.classList.add('recording');
+                recordStartTime = Date.now();
+            } else {
+                isRecording = false;
+                shutter.classList.remove('recording');
+                const elapsedSec = Math.max(2, Math.round((Date.now() - recordStartTime) / 1000));
+                const durStr = `00:${String(elapsedSec).padStart(2,'0')}`;
+                
+                closeCameraRecorder();
+                addImportedVideoToLibrary("assets/video_demo.mp4", durStr, "Camera_Recording.mp4");
+            }
+        }
+
+        function toggleCameraFacing() {
+            alert('🔄 Đã xoay Camera trước/sau');
+        }
+
+        function filterVideoGrid(query) {
+            const q = query.toLowerCase();
+            const cards = document.getElementById('library-video-grid').children;
+            Array.from(cards).forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(q) ? 'flex' : 'none';
+            });
+        }
+
+        function openModule1StudioWithVideo(videoSrc) {
+            alert('🎬 Đã nạp clip vào Studio Phân Tích 1-Clip Module 1!');
+        }
+
+        /* ADD STUDENT MODAL ACTIONS */
+        function openAddStudentModal() {
+            document.getElementById('add-student-modal').style.display = 'flex';
+        }
+
+        function closeAddStudentModal() {
+            document.getElementById('add-student-modal').style.display = 'none';
+        }
+
+        function submitNewStudent() {
+            const nameInput = document.getElementById('new-student-name').value.trim();
+            if (!nameInput) {
+                alert('Vui lòng nhập tên học viên!');
+                return;
+            }
+
+            const words = nameInput.split(' ');
+            let initials = "HV";
+            if (words.length >= 2) initials = (words[0][0] + words[words.length - 1][0]).toUpperCase();
+
+            studentList.push({ name: nameInput, initials: initials, color: "#1375BC" });
+            renderStudentList();
+            closeAddStudentModal();
+            document.getElementById('new-student-name').value = '';
+            alert('🎉 Đã tạo thành công hồ sơ học viên: ' + nameInput);
+        }
+
+        function renderStudentList() {
+            const container = document.getElementById('student-list-container');
+            container.innerHTML = '';
+            
+            studentList.forEach(st => {
+                const card = document.createElement('div');
+                card.className = 'student-account-card';
+                card.onclick = () => openStudentProfile(st.name);
+                card.innerHTML = `
+                    <div class="avatar-nc" style="background: ${st.color};">${st.initials}</div>
+                    <div>
+                        <div class="student-name-main">${st.name}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterStudentList(query) {
+            const q = query.toLowerCase();
+            const cards = document.getElementById('student-list-container').children;
+            Array.from(cards).forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(q) ? 'flex' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
