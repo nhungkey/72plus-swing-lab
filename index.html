@@ -2292,7 +2292,16 @@
                 }, { passive: false });
 
                 target.addEventListener('touchmove', (e) => {
-                    isTouchMoved = true;
+                    // FILTER OUT MICRO JITTER (<6px) TO ENSURE TAPS WORK 100% RELIABLY ON MOBILE TOUCHSCREENS
+                    if (e.touches.length === 1) {
+                        const t = e.touches[0];
+                        const dist = Math.hypot(t.clientX - touchStartX, t.clientY - touchStartY);
+                        if (dist > 6) {
+                            isTouchMoved = true;
+                        }
+                    } else if (e.touches.length >= 2) {
+                        isTouchMoved = true;
+                    }
 
                     // 1. DUAL-FINGER TRACKPAD PAN + PINCH ZOOM
                     if (e.touches.length >= 2) {
@@ -2326,7 +2335,7 @@
                     }
 
                     // 2. SINGLE FINGER PAN DRAG (WHEN IN PAN MODE OR ZOOMED IN)
-                    if (e.touches.length === 1 && isPanDragging && activeTool === 'pan') {
+                    if (e.touches.length === 1 && isPanDragging && activeTool === 'pan' && isTouchMoved) {
                         e.preventDefault();
                         const t = e.touches[0];
                         const deltaX = t.clientX - touchStartX;
@@ -2347,6 +2356,7 @@
                         initialPinchDist = 0;
                     }
                     if (e.touches.length === 0) {
+                        // CLEAN SINGLE TAP TO TOGGLE PLAY/PAUSE (PLAY ▶ IF PAUSED, PAUSE ⏸ IF PLAYING)
                         if (!isTouchMoved && activeTool === 'pan' && !isDrawing) {
                             toggleStudioPlay();
                         }
@@ -2354,13 +2364,14 @@
                         if (zoomLevel < 1.0) resetZoomAndPan();
                     }
                 });
-            });
-        }
 
-        function onStudioViewportClick(e) {
-            if (activeTool === 'pan' && !isDrawing) {
-                toggleStudioPlay();
-            }
+                // ALSO ATTACH CLICK DISPATCHER TO GUARANTEE MOUSE & TOUCH PARITY
+                target.addEventListener('click', (e) => {
+                    if (!isTouchMoved && activeTool === 'pan' && !isDrawing) {
+                        toggleStudioPlay();
+                    }
+                });
+            });
         }
 
         function toggleAISkeletonOverlay() {
