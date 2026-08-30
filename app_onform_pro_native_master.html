@@ -2208,7 +2208,7 @@
             }, 1500);
         }
 
-        /* ==================== 5. UNIFIED HIGH-PRECISION TOUCH GESTURE ENGINE (100% REBUILT FROM SCRATCH) ==================== */
+        /* ==================== 5. UNIFIED SINGLE-DISPATCH GESTURE ENGINE (ZERO DOUBLE BUBBLING) ==================== */
         let zoomLevel = 1.0;
         let panX = 0;
         let panY = 0;
@@ -2238,129 +2238,129 @@
         }
 
         function setupMultiTouchGestureEngine() {
-            const container = document.getElementById('studio-video-container');
             const canvasEl = document.getElementById('studio-drawing-canvas');
-            if (!container || !canvasEl) return;
+            if (!canvasEl) return;
 
-            const targetElements = [container, canvasEl];
+            // ATTACH UNIFIED GESTURE ENGINE EXCLUSIVELY TO CANVAS TO PREVENT ANY EVENT BUBBLING DUPLICATION
+            canvasEl.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+                isTouchJitterMoved = false;
 
-            targetElements.forEach(el => {
-                el.addEventListener('touchstart', (e) => {
-                    isTouchJitterMoved = false;
+                // 1. DUAL FINGER ANCHOR PAN / PINCH ZOOM (2 OR MORE FINGERS)
+                if (e.touches.length >= 2) {
+                    gestureMode = "PINCHING";
+                    isDrawing = false; // SUPPRESS DRAWING 100%
 
-                    // 1. DUAL FINGER ANCHOR PAN / PINCH ZOOM (2 OR MORE FINGERS)
-                    if (e.touches.length >= 2) {
-                        gestureMode = "PINCHING";
-                        isDrawing = false; // SUPPRESS DRAWING 100%
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    touchStartDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                    touchStartZoom = zoomLevel;
 
-                        const t1 = e.touches[0];
-                        const t2 = e.touches[1];
-                        touchStartDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-                        touchStartZoom = zoomLevel;
+                    touchStartX = (t1.clientX + t2.clientX) / 2;
+                    touchStartY = (t1.clientY + t2.clientY) / 2;
+                    touchStartPanX = panX;
+                    touchStartPanY = panY;
+                    return;
+                }
 
-                        touchStartX = (t1.clientX + t2.clientX) / 2;
-                        touchStartY = (t1.clientY + t2.clientY) / 2;
-                        touchStartPanX = panX;
-                        touchStartPanY = panY;
-                        return;
+                // 2. SINGLE FINGER TOUCH
+                if (e.touches.length === 1) {
+                    const t = e.touches[0];
+                    touchStartX = t.clientX;
+                    touchStartY = t.clientY;
+                    touchStartPanX = panX;
+                    touchStartPanY = panY;
+
+                    if (activeTool === 'pan' || zoomLevel > 1.05) {
+                        gestureMode = "PANNING";
+                    } else if (activeTool !== 'pan') {
+                        gestureMode = "DRAWING";
+                        startDraw({ clientX: t.clientX, clientY: t.clientY });
+                    }
+                }
+            }, { passive: false });
+
+            canvasEl.addEventListener('touchmove', (e) => {
+                e.stopPropagation();
+                // PINCH ZOOM / DUAL-FINGER TRACKPAD PAN
+                if (e.touches.length >= 2) {
+                    e.preventDefault();
+                    gestureMode = "PINCHING";
+                    isDrawing = false; // FORCE NO DRAWING
+
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+
+                    if (touchStartDist > 0) {
+                        const curDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                        zoomLevel = Math.min(Math.max(0.9, touchStartZoom * (curDist / touchStartDist)), 4.0);
                     }
 
-                    // 2. SINGLE FINGER TOUCH
-                    if (e.touches.length === 1) {
-                        const t = e.touches[0];
-                        touchStartX = t.clientX;
-                        touchStartY = t.clientY;
-                        touchStartPanX = panX;
-                        touchStartPanY = panY;
+                    const curMidX = (t1.clientX + t2.clientX) / 2;
+                    const curMidY = (t1.clientY + t2.clientY) / 2;
 
-                        if (activeTool === 'pan' || zoomLevel > 1.05) {
-                            gestureMode = "PANNING";
-                        } else if (activeTool !== 'pan') {
-                            gestureMode = "DRAWING";
-                            startDraw({ clientX: t.clientX, clientY: t.clientY });
-                        }
+                    panX = touchStartPanX + (curMidX - touchStartX);
+                    panY = touchStartPanY + (curMidY - touchStartY);
+
+                    updateStudioTransform();
+                    return;
+                }
+
+                // SINGLE FINGER MOVEMENT
+                if (e.touches.length === 1) {
+                    const t = e.touches[0];
+                    const distMoved = Math.hypot(t.clientX - touchStartX, t.clientY - touchStartY);
+                    if (distMoved > 6) {
+                        isTouchJitterMoved = true;
                     }
-                }, { passive: false });
 
-                el.addEventListener('touchmove', (e) => {
-                    // PINCH ZOOM / DUAL-FINGER TRACKPAD PAN
-                    if (e.touches.length >= 2) {
+                    if (gestureMode === "PANNING" && activeTool === 'pan' && isTouchJitterMoved) {
                         e.preventDefault();
-                        gestureMode = "PINCHING";
-                        isDrawing = false; // FORCE NO DRAWING
-
-                        const t1 = e.touches[0];
-                        const t2 = e.touches[1];
-
-                        if (touchStartDist > 0) {
-                            const curDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-                            zoomLevel = Math.min(Math.max(0.9, touchStartZoom * (curDist / touchStartDist)), 4.0);
-                        }
-
-                        const curMidX = (t1.clientX + t2.clientX) / 2;
-                        const curMidY = (t1.clientY + t2.clientY) / 2;
-
-                        panX = touchStartPanX + (curMidX - touchStartX);
-                        panY = touchStartPanY + (curMidY - touchStartY);
-
+                        panX = touchStartPanX + (t.clientX - touchStartX);
+                        panY = touchStartPanY + (t.clientY - touchStartY);
                         updateStudioTransform();
-                        return;
+                    } else if (gestureMode === "DRAWING" && activeTool !== 'pan') {
+                        drawMove({ clientX: t.clientX, clientY: t.clientY });
                     }
+                }
+            }, { passive: false });
 
-                    // SINGLE FINGER MOVEMENT
-                    if (e.touches.length === 1) {
-                        const t = e.touches[0];
-                        const distMoved = Math.hypot(t.clientX - touchStartX, t.clientY - touchStartY);
-                        if (distMoved > 6) {
-                            isTouchJitterMoved = true;
-                        }
-
-                        if (gestureMode === "PANNING" && activeTool === 'pan' && isTouchJitterMoved) {
-                            e.preventDefault();
-                            panX = touchStartPanX + (t.clientX - touchStartX);
-                            panY = touchStartPanY + (t.clientY - touchStartY);
-                            updateStudioTransform();
-                        } else if (gestureMode === "DRAWING" && activeTool !== 'pan') {
-                            drawMove({ clientX: t.clientX, clientY: t.clientY });
-                        }
-                    }
-                }, { passive: false });
-
-                el.addEventListener('touchend', (e) => {
-                    if (e.touches.length === 0) {
-                        if (gestureMode === "DRAWING" && activeTool !== 'pan') {
-                            stopDraw(e);
-                        } else if (!isTouchJitterMoved && activeTool === 'pan') {
-                            const now = Date.now();
-                            if (now - lastTapTimestamp < 280) {
-                                // DOUBLE TAP RESET / ZOOM
-                                if (zoomLevel > 1.05) {
-                                    resetZoomAndPan();
-                                    showToast('Khôi phục Zoom 1.0× (Double Tap)');
-                                } else {
-                                    zoomLevel = 2.2;
-                                    updateStudioTransform();
-                                    showToast('Phóng to Zoom 2.2× (Double Tap)');
-                                }
-                                lastTapTimestamp = 0;
+            canvasEl.addEventListener('touchend', (e) => {
+                e.stopPropagation();
+                if (e.touches.length === 0) {
+                    if (gestureMode === "DRAWING" && activeTool !== 'pan') {
+                        stopDraw(e);
+                    } else if (!isTouchJitterMoved && activeTool === 'pan') {
+                        const now = Date.now();
+                        if (now - lastTapTimestamp < 280) {
+                            // DOUBLE TAP RESET / ZOOM
+                            if (zoomLevel > 1.05) {
+                                resetZoomAndPan();
+                                showToast('Khôi phục Zoom 1.0× (Double Tap)');
                             } else {
-                                // SINGLE TAP PLAY / PAUSE
-                                toggleStudioPlay();
-                                lastTapTimestamp = now;
+                                zoomLevel = 2.2;
+                                updateStudioTransform();
+                                showToast('Phóng to Zoom 2.2× (Double Tap)');
                             }
+                            lastTapTimestamp = 0;
+                        } else {
+                            // SINGLE TAP PLAY / PAUSE (FIRES ONCE)
+                            toggleStudioPlay();
+                            lastTapTimestamp = now;
                         }
-
-                        gestureMode = "IDLE";
-                        if (zoomLevel < 1.0) resetZoomAndPan();
                     }
-                });
 
-                // MOUSE CLICK PARITY DISPATCHER
-                el.addEventListener('click', (e) => {
-                    if (!isTouchJitterMoved && activeTool === 'pan') {
-                        toggleStudioPlay();
-                    }
-                });
+                    gestureMode = "IDLE";
+                    if (zoomLevel < 1.0) resetZoomAndPan();
+                }
+            });
+
+            // MOUSE CLICK PARITY DISPATCHER (ONLY ON CANVAS)
+            canvasEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!isTouchJitterMoved && activeTool === 'pan') {
+                    toggleStudioPlay();
+                }
             });
         }
 
