@@ -764,14 +764,13 @@
             object-fit: contain;
         }
 
-        /* CANVAS POINTER-EVENTS IS DEFAULT NONE FOR SEAMLESS 1-FINGER & 2-FINGER IPHONE NAVIGATION */
         #studio-drawing-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
+            pointer-events: auto;
             z-index: 100;
         }
 
@@ -1766,7 +1765,7 @@
         let isMultiSelectActive = false;
         let mediaStream = null;
         let isRecording = false;
-        let activeTool = "pan"; // DEFAULT TO IPHONE PAN / NAVIGATE MODE FOR SEAMLESS 1-FINGER PAN DRAG
+        let activeTool = "pan";
         let toastTimeout = null;
         let isAISkeletonActive = false;
         let isFilmstripActive = false;
@@ -2210,7 +2209,7 @@
             }, 1500);
         }
 
-        /* ==================== 5. FULL MULTI-TOUCH GESTURE SUITE ENGINE (100% IPHONE PARITY) ==================== */
+        /* ==================== 5. DUAL-FINGER ANCHOR-PAN GESTURE ENGINE (100% IPHONE TRACKPAD PARITY) ==================== */
         function applyTransform() {
             const wrapper = document.getElementById('studio-transform-wrapper');
             if (wrapper) {
@@ -2233,22 +2232,29 @@
                 const now = Date.now();
                 isTouchMoved = false;
                 
-                // 1. PINCH-TO-ZOOM INITIALIZATION (ALWAYS ACTIVE FOR 2 FINGERS ON IPHONE)
-                if (e.touches.length === 2) {
+                // 1. DUAL-FINGER ANCHOR PAN / PINCH-TO-ZOOM (WHEN 2 FINGERS TOUCH DOWN)
+                if (e.touches.length >= 2) {
+                    // IMMEDIATELY CANCEL DRAWING MODE TO PREVENT UNWANTED PEN LINES!
+                    isDrawing = false;
+                    isPanDragging = true;
+
                     const t1 = e.touches[0];
                     const t2 = e.touches[1];
                     initialPinchDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
                     initialZoom = zoomLevel;
+
+                    touchStartX = (t1.clientX + t2.clientX) / 2;
+                    touchStartY = (t1.clientY + t2.clientY) / 2;
                     return;
                 }
 
-                // 2. SINGLE & DOUBLE-TAP & 1-FINGER PAN DRAG ENGINE (1 FINGER)
+                // 2. SINGLE FINGER TOUCH ENGINE
                 if (e.touches.length === 1) {
                     const t = e.touches[0];
                     touchStartX = t.clientX;
                     touchStartY = t.clientY;
 
-                    // Check Double Tap
+                    // Check Double Tap Quick Reset
                     if (now - lastTapTime < 280) {
                         if (zoomLevel > 1.05) {
                             resetZoomAndPan();
@@ -2263,7 +2269,6 @@
                     }
                     lastTapTime = now;
 
-                    // Enable 1-finger pan drag when in Pan mode OR when zoomed in (> 1.05)
                     if (activeTool === 'pan' || zoomLevel > 1.05) {
                         isPanDragging = true;
                     }
@@ -2273,20 +2278,39 @@
             container.addEventListener('touchmove', (e) => {
                 isTouchMoved = true;
 
-                // 1. PINCH-TO-ZOOM IN PROGRESS (2 FINGERS)
-                if (e.touches.length === 2 && initialPinchDist > 0) {
+                // 1. DUAL-FINGER TRACKPAD PAN + PINCH-TO-ZOOM IN PROGRESS
+                if (e.touches.length >= 2) {
                     e.preventDefault();
+                    isDrawing = false; // SUPPRESS ALL DRAWING LINES DURING 2-FINGER TOUCH!
+
                     const t1 = e.touches[0];
                     const t2 = e.touches[1];
-                    const currentDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-                    const scaleChange = currentDist / initialPinchDist;
-                    zoomLevel = Math.min(Math.max(0.9, initialZoom * scaleChange), 4.0);
+
+                    // Compute Pinch Zoom Ratio
+                    if (initialPinchDist > 0) {
+                        const currentDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                        const scaleChange = currentDist / initialPinchDist;
+                        zoomLevel = Math.min(Math.max(0.9, initialZoom * scaleChange), 4.0);
+                    }
+
+                    // Compute Midpoint Trackpad Pan Movement
+                    const currentMidX = (t1.clientX + t2.clientX) / 2;
+                    const currentMidY = (t1.clientY + t2.clientY) / 2;
+                    const deltaX = (currentMidX - touchStartX) / zoomLevel;
+                    const deltaY = (currentMidY - touchStartY) / zoomLevel;
+
+                    panX += deltaX;
+                    panY += deltaY;
+
+                    touchStartX = currentMidX;
+                    touchStartY = currentMidY;
+
                     applyTransform();
                     return;
                 }
 
                 // 2. 1-FINGER TOUCH PAN DRAG (WHEN IN PAN MODE OR ZOOMED IN)
-                if (e.touches.length === 1 && isPanDragging) {
+                if (e.touches.length === 1 && isPanDragging && !isDrawing) {
                     e.preventDefault();
                     const t = e.touches[0];
                     const deltaX = (t.clientX - touchStartX) / zoomLevel;
@@ -2304,7 +2328,6 @@
                     initialPinchDist = 0;
                 }
                 if (e.touches.length === 0) {
-                    // SINGLE-TAP TOGGLE PLAY/PAUSE (IF NOT MOVED AND NOT DRAWING)
                     if (!isTouchMoved && activeTool === 'pan' && !isDrawing) {
                         toggleStudioPlay();
                     }
@@ -2601,7 +2624,7 @@
             }
         }
 
-        /* CANVAS DRAWING ENGINE WITH STRICT POINTER-EVENTS SCOPING FOR PAN VS DRAWING */
+        /* CANVAS DRAWING ENGINE WITH STRICT MULTI-FINGER SUPPRESSION */
         let canvas, ctx;
         let isDrawing = false;
         let startX = 0, startY = 0;
@@ -2620,13 +2643,27 @@
             canvas.onmousedown = startDraw;
             canvas.onmousemove = drawMove;
             canvas.onmouseup = stopDraw;
+
             canvas.ontouchstart = (e) => {
+                // IF 2 OR MORE FINGERS TOUCH DOWN, ABORT DRAWING IMMEDIATELY & PASS TO PAN ENGINE!
+                if (e.touches.length >= 2) {
+                    isDrawing = false;
+                    redrawCanvas();
+                    return;
+                }
                 if (e.touches.length === 1 && activeTool !== 'pan') {
                     const t = e.touches[0];
                     startDraw({ clientX: t.clientX, clientY: t.clientY });
                 }
             };
+
             canvas.ontouchmove = (e) => {
+                // IF 2 OR MORE FINGERS MOVED, CANCEL DRAWING LINES IMMEDIATELY!
+                if (e.touches.length >= 2) {
+                    isDrawing = false;
+                    redrawCanvas();
+                    return;
+                }
                 if (e.touches.length === 1 && isDrawing && activeTool !== 'pan') {
                     const t = e.touches[0];
                     drawMove({ clientX: t.clientX, clientY: t.clientY });
@@ -2646,13 +2683,9 @@
             if (toolBtn) toolBtn.classList.add('active');
 
             if (toolName === 'pan') {
-                // IPHONE NATIVE PAN MODE: CANVAS DOES NOT CAPTURE 1-FINGER TOUCHES!
-                if (canvasEl) canvasEl.style.pointerEvents = 'none';
                 if (penBtn) penBtn.classList.remove('drawing-mode-active');
-                showToast('Chế độ Rê Pan 1 Ngón / Phóng Zoom (✋)');
+                showToast('Chế độ Rê Pan / Phóng Zoom (✋)');
             } else {
-                // DRAWING TOOL MODE: CANVAS CAPTURES TOUCHES FOR DRAWING!
-                if (canvasEl) canvasEl.style.pointerEvents = 'auto';
                 if (penBtn) penBtn.classList.add('drawing-mode-active');
 
                 if (toolName === 'text') {
