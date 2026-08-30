@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>72+ SWING LAB — 100% ONFORM NATIVE MOBILE STUDIO (FULL MULTI-TOUCH GESTURE SUITE + SINGLE TAP PLAY/PAUSE)</title>
+    <title>72+ SWING LAB — IOS NATIVE VIDEO EDITOR & ONFORM PRO HYBRID UI/UX</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -16,10 +16,12 @@
             --72-navy: #0A2540;
             --72-green: #10B981;
             --72-gold: #F59E0B;
-            --mobile-bg: #0B132B;
-            --mobile-card: #1C2541;
+            --mobile-bg: #000000;
+            --mobile-card: #141E33;
             --mobile-tabbar: rgba(10, 37, 64, 0.98);
-            --border-color: rgba(255, 255, 255, 0.14);
+            --border-color: rgba(255, 255, 255, 0.16);
+            --ios-glass: rgba(30, 30, 30, 0.78);
+            --ios-blur: blur(24px);
         }
 
         * {
@@ -38,6 +40,7 @@
             background-color: #000000;
             font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             color: #FFFFFF;
+            -webkit-font-smoothing: antialiased;
         }
 
         #mobile-container {
@@ -59,7 +62,7 @@
             display: none;
             flex-direction: column;
             overflow: hidden;
-            background: var(--mobile-bg);
+            background: #0B132B;
         }
 
         .screen-view.active {
@@ -69,13 +72,13 @@
         /* TOP BANNER HEADER (HOME SCREEN ONLY) */
         #onform-header-bar {
             background: #0A2540;
-            border-bottom: 2px solid rgba(239, 63, 54, 0.8);
-            padding: 10px 16px;
+            border-bottom: 2px solid rgba(239, 63, 54, 0.85);
+            padding: 12px 16px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             z-index: 100;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.7);
             padding-top: env(safe-area-inset-top);
         }
 
@@ -87,19 +90,19 @@
         }
 
         .official-logo-img {
-            height: 28px;
+            height: 30px;
             width: auto;
             object-fit: contain;
         }
 
         .swing-lab-pro-pill-badge {
-            background: rgba(239, 63, 54, 0.18);
+            background: rgba(239, 63, 54, 0.2);
             border: 1.5px solid var(--72-red);
             color: #FF6B6B;
             font-family: 'Raleway', sans-serif;
-            font-size: 0.76rem;
+            font-size: 0.78rem;
             font-weight: 900;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.8px;
             padding: 4px 14px;
             border-radius: 20px;
             text-transform: uppercase;
@@ -109,28 +112,28 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(15, 23, 42, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 8px 12px;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 14px;
+            padding: 8px 14px;
         }
 
         .account-selector {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
         }
 
         .avatar-pa {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
             background: #543D0A;
             color: #FDE047;
             font-family: 'Raleway', sans-serif;
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -139,7 +142,7 @@
 
         .account-name-text {
             font-family: 'Raleway', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             font-weight: 800;
             color: #FFFFFF;
             display: flex;
@@ -157,10 +160,10 @@
             background: var(--72-blue);
             border: 1px solid #60A5FA;
             color: #FFFFFF;
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
-            font-size: 1rem;
+            font-size: 1.05rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -169,8 +172,8 @@
 
         .coach-avatar-wrapper {
             position: relative;
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
         }
@@ -186,18 +189,18 @@
         /* SEARCH BAR */
         .search-bar-wrapper {
             padding: 12px 16px;
-            background: var(--mobile-bg);
+            background: #0B132B;
             position: relative;
         }
 
         .search-input-box {
             width: 100%;
-            height: 42px;
+            height: 44px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 0 14px 0 40px;
-            font-size: 0.92rem;
+            border-radius: 14px;
+            padding: 0 14px 0 42px;
+            font-size: 0.95rem;
             color: #FFFFFF;
             outline: none;
         }
@@ -205,9 +208,9 @@
         .search-icon-pos {
             position: absolute;
             left: 30px;
-            top: 25px;
+            top: 26px;
             color: #94A3B8;
-            font-size: 0.95rem;
+            font-size: 1rem;
             z-index: 10;
         }
 
@@ -223,7 +226,7 @@
 
         .menu-list-group {
             background: var(--mobile-card);
-            border-radius: 16px;
+            border-radius: 18px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -245,12 +248,12 @@
         }
 
         .menu-icon-square {
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.35rem;
+            font-size: 1.4rem;
             color: #60A5FA;
         }
 
@@ -274,8 +277,8 @@
 
         .student-account-card {
             background: var(--mobile-card);
-            border-radius: 14px;
-            padding: 14px 16px;
+            border-radius: 16px;
+            padding: 16px;
             display: flex;
             align-items: center;
             gap: 14px;
@@ -284,21 +287,21 @@
         }
 
         .avatar-nc {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
             background: var(--72-blue);
             color: #FFFFFF;
             font-family: 'Raleway', sans-serif;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 1.05rem;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .student-name-main {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #FFFFFF;
         }
@@ -315,8 +318,8 @@
         }
 
         .btn-icon-back {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.08);
             border: none;
@@ -329,7 +332,7 @@
         }
 
         .student-profile-header-card {
-            padding: 20px 16px;
+            padding: 22px 16px;
             display: flex;
             align-items: center;
             gap: 16px;
@@ -337,14 +340,14 @@
         }
 
         .avatar-nc-large {
-            width: 60px;
-            height: 60px;
-            border-radius: 14px;
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
             background: var(--72-blue);
             color: #FFFFFF;
             font-family: 'Raleway', sans-serif;
             font-weight: 900;
-            font-size: 1.35rem;
+            font-size: 1.4rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -352,14 +355,14 @@
 
         .profile-title-name {
             font-family: 'Raleway', sans-serif;
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             font-weight: 800;
             color: #FFFFFF;
             outline: none;
         }
 
         .profile-subtitle {
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             color: #94A3B8;
             margin-top: 2px;
         }
@@ -382,7 +385,7 @@
 
         .library-main-title {
             font-family: 'Raleway', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: #FFFFFF;
             display: flex;
@@ -391,7 +394,7 @@
         }
 
         .library-sub-student {
-            font-size: 0.82rem;
+            font-size: 0.84rem;
             color: #94A3B8;
         }
 
@@ -405,9 +408,9 @@
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--border-color);
             color: #FFFFFF;
-            padding: 6px 14px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
         }
@@ -419,7 +422,7 @@
 
         .library-info-subbar {
             padding: 10px 16px;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             color: #94A3B8;
             border-bottom: 1px solid var(--border-color);
             background: rgba(15, 23, 42, 0.6);
@@ -427,10 +430,10 @@
 
         .section-today-title {
             font-family: 'Raleway', sans-serif;
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 900;
             color: #FFFFFF;
-            padding: 14px 16px 8px 16px;
+            padding: 16px 16px 8px 16px;
         }
 
         .video-grid-container {
@@ -442,7 +445,7 @@
 
         .video-card-item {
             background: var(--mobile-card);
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
             border: 1px solid var(--border-color);
             cursor: pointer;
@@ -453,7 +456,7 @@
 
         .video-card-item.selected-card {
             border: 2px solid var(--72-blue);
-            box-shadow: 0 0 16px rgba(19, 117, 188, 0.6);
+            box-shadow: 0 0 18px rgba(19, 117, 188, 0.7);
         }
 
         .video-thumb-wrapper {
@@ -477,13 +480,13 @@
             position: absolute;
             top: 8px;
             left: 8px;
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             background: rgba(0,0,0,0.6);
             border: 2px solid #FFFFFF;
             color: #FFFFFF;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             align-items: center;
             justify-content: center;
             z-index: 10;
@@ -499,7 +502,7 @@
             top: 8px;
             right: 8px;
             color: #F59E0B;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.9);
             cursor: pointer;
             z-index: 15;
@@ -509,35 +512,36 @@
             position: absolute;
             bottom: 8px;
             left: 8px;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             color: #FFFFFF;
             font-weight: 700;
             text-shadow: 0 2px 5px rgba(0,0,0,0.95);
             line-height: 1.25;
-            background: rgba(0, 0, 0, 0.55);
-            padding: 3px 6px;
-            border-radius: 6px;
-            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.65);
+            padding: 4px 8px;
+            border-radius: 8px;
+            backdrop-filter: blur(6px);
             z-index: 15;
         }
 
         .video-card-caption {
-            padding: 8px 10px;
+            padding: 10px 12px;
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
 
         .video-filename-text {
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             color: #CBD5E1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            font-family: monospace;
         }
 
         .video-author-text {
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             color: #94A3B8;
             font-weight: 600;
         }
@@ -548,11 +552,11 @@
             bottom: 16px;
             left: 16px;
             right: 16px;
-            height: 56px;
+            height: 58px;
             background: rgba(10, 37, 64, 0.96);
             backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
-            border-radius: 28px;
+            border-radius: 29px;
             z-index: 700;
             align-items: center;
             justify-content: space-around;
@@ -564,7 +568,7 @@
             background: transparent;
             border: none;
             color: #FFFFFF;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -581,13 +585,13 @@
         }
 
         .btn-fab-camera-red {
-            width: 64px;
-            height: 64px;
+            width: 66px;
+            height: 66px;
             border-radius: 50%;
             background: radial-gradient(circle, #EF3F36 0%, #DC2626 100%);
             border: 3px solid #FFFFFF;
             color: #FFFFFF;
-            font-size: 1.6rem;
+            font-size: 1.65rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -606,8 +610,8 @@
             color: #FFFFFF;
             font-family: 'Raleway', sans-serif;
             font-weight: 800;
-            font-size: 0.88rem;
-            padding: 10px 20px;
+            font-size: 0.9rem;
+            padding: 10px 22px;
             border-radius: 24px;
             z-index: 9999;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
@@ -622,7 +626,7 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* ==================== 100% STANDALONE FULLSCREEN OVERLAY: STUDIO 1-CLIP ==================== */
+        /* ==================== 100% STANDALONE IOS NATIVE VIDEO EDITOR & ONFORM PRO HYBRID STUDIO ==================== */
         #screen-studio {
             display: none;
             position: absolute;
@@ -640,61 +644,66 @@
             display: flex;
         }
 
-        /* 1. TOP OVERLAY BAR */
+        /* 1. TOP OVERLAY BAR (IOS GLASSMORPISM CIRCLES & CENTER GROUP) */
         .onform-top-overlay-bar {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 60px;
+            height: 64px;
             padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 1200;
             padding-top: env(safe-area-inset-top);
-            background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0) 100%);
         }
 
         .onform-top-left, .onform-top-right {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .onform-circle-btn {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: rgba(40, 40, 40, 0.85);
-            backdrop-filter: blur(14px);
+            background: var(--ios-glass);
+            backdrop-filter: var(--ios-blur);
             border: 1px solid rgba(255, 255, 255, 0.22);
             color: #FFFFFF;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .onform-circle-btn:active {
+            transform: scale(0.92);
         }
 
         .onform-center-btn-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .onform-mic-btn {
-            background: rgba(40, 40, 40, 0.85);
-            backdrop-filter: blur(14px);
+            background: var(--ios-glass);
+            backdrop-filter: var(--ios-blur);
             border: 1px solid rgba(255, 255, 255, 0.22);
             color: #FFFFFF;
-            height: 42px;
-            padding: 0 16px;
-            border-radius: 21px;
-            font-size: 1.1rem;
+            height: 44px;
+            padding: 0 18px;
+            border-radius: 22px;
+            font-size: 1.15rem;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
             font-family: 'Raleway', sans-serif;
             font-weight: 800;
@@ -707,14 +716,14 @@
         }
 
         .onform-dual-compare-btn {
-            background: rgba(40, 40, 40, 0.85);
-            backdrop-filter: blur(14px);
+            background: var(--ios-glass);
+            backdrop-filter: var(--ios-blur);
             border: 1px solid rgba(255, 255, 255, 0.22);
             color: #FFFFFF;
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -768,16 +777,16 @@
         /* FLOATING RIGHT TOOL (PEN A BUTTON ONLY) */
         .onform-side-tool-right {
             position: absolute;
-            right: 14px;
-            top: 75px;
-            width: 44px;
-            height: 44px;
+            right: 16px;
+            top: 80px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
-            background: rgba(40, 40, 40, 0.85);
-            backdrop-filter: blur(14px);
+            background: var(--ios-glass);
+            backdrop-filter: var(--ios-blur);
             border: 1px solid rgba(255, 255, 255, 0.22);
             color: #FFFFFF;
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -788,27 +797,27 @@
         #floating-tool-dock {
             display: none;
             position: absolute;
-            right: 14px;
-            top: 130px;
-            background: rgba(10, 37, 64, 0.94);
-            backdrop-filter: blur(16px);
+            right: 16px;
+            top: 136px;
+            background: rgba(10, 37, 64, 0.95);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 10px;
+            border-radius: 26px;
+            padding: 12px;
             flex-direction: column;
             gap: 12px;
             z-index: 1150;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.85);
         }
 
         .tool-dock-btn {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.08);
             border: none;
             color: #FFFFFF;
-            font-size: 1rem;
+            font-size: 1.05rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -827,12 +836,12 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 12px 16px 20px 16px;
+            padding: 12px 16px 22px 16px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             z-index: 1200;
-            background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0) 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0) 100%);
             padding-bottom: env(safe-area-inset-bottom);
         }
 
@@ -841,9 +850,9 @@
             display: none;
             position: relative;
             width: 100%;
-            height: 54px;
-            background: rgba(20, 20, 20, 0.92);
-            border-radius: 12px;
+            height: 56px;
+            background: rgba(20, 20, 20, 0.94);
+            border-radius: 14px;
             overflow-x: auto;
             overflow-y: hidden;
             border: 1px solid rgba(255,255,255,0.18);
@@ -854,16 +863,16 @@
         .filmstrip-track {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
             height: 100%;
             position: relative;
         }
 
         .filmstrip-thumb-item {
             height: 100%;
-            width: 36px;
+            width: 38px;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 6px;
         }
 
         .filmstrip-yellow-playhead {
@@ -873,7 +882,7 @@
             left: 45%;
             width: 3px;
             background: #F59E0B;
-            box-shadow: 0 0 8px #F59E0B;
+            box-shadow: 0 0 10px #F59E0B;
             z-index: 10;
         }
 
@@ -881,19 +890,20 @@
             display: flex;
             align-items: center;
             background: rgba(30, 30, 30, 0.88);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 26px;
-            padding: 8px 16px;
-            gap: 14px;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 28px;
+            padding: 10px 18px;
+            gap: 16px;
         }
 
         #onform-precision-timecode {
             font-family: monospace;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             color: #FFFFFF;
-            min-width: 50px;
+            min-width: 54px;
+            letter-spacing: 0.5px;
         }
 
         .onform-scrubber-slider {
@@ -907,20 +917,20 @@
 
         .onform-scrubber-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: #F59E0B;
             border: 2px solid #FFFFFF;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.85);
         }
 
         .onform-filmstrip-btn {
             background: transparent;
             border: none;
             color: #FFFFFF;
-            font-size: 1.15rem;
+            font-size: 1.25rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -931,19 +941,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 24px;
+            gap: 26px;
             width: 100%;
         }
 
         .onform-pill-ctrl {
             background: rgba(40, 40, 40, 0.88);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
             color: #FFFFFF;
-            padding: 10px 18px;
+            padding: 10px 20px;
             border-radius: 24px;
             font-family: 'Raleway', sans-serif;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 800;
             cursor: pointer;
         }
@@ -952,20 +962,20 @@
             display: flex;
             align-items: center;
             background: rgba(40, 40, 40, 0.88);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 30px;
-            padding: 4px 12px;
-            gap: 16px;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 32px;
+            padding: 4px 14px;
+            gap: 18px;
         }
 
         .onform-play-ctrl {
             background: transparent;
             border: none;
             color: #FFFFFF;
-            font-size: 1.25rem;
-            width: 44px;
-            height: 44px;
+            font-size: 1.3rem;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -974,31 +984,31 @@
         }
 
         .onform-play-ctrl.main-play {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
         }
 
         /* ONFORM TOP DROPDOWN MENU (...) */
         #onform-more-menu {
             display: none;
             position: absolute;
-            top: 64px;
+            top: 68px;
             right: 16px;
             background: rgba(15, 23, 42, 0.96);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 8px 0;
             z-index: 1500;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            min-width: 180px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.85);
+            min-width: 190px;
         }
 
         .more-menu-item {
-            padding: 12px 18px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             font-weight: 600;
             color: #FFFFFF;
             cursor: pointer;
@@ -1009,8 +1019,8 @@
             display: none;
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(12px);
             z-index: 1800;
             align-items: center;
             justify-content: center;
@@ -1019,11 +1029,11 @@
 
         .ios-action-sheet-card {
             background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
+            backdrop-filter: blur(24px);
+            border-radius: 22px;
             width: 100%;
             max-width: 320px;
-            padding: 22px 18px;
+            padding: 24px 20px;
             display: flex;
             flex-direction: column;
             gap: 14px;
@@ -1032,36 +1042,36 @@
         }
 
         .ios-sheet-title {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 800;
             color: #000000;
         }
 
         .ios-sheet-desc {
-            font-size: 0.82rem;
+            font-size: 0.84rem;
             color: #4B5563;
-            line-height: 1.35;
+            line-height: 1.4;
         }
 
         .btn-ios-option-green {
             background: #DCFCE7;
             border: 1px solid #86EFAC;
             color: #166534;
-            height: 44px;
-            border-radius: 22px;
+            height: 46px;
+            border-radius: 23px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             cursor: pointer;
         }
 
         .btn-ios-option-blue {
             background: #007AFF;
             color: #FFFFFF;
-            height: 44px;
+            height: 46px;
             border: none;
-            border-radius: 22px;
+            border-radius: 23px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             cursor: pointer;
         }
 
@@ -1070,10 +1080,10 @@
             display: none;
             position: absolute;
             top: 0; left: 0; right: 0;
-            height: 60px;
+            height: 64px;
             padding: 10px 16px;
             background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
             z-index: 1600;
             align-items: center;
             justify-content: space-between;
@@ -1082,11 +1092,11 @@
 
         .btn-review-pill {
             background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.22);
             color: #FFFFFF;
-            padding: 6px 16px;
-            border-radius: 18px;
-            font-size: 0.88rem;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
         }
@@ -1112,11 +1122,11 @@
             background: #D97706;
             color: #FFFFFF;
             border: none;
-            padding: 10px 24px;
-            border-radius: 20px;
+            padding: 10px 26px;
+            border-radius: 22px;
             font-family: 'Raleway', sans-serif;
             font-weight: 800;
-            font-size: 0.95rem;
+            font-size: 0.98rem;
             cursor: pointer;
         }
 
@@ -1126,7 +1136,7 @@
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(11, 19, 43, 0.85);
-            backdrop-filter: blur(14px);
+            backdrop-filter: blur(16px);
             z-index: 2000;
             align-items: center;
             justify-content: center;
@@ -1136,11 +1146,11 @@
         .modal-content-card {
             background: var(--mobile-card);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
+            border-radius: 22px;
             width: 100%;
             max-width: 400px;
             padding: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.65);
             display: flex;
             flex-direction: column;
             gap: 14px;
@@ -1151,15 +1161,15 @@
             height: 44px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 0 14px;
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             color: #FFFFFF;
             outline: none;
         }
 
         .form-label-text {
-            font-size: 0.82rem;
+            font-size: 0.84rem;
             font-weight: 700;
             color: #94A3B8;
             margin-bottom: -8px;
@@ -1170,7 +1180,7 @@
             color: #FFFFFF;
             height: 44px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-family: 'Raleway', sans-serif;
             font-weight: 800;
             font-size: 0.95rem;
@@ -1189,15 +1199,15 @@
         }
 
         .import-option-icon {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
             background: var(--72-blue);
             color: #FFFFFF;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.3rem;
         }
 
         #mobile-bottom-tabbar {
@@ -1216,7 +1226,7 @@
             align-items: center;
             justify-content: center;
             color: #94A3B8;
-            font-size: 0.72rem;
+            font-size: 0.74rem;
             font-weight: 600;
             gap: 3px;
             cursor: pointer;
@@ -1225,7 +1235,7 @@
         }
 
         .tab-item i {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
         }
 
         .tab-item.active {
@@ -2295,7 +2305,6 @@
         }
 
         function onStudioViewportClick(e) {
-            // DESKTOP & FALLBACK SINGLE-CLICK TOGGLE PLAY/PAUSE
             if (!isDrawing) {
                 toggleStudioPlay();
             }
