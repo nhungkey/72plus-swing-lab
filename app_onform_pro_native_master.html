@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>72+ SWING LAB — 100% ONFORM NATIVE MOBILE STUDIO (FULL MULTI-TOUCH GESTURE SUITE)</title>
+    <title>72+ SWING LAB — 100% ONFORM NATIVE MOBILE STUDIO (FULL MULTI-TOUCH GESTURE SUITE + SINGLE TAP PLAY/PAUSE)</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -733,6 +733,7 @@
             justify-content: center;
             overflow: hidden;
             touch-action: none;
+            cursor: pointer;
         }
 
         #studio-transform-wrapper {
@@ -1470,18 +1471,18 @@
                 <button class="btn-review-pill" style="background:var(--72-blue); border-color:#60A5FA;" onclick="saveVoiceover()">Save</button>
             </div>
 
-            <!-- 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT + GESTURE TRANSFORM WRAPPER -->
-            <div id="studio-video-container">
+            <!-- 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT + GESTURE WRAPPER -->
+            <div id="studio-video-container" onclick="onStudioViewportClick(event)">
                 <div id="studio-transform-wrapper">
                     <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4"></video>
                     <canvas id="studio-drawing-canvas"></canvas>
                 </div>
 
                 <!-- RIGHT FLOATING PEN TOOL (A BUTTON ONLY) -->
-                <button class="onform-side-tool-right" onclick="toggleDrawingToolsDock()" title="Bút vẽ & Kẻ đường kỹ thuật"><i class="fa-solid fa-pen-nib"></i></button>
+                <button class="onform-side-tool-right" onclick="event.stopPropagation(); toggleDrawingToolsDock();" title="Bút vẽ & Kẻ đường kỹ thuật"><i class="fa-solid fa-pen-nib"></i></button>
 
                 <!-- FLOATING TOOLBOX DOCK -->
-                <div id="floating-tool-dock">
+                <div id="floating-tool-dock" onclick="event.stopPropagation();">
                     <button class="tool-dock-btn active" onclick="setTool('plane')" title="Đường Plane Line"><i class="fa-solid fa-ruler-combined"></i></button>
                     <button class="tool-dock-btn" onclick="setTool('head')" title="Vòng tròn Head Box"><i class="fa-regular fa-circle"></i></button>
                     <button class="tool-dock-btn" onclick="setTool('angle')" title="Đo góc nghiêng °"><i class="fa-solid fa-compass"></i></button>
@@ -1496,7 +1497,7 @@
             </div>
 
             <!-- 3. BOTTOM ONFORM PLAYER CONTROL DOCK MATCHING ONFORM SCREENSHOT EXACTLY -->
-            <div class="onform-bottom-player-dock">
+            <div class="onform-bottom-player-dock" onclick="event.stopPropagation();">
                 <!-- FILMSTRIP THUMBNAILS STRIP (MATCHING ONFORM SCREENSHOT 4) -->
                 <div id="onform-filmstrip-container">
                     <div class="filmstrip-track">
@@ -1768,6 +1769,7 @@
         let touchStartX = 0;
         let touchStartY = 0;
         let isPanDragging = false;
+        let isTouchMoved = false;
 
         /* 💾 LOCALSTORAGE PERSISTENCE */
         function saveAppState() {
@@ -2210,6 +2212,7 @@
 
             container.addEventListener('touchstart', (e) => {
                 const now = Date.now();
+                isTouchMoved = false;
                 
                 // 1. PINCH-TO-ZOOM INITIALIZATION (2 FINGERS)
                 if (e.touches.length === 2) {
@@ -2248,6 +2251,8 @@
             }, { passive: false });
 
             container.addEventListener('touchmove', (e) => {
+                isTouchMoved = true;
+
                 // 1. PINCH-TO-ZOOM IN PROGRESS
                 if (e.touches.length === 2 && initialPinchDist > 0) {
                     e.preventDefault();
@@ -2279,10 +2284,21 @@
                     initialPinchDist = 0;
                 }
                 if (e.touches.length === 0) {
+                    // SINGLE-TAP TOGGLE PLAY/PAUSE (IF NOT MOVED AND NOT IN DRAWING MODE)
+                    if (!isTouchMoved && !isDrawing) {
+                        toggleStudioPlay();
+                    }
                     isPanDragging = false;
                     if (zoomLevel < 1.0) resetZoomAndPan();
                 }
             });
+        }
+
+        function onStudioViewportClick(e) {
+            // DESKTOP & FALLBACK SINGLE-CLICK TOGGLE PLAY/PAUSE
+            if (!isDrawing) {
+                toggleStudioPlay();
+            }
         }
 
         function toggleAISkeletonOverlay() {
@@ -2407,9 +2423,11 @@
             if (video.paused) {
                 video.play();
                 btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                showToast('▶ Phát video');
             } else {
                 video.pause();
                 btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                showToast('⏸ Tạm dừng video');
             }
         }
 
