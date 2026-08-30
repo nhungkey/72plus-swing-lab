@@ -9,6 +9,7 @@
     <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700;800;900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <style>
         :root {
             --72-blue: #1375BC;
@@ -772,6 +773,7 @@
             height: 100%;
             pointer-events: auto;
             z-index: 100;
+            touch-action: none;
         }
 
         /* FLOATING RIGHT TOOL (PEN A BUTTON ONLY) */
@@ -2208,18 +2210,10 @@
             }, 1500);
         }
 
-        /* ==================== 5. UNIFIED SINGLE-DISPATCH GESTURE ENGINE (REAL-TIME CONTINUOUS DELTA PAN) ==================== */
+        /* ==================== 5. HAMMER.JS INDUSTRIAL GESTURE ENGINE (100% RELIABLE GESTURE RECOGNIZER) ==================== */
         let zoomLevel = 1.0;
         let panX = 0;
         let panY = 0;
-
-        let gestureMode = "IDLE"; // "IDLE", "PANNING", "PINCHING", "DRAWING"
-        let lastTouchX = 0;
-        let lastTouchY = 0;
-        let touchStartDist = 0;
-        let touchStartZoom = 1.0;
-        let isTouchJitterMoved = false;
-        let lastTapTimestamp = 0;
 
         function updateStudioTransform() {
             const wrapper = document.getElementById('studio-transform-wrapper');
@@ -2235,145 +2229,84 @@
             updateStudioTransform();
         }
 
-        function setupMultiTouchGestureEngine() {
+        function setupHammerGestureEngine() {
             const canvasEl = document.getElementById('studio-drawing-canvas');
             if (!canvasEl) return;
 
-            canvasEl.addEventListener('touchstart', (e) => {
-                e.stopPropagation();
-                isTouchJitterMoved = false;
+            if (typeof Hammer === 'undefined') {
+                console.warn("Hammer.js not loaded!");
+                return;
+            }
 
-                // 1. DUAL FINGER ANCHOR PAN / PINCH ZOOM (2 OR MORE FINGERS)
-                if (e.touches.length >= 2) {
-                    gestureMode = "PINCHING";
-                    isDrawing = false; // SUPPRESS DRAWING 100%
+            const mc = new Hammer.Manager(canvasEl);
 
-                    // CANCEL ANY TRANSIENT DRAWING STROKE STARTED BY FINGER 1
+            const pinch = new Hammer.Pinch();
+            const pan = new Hammer.Pan({ threshold: 4, pointers: 0 });
+            const singleTap = new Hammer.Tap({ event: 'singletap', interval: 250 });
+            const doubleTap = new Hammer.Tap({ event: 'doubletap', taps: 2, interval: 250 });
+
+            doubleTap.recognizeWith(singleTap);
+            singleTap.requireFailure(doubleTap);
+            pinch.recognizeWith(pan);
+
+            mc.add([pinch, pan, doubleTap, singleTap]);
+
+            let initialScale = 1.0;
+            let initialPanX = 0;
+            let initialPanY = 0;
+
+            // 1. SINGLE TAP PLAY / PAUSE
+            mc.on('singletap', (e) => {
+                if (activeTool === 'pan') {
+                    toggleStudioPlay();
+                }
+            });
+
+            // 2. DOUBLE TAP QUICK ZOOM / RESET
+            mc.on('doubletap', (e) => {
+                if (activeTool === 'pan') {
+                    if (zoomLevel > 1.05) {
+                        resetZoomAndPan();
+                        showToast('Khôi phục Zoom 1.0× (Double Tap)');
+                    } else {
+                        zoomLevel = 2.2;
+                        updateStudioTransform();
+                        showToast('Phóng to Zoom 2.2× (Double Tap)');
+                    }
+                }
+            });
+
+            // 3. DUAL-FINGER TRACKPAD ANCHOR PAN + PINCH ZOOM
+            mc.on('pinchstart panstart', (e) => {
+                initialScale = zoomLevel;
+                initialPanX = panX;
+                initialPanY = panY;
+
+                if (e.pointers.length >= 2) {
+                    isDrawing = false; // LOCK DRAWING 100%
                     if (drawingsHistory.length > 0 && activeTool !== 'pan') {
                         drawingsHistory.pop();
                         redrawCanvas();
                     }
-
-                    const t1 = e.touches[0];
-                    const t2 = e.touches[1];
-                    touchStartDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-                    touchStartZoom = zoomLevel;
-
-                    lastTouchX = (t1.clientX + t2.clientX) / 2;
-                    lastTouchY = (t1.clientY + t2.clientY) / 2;
-                    return;
-                }
-
-                // 2. SINGLE FINGER TOUCH
-                if (e.touches.length === 1) {
-                    const t = e.touches[0];
-                    lastTouchX = t.clientX;
-                    lastTouchY = t.clientY;
-
-                    if (activeTool === 'pan' || zoomLevel > 1.05) {
-                        gestureMode = "PANNING";
-                    } else if (activeTool !== 'pan') {
-                        gestureMode = "DRAWING";
-                        startDraw({ clientX: t.clientX, clientY: t.clientY });
-                    }
-                }
-            }, { passive: false });
-
-            canvasEl.addEventListener('touchmove', (e) => {
-                e.stopPropagation();
-
-                // 1. DUAL-FINGER TRACKPAD ANCHOR PAN + PINCH ZOOM
-                if (e.touches.length >= 2) {
-                    e.preventDefault();
-                    gestureMode = "PINCHING";
-                    isDrawing = false; // FORCE NO DRAWING
-
-                    const t1 = e.touches[0];
-                    const t2 = e.touches[1];
-
-                    if (touchStartDist > 0) {
-                        const curDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-                        zoomLevel = Math.min(Math.max(0.9, touchStartZoom * (curDist / touchStartDist)), 4.0);
-                    }
-
-                    // REAL-TIME CONTINUOUS DELTA PAN: MOVES VIDEO SMOOTHLY REGARDLESS OF WHICH FINGER DRAGS OR STAYS ANCHORED
-                    const curMidX = (t1.clientX + t2.clientX) / 2;
-                    const curMidY = (t1.clientY + t2.clientY) / 2;
-
-                    const deltaX = curMidX - lastTouchX;
-                    const deltaY = curMidY - lastTouchY;
-
-                    panX += deltaX;
-                    panY += deltaY;
-
-                    lastTouchX = curMidX;
-                    lastTouchY = curMidY;
-
-                    updateStudioTransform();
-                    return;
-                }
-
-                // 2. SINGLE FINGER MOVEMENT
-                if (e.touches.length === 1) {
-                    const t = e.touches[0];
-                    const deltaX = t.clientX - lastTouchX;
-                    const deltaY = t.clientY - lastTouchY;
-
-                    if (Math.hypot(deltaX, deltaY) > 2) {
-                        isTouchJitterMoved = true;
-                    }
-
-                    if (gestureMode === "PANNING" && activeTool === 'pan') {
-                        e.preventDefault();
-                        panX += deltaX;
-                        panY += deltaY;
-
-                        lastTouchX = t.clientX;
-                        lastTouchY = t.clientY;
-
-                        updateStudioTransform();
-                    } else if (gestureMode === "DRAWING" && activeTool !== 'pan') {
-                        drawMove({ clientX: t.clientX, clientY: t.clientY });
-                    }
-                }
-            }, { passive: false });
-
-            canvasEl.addEventListener('touchend', (e) => {
-                e.stopPropagation();
-                if (e.touches.length === 0) {
-                    if (gestureMode === "DRAWING" && activeTool !== 'pan') {
-                        stopDraw(e);
-                    } else if (!isTouchJitterMoved && activeTool === 'pan') {
-                        const now = Date.now();
-                        if (now - lastTapTimestamp < 280) {
-                            // DOUBLE TAP RESET / ZOOM
-                            if (zoomLevel > 1.05) {
-                                resetZoomAndPan();
-                                showToast('Khôi phục Zoom 1.0× (Double Tap)');
-                            } else {
-                                zoomLevel = 2.2;
-                                updateStudioTransform();
-                                showToast('Phóng to Zoom 2.2× (Double Tap)');
-                            }
-                            lastTapTimestamp = 0;
-                        } else {
-                            // SINGLE TAP PLAY / PAUSE
-                            toggleStudioPlay();
-                            lastTapTimestamp = now;
-                        }
-                    }
-
-                    gestureMode = "IDLE";
-                    if (zoomLevel < 1.0) resetZoomAndPan();
                 }
             });
 
-            // MOUSE CLICK PARITY DISPATCHER (ONLY ON CANVAS)
-            canvasEl.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (!isTouchJitterMoved && activeTool === 'pan') {
-                    toggleStudioPlay();
+            mc.on('pinchmove panmove', (e) => {
+                if (e.pointers.length >= 2) {
+                    isDrawing = false;
+                    zoomLevel = Math.min(Math.max(0.9, initialScale * e.scale), 4.0);
+                    panX = initialPanX + e.deltaX;
+                    panY = initialPanY + e.deltaY;
+                    updateStudioTransform();
+                } else if (e.pointers.length === 1 && activeTool === 'pan') {
+                    panX = initialPanX + e.deltaX;
+                    panY = initialPanY + e.deltaY;
+                    updateStudioTransform();
                 }
+            });
+
+            mc.on('pinchend panend', (e) => {
+                if (zoomLevel < 1.0) resetZoomAndPan();
             });
         }
 
@@ -2677,6 +2610,22 @@
             canvas.onmousedown = startDraw;
             canvas.onmousemove = drawMove;
             canvas.onmouseup = stopDraw;
+
+            canvas.ontouchstart = (e) => {
+                if (e.touches.length === 1 && activeTool !== 'pan') {
+                    startDraw(e.touches[0]);
+                }
+            };
+            canvas.ontouchmove = (e) => {
+                if (e.touches.length === 1 && activeTool !== 'pan') {
+                    drawMove(e.touches[0]);
+                }
+            };
+            canvas.ontouchend = (e) => {
+                if (activeTool !== 'pan') {
+                    stopDraw(e);
+                }
+            };
         }
 
         function setTool(toolName) {
@@ -2932,12 +2881,12 @@
             });
         }
 
-        // INITIALIZE APP STATE & MULTI-TOUCH GESTURES ON LOAD
+        // INITIALIZE APP STATE & HAMMER GESTURE ENGINE ON LOAD
         window.addEventListener('DOMContentLoaded', () => {
             loadAppState();
             renderStudentList();
             renderVideoGrid();
-            setupMultiTouchGestureEngine();
+            setupHammerGestureEngine();
             document.getElementById('studio-main-video').ontimeupdate = updateScrubber;
             window.addEventListener('resize', initCanvas);
         });
