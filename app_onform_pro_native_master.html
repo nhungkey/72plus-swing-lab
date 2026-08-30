@@ -644,7 +644,7 @@
             display: flex;
         }
 
-        /* 1. TOP OVERLAY BAR (IOS GLASSMORPISM CIRCLES & CENTER GROUP) */
+        /* 1. TOP OVERLAY BAR */
         .onform-top-overlay-bar {
             position: absolute;
             top: 0;
@@ -764,13 +764,14 @@
             object-fit: contain;
         }
 
+        /* CANVAS POINTER-EVENTS IS DEFAULT NONE FOR SEAMLESS 1-FINGER & 2-FINGER IPHONE NAVIGATION */
         #studio-drawing-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: auto;
+            pointer-events: none;
             z-index: 100;
         }
 
@@ -792,6 +793,12 @@
             justify-content: center;
             cursor: pointer;
             z-index: 1100;
+        }
+
+        .onform-side-tool-right.drawing-mode-active {
+            background: var(--72-blue);
+            border-color: #60A5FA;
+            box-shadow: 0 0 16px rgba(19, 117, 188, 0.8);
         }
 
         #floating-tool-dock {
@@ -1489,17 +1496,18 @@
                 </div>
 
                 <!-- RIGHT FLOATING PEN TOOL (A BUTTON ONLY) -->
-                <button class="onform-side-tool-right" onclick="event.stopPropagation(); toggleDrawingToolsDock();" title="Bút vẽ & Kẻ đường kỹ thuật"><i class="fa-solid fa-pen-nib"></i></button>
+                <button class="onform-side-tool-right" id="btn-side-pen-toggle" onclick="event.stopPropagation(); toggleDrawingToolsDock();" title="Bút vẽ & Kẻ đường kỹ thuật"><i class="fa-solid fa-pen-nib"></i></button>
 
                 <!-- FLOATING TOOLBOX DOCK -->
                 <div id="floating-tool-dock" onclick="event.stopPropagation();">
-                    <button class="tool-dock-btn active" onclick="setTool('plane')" title="Đường Plane Line"><i class="fa-solid fa-ruler-combined"></i></button>
-                    <button class="tool-dock-btn" onclick="setTool('head')" title="Vòng tròn Head Box"><i class="fa-regular fa-circle"></i></button>
-                    <button class="tool-dock-btn" onclick="setTool('angle')" title="Đo góc nghiêng °"><i class="fa-solid fa-compass"></i></button>
-                    <button class="tool-dock-btn" onclick="setTool('arrow')" title="Mũi tên chỉ hướng"><i class="fa-solid fa-arrow-trend-up"></i></button>
-                    <button class="tool-dock-btn" onclick="setTool('pen')" title="Bút vẽ tự do"><i class="fa-solid fa-pencil"></i></button>
-                    <button class="tool-dock-btn" onclick="setTool('text')" title="Gõ chữ nhận xét"><i class="fa-solid fa-font"></i></button>
-                    <button class="tool-dock-btn" onclick="setTool('tempo')" title="Bấm giờ Tempo 3:1"><i class="fa-solid fa-stopwatch"></i></button>
+                    <button class="tool-dock-btn active" id="btn-tool-pan" onclick="setTool('pan')" title="Chế độ Rê Pan 1 Ngón / Phóng Zoom (✋)"><i class="fa-solid fa-hand"></i></button>
+                    <button class="tool-dock-btn" id="btn-tool-plane" onclick="setTool('plane')" title="Đường Plane Line"><i class="fa-solid fa-ruler-combined"></i></button>
+                    <button class="tool-dock-btn" id="btn-tool-head" onclick="setTool('head')" title="Vòng tròn Head Box"><i class="fa-regular fa-circle"></i></button>
+                    <button class="tool-dock-btn" id="btn-tool-angle" onclick="setTool('angle')" title="Đo góc nghiêng °"><i class="fa-solid fa-compass"></i></button>
+                    <button class="tool-dock-btn" id="btn-tool-arrow" onclick="setTool('arrow')" title="Mũi tên chỉ hướng"><i class="fa-solid fa-arrow-trend-up"></i></button>
+                    <button class="tool-dock-btn" id="btn-tool-pen" onclick="setTool('pen')" title="Bút vẽ tự do"><i class="fa-solid fa-pencil"></i></button>
+                    <button class="tool-dock-btn" id="btn-tool-text" onclick="setTool('text')" title="Gõ chữ nhận xét"><i class="fa-solid fa-font"></i></button>
+                    <button class="tool-dock-btn" id="btn-tool-tempo" onclick="setTool('tempo')" title="Bấm giờ Tempo 3:1"><i class="fa-solid fa-stopwatch"></i></button>
                     <div style="width:28px; height:1px; background:rgba(255,255,255,0.2); margin:4px auto;"></div>
                     <button class="tool-dock-btn" onclick="undoCanvas()" title="Lùi lại nét vừa vẽ"><i class="fa-solid fa-rotate-left"></i></button>
                     <button class="tool-dock-btn" onclick="clearCanvas()" title="Xóa sạch nét vẽ"><i class="fa-solid fa-trash-can"></i></button>
@@ -1758,7 +1766,7 @@
         let isMultiSelectActive = false;
         let mediaStream = null;
         let isRecording = false;
-        let activeTool = "plane";
+        let activeTool = "pan"; // DEFAULT TO IPHONE PAN / NAVIGATE MODE FOR SEAMLESS 1-FINGER PAN DRAG
         let toastTimeout = null;
         let isAISkeletonActive = false;
         let isFilmstripActive = false;
@@ -1865,6 +1873,7 @@
             const tabbar = document.getElementById('mobile-bottom-tabbar');
             tabbar.style.display = 'none';
 
+            setTool('pan');
             resetZoomAndPan();
             setTimeout(initCanvas, 150);
         }
@@ -2201,7 +2210,7 @@
             }, 1500);
         }
 
-        /* ==================== 5. FULL MULTI-TOUCH GESTURE SUITE ENGINE ==================== */
+        /* ==================== 5. FULL MULTI-TOUCH GESTURE SUITE ENGINE (100% IPHONE PARITY) ==================== */
         function applyTransform() {
             const wrapper = document.getElementById('studio-transform-wrapper');
             if (wrapper) {
@@ -2224,7 +2233,7 @@
                 const now = Date.now();
                 isTouchMoved = false;
                 
-                // 1. PINCH-TO-ZOOM INITIALIZATION (2 FINGERS)
+                // 1. PINCH-TO-ZOOM INITIALIZATION (ALWAYS ACTIVE FOR 2 FINGERS ON IPHONE)
                 if (e.touches.length === 2) {
                     const t1 = e.touches[0];
                     const t2 = e.touches[1];
@@ -2233,7 +2242,7 @@
                     return;
                 }
 
-                // 2. SINGLE & DOUBLE-TAP ENGINE (1 FINGER)
+                // 2. SINGLE & DOUBLE-TAP & 1-FINGER PAN DRAG ENGINE (1 FINGER)
                 if (e.touches.length === 1) {
                     const t = e.touches[0];
                     touchStartX = t.clientX;
@@ -2254,7 +2263,8 @@
                     }
                     lastTapTime = now;
 
-                    if (zoomLevel > 1.05) {
+                    // Enable 1-finger pan drag when in Pan mode OR when zoomed in (> 1.05)
+                    if (activeTool === 'pan' || zoomLevel > 1.05) {
                         isPanDragging = true;
                     }
                 }
@@ -2263,7 +2273,7 @@
             container.addEventListener('touchmove', (e) => {
                 isTouchMoved = true;
 
-                // 1. PINCH-TO-ZOOM IN PROGRESS
+                // 1. PINCH-TO-ZOOM IN PROGRESS (2 FINGERS)
                 if (e.touches.length === 2 && initialPinchDist > 0) {
                     e.preventDefault();
                     const t1 = e.touches[0];
@@ -2275,8 +2285,8 @@
                     return;
                 }
 
-                // 2. 1-FINGER TOUCH PAN DRAG (WHEN ZOOMED IN)
-                if (e.touches.length === 1 && isPanDragging && zoomLevel > 1.05) {
+                // 2. 1-FINGER TOUCH PAN DRAG (WHEN IN PAN MODE OR ZOOMED IN)
+                if (e.touches.length === 1 && isPanDragging) {
                     e.preventDefault();
                     const t = e.touches[0];
                     const deltaX = (t.clientX - touchStartX) / zoomLevel;
@@ -2294,8 +2304,8 @@
                     initialPinchDist = 0;
                 }
                 if (e.touches.length === 0) {
-                    // SINGLE-TAP TOGGLE PLAY/PAUSE (IF NOT MOVED AND NOT IN DRAWING MODE)
-                    if (!isTouchMoved && !isDrawing) {
+                    // SINGLE-TAP TOGGLE PLAY/PAUSE (IF NOT MOVED AND NOT DRAWING)
+                    if (!isTouchMoved && activeTool === 'pan' && !isDrawing) {
                         toggleStudioPlay();
                     }
                     isPanDragging = false;
@@ -2305,7 +2315,7 @@
         }
 
         function onStudioViewportClick(e) {
-            if (!isDrawing) {
+            if (activeTool === 'pan' && !isDrawing) {
                 toggleStudioPlay();
             }
         }
@@ -2591,7 +2601,7 @@
             }
         }
 
-        /* CANVAS DRAWING ENGINE */
+        /* CANVAS DRAWING ENGINE WITH STRICT POINTER-EVENTS SCOPING FOR PAN VS DRAWING */
         let canvas, ctx;
         let isDrawing = false;
         let startX = 0, startY = 0;
@@ -2611,13 +2621,13 @@
             canvas.onmousemove = drawMove;
             canvas.onmouseup = stopDraw;
             canvas.ontouchstart = (e) => {
-                if (e.touches.length === 1 && zoomLevel <= 1.05) {
+                if (e.touches.length === 1 && activeTool !== 'pan') {
                     const t = e.touches[0];
                     startDraw({ clientX: t.clientX, clientY: t.clientY });
                 }
             };
             canvas.ontouchmove = (e) => {
-                if (e.touches.length === 1 && isDrawing && zoomLevel <= 1.05) {
+                if (e.touches.length === 1 && isDrawing && activeTool !== 'pan') {
                     const t = e.touches[0];
                     drawMove({ clientX: t.clientX, clientY: t.clientY });
                 }
@@ -2627,21 +2637,40 @@
 
         function setTool(toolName) {
             activeTool = toolName;
-            document.querySelectorAll('.tool-dock-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            const canvasEl = document.getElementById('studio-drawing-canvas');
+            const penBtn = document.getElementById('btn-side-pen-toggle');
 
-            if (toolName === 'text') {
-                const txt = prompt("Gõ chữ nhận xét kỹ thuật:");
-                if (txt) {
-                    drawingsHistory.push({ type: 'text', text: txt, x: canvas.width / 2, y: canvas.height / 2, color: '#EF3F36' });
-                    redrawCanvas();
+            document.querySelectorAll('.tool-dock-btn').forEach(btn => btn.classList.remove('active'));
+
+            const toolBtn = document.getElementById(`btn-tool-${toolName}`);
+            if (toolBtn) toolBtn.classList.add('active');
+
+            if (toolName === 'pan') {
+                // IPHONE NATIVE PAN MODE: CANVAS DOES NOT CAPTURE 1-FINGER TOUCHES!
+                if (canvasEl) canvasEl.style.pointerEvents = 'none';
+                if (penBtn) penBtn.classList.remove('drawing-mode-active');
+                showToast('Chế độ Rê Pan 1 Ngón / Phóng Zoom (✋)');
+            } else {
+                // DRAWING TOOL MODE: CANVAS CAPTURES TOUCHES FOR DRAWING!
+                if (canvasEl) canvasEl.style.pointerEvents = 'auto';
+                if (penBtn) penBtn.classList.add('drawing-mode-active');
+
+                if (toolName === 'text') {
+                    const txt = prompt("Gõ chữ nhận xét kỹ thuật:");
+                    if (txt) {
+                        drawingsHistory.push({ type: 'text', text: txt, x: canvas.width / 2, y: canvas.height / 2, color: '#EF3F36' });
+                        redrawCanvas();
+                    }
+                } else if (toolName === 'tempo') {
+                    showToast('Tempo 3.0:1 — Takeaway -> Top -> Impact');
+                } else {
+                    showToast('Đã chọn bút vẽ: ' + toolName);
                 }
-            } else if (toolName === 'tempo') {
-                showToast('Tempo 3.0:1 — Takeaway -> Top -> Impact');
             }
         }
 
         function startDraw(e) {
+            if (activeTool === 'pan') return;
             const rect = canvas.getBoundingClientRect();
             startX = (e.clientX - rect.left) / zoomLevel;
             startY = (e.clientY - rect.top) / zoomLevel;
@@ -2649,7 +2678,7 @@
         }
 
         function drawMove(e) {
-            if (!isDrawing) return;
+            if (!isDrawing || activeTool === 'pan') return;
             const rect = canvas.getBoundingClientRect();
             const currX = (e.clientX - rect.left) / zoomLevel;
             const currY = (e.clientY - rect.top) / zoomLevel;
@@ -2669,11 +2698,14 @@
                 ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
                 ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
                 ctx.fillText("42° Backswing", currX + 10, currY + 10);
+            } else if (activeTool === 'pen') {
+                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                startX = currX; startY = currY;
             }
         }
 
         function stopDraw(e) {
-            if (isDrawing) {
+            if (isDrawing && activeTool !== 'pan') {
                 isDrawing = false;
                 const rect = canvas.getBoundingClientRect();
                 const currX = (e && e.clientX) ? ((e.clientX - rect.left) / zoomLevel) : startX + 50;
@@ -2753,6 +2785,8 @@
                     ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
                     ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
                     ctx.fillText("42° Backswing", item.x2 + 10, item.y2 + 10);
+                } else if (item.type === 'pen') {
+                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
                 }
             });
         }
