@@ -1543,7 +1543,7 @@
                     
                     <div class="onform-playback-group">
                         <button class="onform-play-ctrl" onclick="stepFrame(-1)" title="Lùi 1 frame (-1f)"><i class="fa-solid fa-backward-step"></i></button>
-                        <button class="onform-play-ctrl main-play" id="btn-studio-play" onclick="toggleStudioPlay()"><i class="fa-solid fa-play"></i></button>
+                        <button class="onform-play-ctrl main-play" id="btn-studio-play" onclick="toggleStudioPlay()"><i class="fa-solid fa-pause"></i></button>
                         <button class="onform-play-ctrl" onclick="stepFrame(1)" title="Tới 1 frame (+1f)"><i class="fa-solid fa-forward-step"></i></button>
                     </div>
                 </div>
@@ -1875,6 +1875,14 @@
             setTool('pan');
             resetZoomAndPan();
             setTimeout(initCanvas, 150);
+
+            // GUARANTEE AUTOPLAY ON THUMBNAIL TAP
+            video.play().then(() => {
+                document.getElementById('btn-studio-play').innerHTML = '<i class="fa-solid fa-pause"></i>';
+            }).catch(err => {
+                console.warn("Autoplay blocked:", err);
+                document.getElementById('btn-studio-play').innerHTML = '<i class="fa-solid fa-play"></i>';
+            });
         }
 
         function closeStudioView() {
@@ -1883,6 +1891,9 @@
             
             const tabbar = document.getElementById('mobile-bottom-tabbar');
             tabbar.style.display = 'grid';
+
+            const video = document.getElementById('studio-main-video');
+            video.pause();
         }
 
         function openDualSetupScreen() {
@@ -2213,7 +2224,6 @@
         function applyTransform() {
             const wrapper = document.getElementById('studio-transform-wrapper');
             if (wrapper) {
-                // CLEAN INSTANT TRANSFORM: TRANSLATE FIRST THEN SCALE FOR PERFECT FINGER TRACKING
                 wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
             }
         }
@@ -2230,7 +2240,6 @@
             const canvasEl = document.getElementById('studio-drawing-canvas');
             if (!container) return;
 
-            // UNIFIED TOUCH HANDLER ATTACHED TO BOTH CONTAINER AND CANVAS TO GUARANTEE 100% RESPONSIVENESS
             const targets = [container, canvasEl];
 
             targets.forEach(target => {
