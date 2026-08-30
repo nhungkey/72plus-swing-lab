@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>72+ SWING LAB — 100% ONFORM NATIVE MOBILE STUDIO (PERFECT VIEW NAVIGATION)</title>
+    <title>72+ SWING LAB — 100% ONFORM NATIVE MOBILE STUDIO (FULL MULTI-TOUCH GESTURE SUITE)</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -28,6 +28,7 @@
             padding: 0;
             user-select: none;
             -webkit-user-select: none;
+            touch-action: manipulation;
         }
 
         body, html {
@@ -720,7 +721,7 @@
             cursor: pointer;
         }
 
-        /* 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT */
+        /* 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT + GESTURE WRAPPER */
         #studio-video-container {
             position: relative;
             flex: 1;
@@ -731,6 +732,20 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            touch-action: none;
+        }
+
+        #studio-transform-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-origin: center center;
+            transition: transform 0.05s ease-out;
         }
 
         #studio-main-video {
@@ -1455,10 +1470,12 @@
                 <button class="btn-review-pill" style="background:var(--72-blue); border-color:#60A5FA;" onclick="saveVoiceover()">Save</button>
             </div>
 
-            <!-- 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT -->
+            <!-- 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT + GESTURE TRANSFORM WRAPPER -->
             <div id="studio-video-container">
-                <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4"></video>
-                <canvas id="studio-drawing-canvas"></canvas>
+                <div id="studio-transform-wrapper">
+                    <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4"></video>
+                    <canvas id="studio-drawing-canvas"></canvas>
+                </div>
 
                 <!-- RIGHT FLOATING PEN TOOL (A BUTTON ONLY) -->
                 <button class="onform-side-tool-right" onclick="toggleDrawingToolsDock()" title="Bút vẽ & Kẻ đường kỹ thuật"><i class="fa-solid fa-pen-nib"></i></button>
@@ -1478,9 +1495,9 @@
                 </div>
             </div>
 
-            <!-- 3. BOTTOM ONFORM PLAYER CONTROL DOCK -->
+            <!-- 3. BOTTOM ONFORM PLAYER CONTROL DOCK MATCHING ONFORM SCREENSHOT EXACTLY -->
             <div class="onform-bottom-player-dock">
-                <!-- FILMSTRIP THUMBNAILS STRIP (SCREENSHOT 4) -->
+                <!-- FILMSTRIP THUMBNAILS STRIP (MATCHING ONFORM SCREENSHOT 4) -->
                 <div id="onform-filmstrip-container">
                     <div class="filmstrip-track">
                         <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
@@ -1741,6 +1758,17 @@
         let currentSpeedIndex = 0;
         const playbackSpeeds = [1.0, 0.5, 0.25, 2.0];
 
+        /* ==================== FULL MULTI-TOUCH GESTURE SUITE STATE ==================== */
+        let zoomLevel = 1.0;
+        let panX = 0;
+        let panY = 0;
+        let initialPinchDist = 0;
+        let initialZoom = 1.0;
+        let lastTapTime = 0;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isPanDragging = false;
+
         /* 💾 LOCALSTORAGE PERSISTENCE */
         function saveAppState() {
             try {
@@ -1825,6 +1853,7 @@
             const tabbar = document.getElementById('mobile-bottom-tabbar');
             tabbar.style.display = 'none';
 
+            resetZoomAndPan();
             setTimeout(initCanvas, 150);
         }
 
@@ -2160,7 +2189,102 @@
             }, 1500);
         }
 
-        /* 5. 100% ONFORM NATIVE MOBILE STUDIO & VOICEOVER ENGINES */
+        /* ==================== 5. FULL MULTI-TOUCH GESTURE SUITE ENGINE ==================== */
+        function applyTransform() {
+            const wrapper = document.getElementById('studio-transform-wrapper');
+            if (wrapper) {
+                wrapper.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`;
+            }
+        }
+
+        function resetZoomAndPan() {
+            zoomLevel = 1.0;
+            panX = 0;
+            panY = 0;
+            applyTransform();
+        }
+
+        function setupMultiTouchGestureEngine() {
+            const container = document.getElementById('studio-video-container');
+            if (!container) return;
+
+            container.addEventListener('touchstart', (e) => {
+                const now = Date.now();
+                
+                // 1. PINCH-TO-ZOOM INITIALIZATION (2 FINGERS)
+                if (e.touches.length === 2) {
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    initialPinchDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                    initialZoom = zoomLevel;
+                    return;
+                }
+
+                // 2. SINGLE & DOUBLE-TAP ENGINE (1 FINGER)
+                if (e.touches.length === 1) {
+                    const t = e.touches[0];
+                    touchStartX = t.clientX;
+                    touchStartY = t.clientY;
+
+                    // Check Double Tap
+                    if (now - lastTapTime < 280) {
+                        if (zoomLevel > 1.05) {
+                            resetZoomAndPan();
+                            showToast('Khôi phục Zoom 1.0× (Double Tap)');
+                        } else {
+                            zoomLevel = 2.2;
+                            applyTransform();
+                            showToast('Phóng to Zoom 2.2× (Double Tap)');
+                        }
+                        lastTapTime = 0;
+                        return;
+                    }
+                    lastTapTime = now;
+
+                    if (zoomLevel > 1.05) {
+                        isPanDragging = true;
+                    }
+                }
+            }, { passive: false });
+
+            container.addEventListener('touchmove', (e) => {
+                // 1. PINCH-TO-ZOOM IN PROGRESS
+                if (e.touches.length === 2 && initialPinchDist > 0) {
+                    e.preventDefault();
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    const currentDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                    const scaleChange = currentDist / initialPinchDist;
+                    zoomLevel = Math.min(Math.max(0.9, initialZoom * scaleChange), 4.0);
+                    applyTransform();
+                    return;
+                }
+
+                // 2. 1-FINGER TOUCH PAN DRAG (WHEN ZOOMED IN)
+                if (e.touches.length === 1 && isPanDragging && zoomLevel > 1.05) {
+                    e.preventDefault();
+                    const t = e.touches[0];
+                    const deltaX = (t.clientX - touchStartX) / zoomLevel;
+                    const deltaY = (t.clientY - touchStartY) / zoomLevel;
+                    panX += deltaX;
+                    panY += deltaY;
+                    touchStartX = t.clientX;
+                    touchStartY = t.clientY;
+                    applyTransform();
+                }
+            }, { passive: false });
+
+            container.addEventListener('touchend', (e) => {
+                if (e.touches.length < 2) {
+                    initialPinchDist = 0;
+                }
+                if (e.touches.length === 0) {
+                    isPanDragging = false;
+                    if (zoomLevel < 1.0) resetZoomAndPan();
+                }
+            });
+        }
+
         function toggleAISkeletonOverlay() {
             isAISkeletonActive = !isAISkeletonActive;
             const btn = document.getElementById('btn-toggle-skeleton');
@@ -2459,8 +2583,18 @@
             canvas.onmousedown = startDraw;
             canvas.onmousemove = drawMove;
             canvas.onmouseup = stopDraw;
-            canvas.ontouchstart = (e) => { const t = e.touches[0]; startDraw({ clientX: t.clientX, clientY: t.clientY }); };
-            canvas.ontouchmove = (e) => { const t = e.touches[0]; drawMove({ clientX: t.clientX, clientY: t.clientY }); };
+            canvas.ontouchstart = (e) => {
+                if (e.touches.length === 1 && zoomLevel <= 1.05) {
+                    const t = e.touches[0];
+                    startDraw({ clientX: t.clientX, clientY: t.clientY });
+                }
+            };
+            canvas.ontouchmove = (e) => {
+                if (e.touches.length === 1 && isDrawing && zoomLevel <= 1.05) {
+                    const t = e.touches[0];
+                    drawMove({ clientX: t.clientX, clientY: t.clientY });
+                }
+            };
             canvas.ontouchend = stopDraw;
         }
 
@@ -2482,16 +2616,16 @@
 
         function startDraw(e) {
             const rect = canvas.getBoundingClientRect();
-            startX = e.clientX - rect.left;
-            startY = e.clientY - rect.top;
+            startX = (e.clientX - rect.left) / zoomLevel;
+            startY = (e.clientY - rect.top) / zoomLevel;
             isDrawing = true;
         }
 
         function drawMove(e) {
             if (!isDrawing) return;
             const rect = canvas.getBoundingClientRect();
-            const currX = e.clientX - rect.left;
-            const currY = e.clientY - rect.top;
+            const currX = (e.clientX - rect.left) / zoomLevel;
+            const currY = (e.clientY - rect.top) / zoomLevel;
 
             redrawCanvas();
             ctx.strokeStyle = "#1375BC";
@@ -2515,8 +2649,8 @@
             if (isDrawing) {
                 isDrawing = false;
                 const rect = canvas.getBoundingClientRect();
-                const currX = (e && e.clientX) ? (e.clientX - rect.left) : startX + 50;
-                const currY = (e && e.clientY) ? (e.clientY - rect.top) : startY + 50;
+                const currX = (e && e.clientX) ? ((e.clientX - rect.left) / zoomLevel) : startX + 50;
+                const currY = (e && e.clientY) ? ((e.clientY - rect.top) / zoomLevel) : startY + 50;
                 drawingsHistory.push({ type: activeTool, x1: startX, y1: startY, x2: currX, y2: currY, color: '#1375BC' });
             }
         }
@@ -2698,11 +2832,12 @@
             });
         }
 
-        // INITIALIZE APP STATE ON LOAD
+        // INITIALIZE APP STATE & MULTI-TOUCH GESTURES ON LOAD
         window.addEventListener('DOMContentLoaded', () => {
             loadAppState();
             renderStudentList();
             renderVideoGrid();
+            setupMultiTouchGestureEngine();
             document.getElementById('studio-main-video').ontimeupdate = updateScrubber;
             window.addEventListener('resize', initCanvas);
         });
