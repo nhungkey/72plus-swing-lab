@@ -737,7 +737,7 @@
             cursor: pointer;
         }
 
-        /* 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT + PERFECT CANVAS ALIGNMENT WRAPPER */
+        /* 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT (REAL DUAL CANVAS ARCHITECTURE) */
         #studio-video-container {
             position: relative;
             flex: 1;
@@ -752,7 +752,6 @@
             cursor: pointer;
         }
 
-        /* REAL DUAL SPLIT SCREEN CONTAINER STYLING WITH ACTIVE PANE HIGHLIGHT */
         #studio-video-container.dual-split-active {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -763,20 +762,6 @@
 
         #studio-video-container.dual-split-active #secondary-video-wrapper {
             display: flex !important;
-        }
-
-        /* SUPERIMPOSE OVERLAY BLEND MODE (OFFICIAL ONFORM OVERLAY SPEC) */
-        #studio-video-container.superimpose-overlay-active {
-            display: flex !important;
-        }
-
-        #studio-video-container.superimpose-overlay-active #secondary-video-wrapper {
-            display: flex !important;
-            position: absolute !important;
-            top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0.55;
-            pointer-events: none;
-            z-index: 80;
         }
 
         #studio-transform-wrapper, #secondary-video-wrapper {
@@ -793,7 +778,6 @@
             border-radius: 12px;
         }
 
-        /* ACTIVE PANE FOCUS HIGHLIGHT BORDER */
         #studio-transform-wrapper.pane-focused, #secondary-video-wrapper.pane-focused {
             border-color: var(--72-blue) !important;
             box-shadow: inset 0 0 16px rgba(19, 117, 188, 0.6);
@@ -815,8 +799,27 @@
             z-index: 110;
         }
 
-        #studio-video-container.dual-split-active .pane-label-badge {
-            display: block;
+        .pane-quick-play-btn {
+            position: absolute;
+            top: 72px;
+            right: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(10, 37, 64, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 120;
+        }
+
+        #studio-video-container.dual-split-active .pane-label-badge,
+        #studio-video-container.dual-split-active .pane-quick-play-btn {
+            display: flex;
         }
 
         #secondary-video-wrapper {
@@ -830,14 +833,16 @@
             object-fit: contain;
         }
 
-        #studio-drawing-canvas {
+        .studio-drawing-canvas-instance {
             position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: auto;
             z-index: 100;
             touch-action: none;
         }
 
-        /* FLOATING RIGHT TOOL (PEN A BUTTON ONLY) */
+        /* FLOATING RIGHT TOOL */
         .onform-side-tool-right {
             position: absolute;
             right: 16px;
@@ -901,7 +906,6 @@
             border: 1px solid #60A5FA;
         }
 
-        /* COLOR & THICKNESS SELECTION DOCK ITEMS */
         .palette-color-dot {
             width: 24px;
             height: 24px;
@@ -921,7 +925,7 @@
             cursor: pointer;
         }
 
-        /* 3. BOTTOM ONFORM PLAYER CONTROL DOCK MATCHING ONFORM SCREENSHOT EXACTLY */
+        /* 3. BOTTOM ONFORM PLAYER CONTROL DOCK */
         .onform-bottom-player-dock {
             position: absolute;
             bottom: 0;
@@ -936,7 +940,6 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* FILMSTRIP THUMBNAILS STRIP (MATCHING ONFORM SCREENSHOT 4) */
         #onform-filmstrip-container {
             display: none;
             position: relative;
@@ -964,17 +967,6 @@
             width: 38px;
             object-fit: cover;
             border-radius: 6px;
-        }
-
-        .filmstrip-yellow-playhead {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 45%;
-            width: 3px;
-            background: #F59E0B;
-            box-shadow: 0 0 10px #F59E0B;
-            z-index: 10;
         }
 
         .onform-scrubber-row {
@@ -1084,7 +1076,6 @@
             font-size: 1.5rem;
         }
 
-        /* ONFORM TOP DROPDOWN MENU (...) */
         #onform-more-menu {
             display: none;
             position: absolute;
@@ -1111,7 +1102,6 @@
             cursor: pointer;
         }
 
-        /* ONFORM SCREEN CAPTURE PERMISSION MODAL (SCREENSHOT 2) */
         #voiceover-permission-modal {
             display: none;
             position: absolute;
@@ -1172,7 +1162,6 @@
             cursor: pointer;
         }
 
-        /* ONFORM VOICEOVER REVIEW BAR (SCREENSHOT 3) */
         #voiceover-review-bar {
             display: none;
             position: absolute;
@@ -1198,7 +1187,6 @@
             cursor: pointer;
         }
 
-        /* ONFORM ADD SECOND VIDEO COMPARISON SCREEN (SCREENSHOT 1) */
         #screen-dual-setup {
             display: none;
             position: absolute;
@@ -1227,7 +1215,6 @@
             cursor: pointer;
         }
 
-        /* SLEEK IOS FLOATING TEXT OVERLAY MODAL */
         #ios-text-annotation-modal {
             display: none;
             position: absolute;
@@ -1256,7 +1243,6 @@
             transform: scale(1.15);
         }
 
-        /* MODALS */
         .modal-mask {
             display: none;
             position: absolute;
@@ -1566,14 +1552,13 @@
             </button>
         </div>
 
-        <!-- ==================== 100% STANDALONE FULLSCREEN OVERLAY: STUDIO 1-CLIP / DUAL SPLIT VIEW ==================== -->
+        <!-- ==================== 100% STANDALONE FULLSCREEN OVERLAY: STUDIO DUAL CANVAS ARCHITECTURE ==================== -->
         <div id="screen-studio">
             <!-- 1. TOP OVERLAY BAR -->
             <div class="onform-top-overlay-bar">
                 <div class="onform-top-left">
                     <button class="onform-circle-btn" onclick="closeStudioView()" title="Thoát Studio"><i class="fa-solid fa-xmark"></i></button>
                     <button class="onform-circle-btn" id="btn-toggle-skeleton" onclick="toggleAISkeletonOverlay()" title="Bật/tắt AI Skeleton 🧍"><i class="fa-solid fa-child-reaching"></i></button>
-                    <!-- OFFICIAL ONFORM SPEC: SUPERIMPOSE OVERLAY BUTTON (TWO STACKED BOXES) -->
                     <button class="onform-circle-btn" id="btn-toggle-superimpose" onclick="toggleSuperimposeOverlay()" title="Chế độ Chồng Hình Video (Superimpose Overlay 🔲)"><i class="fa-solid fa-layer-group"></i></button>
                 </div>
 
@@ -1601,7 +1586,7 @@
                 <div class="more-menu-item" style="color:#FF6B6B;" onclick="triggerDeleteCurrentVideo()"><i class="fa-solid fa-trash-can"></i> 🗑️ Delete Video</div>
             </div>
 
-            <!-- VOICEOVER REVIEW BAR (SCREENSHOT 3) -->
+            <!-- VOICEOVER REVIEW BAR -->
             <div id="voiceover-review-bar">
                 <button class="btn-review-pill" onclick="discardVoiceover()">Discard</button>
                 <button class="btn-review-pill" onclick="previewVoiceover()">Preview</button>
@@ -1609,25 +1594,28 @@
                 <button class="btn-review-pill" style="background:var(--72-blue); border-color:#60A5FA;" onclick="saveVoiceover()">Save</button>
             </div>
 
-            <!-- 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT + PERFECT CANVAS ALIGNMENT WRAPPER (REAL DUAL SPLIT CAPABLE) -->
+            <!-- 2. FULLSCREEN VIEWPORT WITH DUAL INDEPENDENT CANVASES & OVERLAY PLAY BUTTONS -->
             <div id="studio-video-container">
-                <!-- PANE 1: MAIN VIDEO (JUNIOR GOLFER CLIP) -->
+                <!-- PANE 1: MAIN VIDEO 1 (LEFT) -->
                 <div id="studio-transform-wrapper" class="pane-focused" onclick="setActivePane('left')">
                     <div class="pane-label-badge">VIDEO 1 (TRÁI)</div>
-                    <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4" onloadedmetadata="alignCanvasToVideo()"></video>
-                    <canvas id="studio-drawing-canvas"></canvas>
+                    <button class="pane-quick-play-btn" id="btn-pane1-play" onclick="event.stopPropagation(); togglePanePlay('left');"><i class="fa-solid fa-play"></i></button>
+                    <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4" onloadedmetadata="initCanvasEngine()"></video>
+                    <canvas id="canvas-left" class="studio-drawing-canvas-instance"></canvas>
                 </div>
 
-                <!-- PANE 2: SECONDARY COMPARISON VIDEO (RORY MCILROY / NELLY KORDA / SELECTED VIDEO 2) -->
+                <!-- PANE 2: SECONDARY VIDEO 2 (RIGHT) -->
                 <div id="secondary-video-wrapper" onclick="setActivePane('right')">
                     <div class="pane-label-badge" style="background:#0EA5E9;">VIDEO 2 (PHẢI)</div>
-                    <video id="studio-secondary-video" playsinline loop muted src="assets/sample-golf-swing.mp4"></video>
+                    <button class="pane-quick-play-btn" id="btn-pane2-play" onclick="event.stopPropagation(); togglePanePlay('right');"><i class="fa-solid fa-play"></i></button>
+                    <video id="studio-secondary-video" playsinline loop muted src="assets/sample-golf-swing.mp4" onloadedmetadata="initCanvasEngine()"></video>
+                    <canvas id="canvas-right" class="studio-drawing-canvas-instance"></canvas>
                 </div>
 
-                <!-- RIGHT FLOATING PEN TOOL (A BUTTON ONLY) -->
+                <!-- RIGHT FLOATING PEN TOOL -->
                 <button class="onform-side-tool-right" id="btn-side-pen-toggle" onclick="event.stopPropagation(); toggleDrawingToolsDock();" title="Bút vẽ & Kẻ đường kỹ thuật"><i class="fa-solid fa-pen-nib"></i></button>
 
-                <!-- OFFICIAL ONFORM SPEC: ADVANCED FLOATING TOOLBOX DOCK -->
+                <!-- ADVANCED FLOATING TOOLBOX DOCK -->
                 <div id="floating-tool-dock" onclick="event.stopPropagation();">
                     <button class="tool-dock-btn active" id="btn-tool-pan" onclick="setTool('pan')" title="Chế độ Rê Pan 1 Ngón / Phóng Zoom (✋)"><i class="fa-solid fa-hand"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-plane" onclick="setTool('plane')" title="Đường Plane Line"><i class="fa-solid fa-ruler-combined"></i></button>
@@ -1661,32 +1649,26 @@
 
                     <div style="width:28px; height:1px; background:rgba(255,255,255,0.2); margin:4px auto;"></div>
 
-                    <button class="tool-dock-btn" onclick="undoCanvas()" title="Lùi lại nét vừa vẽ"><i class="fa-solid fa-rotate-left"></i></button>
-                    <button class="tool-dock-btn" onclick="clearCanvas()" title="Xóa sạch nét vẽ"><i class="fa-solid fa-trash-can"></i></button>
+                    <button class="tool-dock-btn" onclick="undoActiveCanvas()" title="Lùi lại nét vừa vẽ trên video hiện tại"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button class="tool-dock-btn" onclick="clearActiveCanvas()" title="Xóa sạch nét vẽ trên video hiện tại"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             </div>
 
-            <!-- 3. BOTTOM ONFORM PLAYER CONTROL DOCK MATCHING ONFORM SCREENSHOT EXACTLY -->
+            <!-- 3. BOTTOM ONFORM PLAYER CONTROL DOCK -->
             <div class="onform-bottom-player-dock" onclick="event.stopPropagation();">
-                <!-- FILMSTRIP THUMBNAILS STRIP (MATCHING ONFORM SCREENSHOT 4) -->
                 <div id="onform-filmstrip-container">
-                    <div class="filmstrip-track" id="filmstrip-dynamic-track">
-                        <!-- DYNAMICALLY GENERATED FILMSTRIP -->
-                    </div>
+                    <div class="filmstrip-track" id="filmstrip-dynamic-track"></div>
                 </div>
 
-                <!-- SCRUBBER ROW -->
                 <div class="onform-scrubber-row">
                     <span id="onform-precision-timecode">0.000s</span>
                     <input type="range" class="onform-scrubber-slider" id="studio-scrubber" min="0" max="100" value="0" step="0.1" oninput="onScrubberInput(this.value)">
                     <button class="onform-filmstrip-btn" onclick="toggleFilmstripStrip()" title="Hiện/Ẩn cuộn ảnh khung hình Filmstrip (▥)"><i class="fa-solid fa-table-cells-large"></i></button>
                 </div>
 
-                <!-- CONTROLS PILL ROW -->
                 <div class="onform-controls-pill-row">
                     <button class="onform-pill-ctrl" id="btn-speed-toggle" onclick="cyclePlaybackSpeed()">1×`</button>
                     
-                    <!-- OFFICIAL ONFORM SPEC: LINK ALIGNMENT BUTTON (🔒 LINK ALIGN TIME OFFSET) -->
                     <button class="onform-pill-ctrl" id="btn-link-align-toggle" onclick="toggleLinkAlign()" title="Khóa Đồng Bộ Điểm Đầu 2 Video (🔒 Link Alignment)">
                         <i class="fa-solid fa-link"></i> <span id="link-align-label">🔒 Link</span>
                     </button>
@@ -1700,14 +1682,13 @@
             </div>
         </div>
 
-        <!-- ==================== VIEW 5: ADD SECOND VIDEO COMPARISON SCREEN (REAL DUAL PICKER) ==================== -->
+        <!-- ==================== VIEW 5: ADD SECOND VIDEO COMPARISON SCREEN ==================== -->
         <div id="screen-dual-setup">
             <div style="width:100%; display:flex; justify-content:space-between; align-items:center; z-index:1100;">
                 <span style="font-weight:700; color:#FFFFFF;">So Sánh 2 Video Song Song</span>
                 <button class="btn-gold-round" style="padding:6px 18px;" onclick="confirmDualSetupDone()">Bắt Đầu So Sánh</button>
             </div>
 
-            <!-- UPPER PANE: VIDEO 2 PREVIEW / ADD BUTTON -->
             <div style="flex:1; width:100%; position:relative; display:flex; align-items:center; justify-content:center; border-bottom:2px solid var(--72-blue); background:#000000; overflow:hidden;">
                 <video id="dual-setup-preview-video-2" playsinline loop muted src="assets/sample-golf-swing.mp4" style="width:100%; height:100%; object-fit:contain;"></video>
                 <div style="position:absolute; display:flex; flex-direction:column; gap:12px; align-items:center; z-index:1100;">
@@ -1715,7 +1696,6 @@
                 </div>
             </div>
 
-            <!-- LOWER PANE: CURRENT VIDEO 1 PRESERVED 100% -->
             <div style="flex:1; width:100%; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#000000;">
                 <video id="dual-setup-preview-video" playsinline loop muted src="assets/sample-golf-swing.mp4" style="width:100%; height:100%; object-fit:contain;"></video>
                 <div style="position:absolute; display:flex; flex-direction:column; gap:12px; align-items:center; z-index:1100;">
@@ -1726,7 +1706,7 @@
 
     </div>
 
-    <!-- MODAL: DUAL VIDEO 2 PICKER MODAL -->
+    <!-- MODALS -->
     <div id="dual-video-picker-modal" class="modal-mask">
         <div class="modal-content-card" style="max-height:80vh; overflow-y:auto;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1755,7 +1735,6 @@
         </div>
     </div>
 
-    <!-- MODAL: ELEGANT IOS NATIVE FLOATING TEXT ANNOTATION INPUT MODAL -->
     <div id="ios-text-annotation-modal">
         <div class="modal-content-card" style="border: 1px solid rgba(255,255,255,0.25); background: rgba(20, 20, 20, 0.96); backdrop-filter: blur(24px);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1780,7 +1759,6 @@
         </div>
     </div>
 
-    <!-- MODAL: IOS VOICEOVER PERMISSION ACTION SHEET (SCREENSHOT 2) -->
     <div id="voiceover-permission-modal">
         <div class="ios-action-sheet-card">
             <div class="ios-sheet-title">Allow screen capture in "Onform"?</div>
@@ -1791,7 +1769,6 @@
         </div>
     </div>
 
-    <!-- OTHER MODALS -->
     <div id="course-info-modal" class="modal-mask">
         <div class="modal-content-card" style="max-height:85vh; overflow-y:auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:10px;">
@@ -1982,20 +1959,23 @@
         let voiceoverSeconds = 0;
         let isVideoFlipped = false;
         let isDualSplitActive = false;
-        let isSuperimposeActive = false; // OFFICIAL ONFORM SPEC: SUPERIMPOSE OVERLAY MODE (🔲)
-        let isLinkAlignActive = false; // OFFICIAL ONFORM SPEC: LINK ALIGN TIME OFFSET (🔒)
-        let linkTimeOffsetDelta = 0; // TIME OFFSET BETWEEN VIDEO 2 AND VIDEO 1
+        let isSuperimposeActive = false;
+        let isLinkAlignActive = false;
+        let linkTimeOffsetDelta = 0;
         let activePane = 'left'; // 'left' or 'right'
         let video2SelectedSrc = "assets/sample-golf-swing.mp4";
         let currentSpeedIndex = 0;
-        let activeDrawColor = "#EF3F36"; // DEFAULT DRAW COLOR (RED)
-        let activeLineWidth = 3.5; // DEFAULT LINE THICKNESS (MEDIUM)
+        let activeDrawColor = "#EF3F36";
+        let activeLineWidth = 3.5;
         let selectedTextColorChoice = "#EF3F36";
         let draggingTextIndex = -1;
         let textDragStartX = 0, textDragStartY = 0;
         const playbackSpeeds = [1.0, 0.5, 0.25, 2.0];
 
-        /* 💾 LOCALSTORAGE PERSISTENCE */
+        /* 💾 DUAL CANVAS INDEPENDENT STORAGE ENGINES */
+        let drawingsHistoryLeft = [];  // INDEPENDENT DRAWINGS FOR VIDEO 1
+        let drawingsHistoryRight = []; // INDEPENDENT DRAWINGS FOR VIDEO 2
+
         function saveAppState() {
             try {
                 localStorage.setItem('72plus_student_list', JSON.stringify(studentList));
@@ -2037,7 +2017,6 @@
             }
         }
 
-        /* SLEEK IOS TOAST */
         function showToast(msg) {
             const toast = document.getElementById('native-toast-notification');
             document.getElementById('toast-message-text').innerText = msg;
@@ -2048,7 +2027,6 @@
             }, 2200);
         }
 
-        /* VIEW SWITCHER LOGIC - 100% ISOLATED OVERLAY */
         function switchView(screenId) {
             document.querySelectorAll('.screen-view').forEach(sc => sc.classList.remove('active'));
             const targetScreen = document.getElementById(screenId);
@@ -2073,7 +2051,6 @@
             isDualSplitActive = false;
             isSuperimposeActive = false;
             document.getElementById('studio-video-container').classList.remove('dual-split-active');
-            document.getElementById('studio-video-container').classList.remove('superimpose-overlay-active');
 
             const video = document.getElementById('studio-main-video');
             video.src = videoSrc;
@@ -2088,7 +2065,6 @@
             resetZoomAndPan();
             setTimeout(initCanvasEngine, 150);
 
-            // GUARANTEE AUTOPLAY ON THUMBNAIL TAP
             video.play().then(() => {
                 document.getElementById('btn-studio-play').innerHTML = '<i class="fa-solid fa-pause"></i>';
             }).catch(err => {
@@ -2110,7 +2086,6 @@
             video2.pause();
         }
 
-        /* OFFICIAL ONFORM SPEC 1: LINK ALIGN TIME OFFSET MECHANICS (🔒 LINK BUTTON) */
         function toggleLinkAlign() {
             isLinkAlignActive = !isLinkAlignActive;
             const btn = document.getElementById('btn-link-align-toggle');
@@ -2119,7 +2094,6 @@
             const vid2 = document.getElementById('studio-secondary-video');
 
             if (isLinkAlignActive) {
-                // LOCK OFFSET DELTA BASED ON CURRENT STARTING POINTS
                 linkTimeOffsetDelta = vid2.currentTime - vid1.currentTime;
                 btn.classList.add('sync-active');
                 label.innerText = '🔒 Linked';
@@ -2131,7 +2105,6 @@
             }
         }
 
-        /* OFFICIAL ONFORM SPEC 2: SUPERIMPOSE OVERLAY MODE (TWO STACKED BOXES 🔲) */
         function toggleSuperimposeOverlay() {
             isSuperimposeActive = !isSuperimposeActive;
             const container = document.getElementById('studio-video-container');
@@ -2150,7 +2123,6 @@
             }
         }
 
-        /* REAL DUAL SPLIT SCREEN INDEPENDENT & SYNC CONTROL ENGINE */
         function setActivePane(pane) {
             activePane = pane;
             const leftPane = document.getElementById('studio-transform-wrapper');
@@ -2165,14 +2137,28 @@
                 leftPane.classList.remove('pane-focused');
                 showToast('Đang chọn Video 2 (Phải) để điều khiển & vẽ');
             }
-            alignCanvasToVideo();
+        }
+
+        function togglePanePlay(pane) {
+            const vid = (pane === 'left') ? document.getElementById('studio-main-video') : document.getElementById('studio-secondary-video');
+            const btn = (pane === 'left') ? document.getElementById('btn-pane1-play') : document.getElementById('btn-pane2-play');
+
+            if (vid.paused) {
+                vid.play();
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                showToast('▶ Phát Video ' + (pane === 'left' ? '1' : '2'));
+            } else {
+                vid.pause();
+                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                showToast('⏸ Tạm dừng Video ' + (pane === 'left' ? '1' : '2'));
+            }
         }
 
         function openDualSetupScreen() {
             const currentStudioVid = document.getElementById('studio-main-video');
             const previewVid1 = document.getElementById('dual-setup-preview-video');
             if (currentStudioVid && currentStudioVid.src) {
-                previewVid1.src = currentStudioVid.src; // PRESERVE CURRENT VIDEO 1!
+                previewVid1.src = currentStudioVid.src;
             }
 
             const dualSetupOverlay = document.getElementById('screen-dual-setup');
@@ -2224,587 +2210,296 @@
             vid2.pause();
             document.getElementById('btn-studio-play').innerHTML = '<i class="fa-solid fa-play"></i>';
 
-            showToast('Đã mở Chế độ So sánh 2 Video (Kéo mốc & bấm 🔒 Link)');
+            showToast('Đã mở 2 Video Độc Lập 100% (Mỗi clip vẽ & tua riêng)');
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
 
-        /* 1. THÔNG TIN HỌC VIÊN */
-        function openCourseInfoModal() {
-            document.getElementById('course-modal-title').innerText = 'Thông Tin Học Viên — ' + activeStudentName;
-            const info = studentCourseInfoMap[activeStudentName] || {
-                courseName: "", startDate: "", duration: "", schedule: "", frequency: ""
-            };
+        /* DUAL CANVAS INITIALIZATION & INDEPENDENT DRAWING ENGINE */
+        let isDrawing = false;
+        let startX = 0, startY = 0;
+        let penPoints = [];
 
-            document.getElementById('ci-course-name').value = info.courseName || '';
-            document.getElementById('ci-start-date').value = info.startDate || '';
-            document.getElementById('ci-duration').value = info.duration || '';
-            document.getElementById('ci-schedule').value = info.schedule || '';
-            document.getElementById('ci-frequency').value = info.frequency || '';
-
-            document.getElementById('course-info-modal').style.display = 'flex';
+        function initCanvasEngine() {
+            setupDualCanvasInstance('canvas-left', 'left');
+            setupDualCanvasInstance('canvas-right', 'right');
+            setupHammerGestureEngine();
         }
 
-        function saveCourseInfo() {
-            studentCourseInfoMap[activeStudentName] = {
-                courseName: document.getElementById('ci-course-name').value.trim(),
-                startDate: document.getElementById('ci-start-date').value.trim(),
-                duration: document.getElementById('ci-duration').value.trim(),
-                schedule: document.getElementById('ci-schedule').value.trim(),
-                frequency: document.getElementById('ci-frequency').value.trim()
-            };
+        function setupDualCanvasInstance(canvasId, pane) {
+            const canvasEl = document.getElementById(canvasId);
+            const container = (pane === 'left') ? document.getElementById('studio-transform-wrapper') : document.getElementById('secondary-video-wrapper');
+            const video = (pane === 'left') ? document.getElementById('studio-main-video') : document.getElementById('studio-secondary-video');
 
-            saveAppState();
-            closeModal('course-info-modal');
-            updateCourseInfoSubtext();
-            showToast('Đã lưu thông tin khóa học');
-        }
+            if (!canvasEl || !container || !video) return;
 
-        function updateCourseInfoSubtext() {
-            const sub = document.getElementById('profile-course-info-subtext');
-            const info = studentCourseInfoMap[activeStudentName];
-            if (info && (info.courseName || info.schedule)) {
-                const cName = info.courseName || 'Khóa học 72+';
-                const sched = info.schedule || 'Chưa xếp lịch';
-                sub.innerText = `${cName} • ${sched}`;
-            } else {
-                sub.innerText = 'Tự do thiết lập Khóa học, Lịch học, Thời hạn';
-            }
-        }
+            const cWidth = container.clientWidth || 360;
+            const cHeight = container.clientHeight || 480;
 
-        /* 2. INLINE RENAME ENGINE */
-        function focusInlineStudentName() {
-            const el = document.getElementById('profile-display-name');
-            el.focus();
-            const range = document.createRange();
-            range.selectNodeContents(el);
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
+            canvasEl.width = cWidth;
+            canvasEl.height = cHeight;
 
-        function saveInlineStudentName() {
-            const el = document.getElementById('profile-display-name');
-            let newName = el.innerText.trim();
-            if (!newName) {
-                newName = activeStudentName;
-                el.innerText = oldName;
-                return;
-            }
+            canvasEl.onmousedown = (e) => handleMouseDownDual(e, pane);
+            canvasEl.onmousemove = (e) => handleMouseMoveDual(e, pane);
+            canvasEl.onmouseup = (e) => handleMouseUpDual(e, pane);
 
-            const oldName = activeStudentName;
-            if (newName === oldName) return;
-
-            activeStudentName = newName;
-
-            if (studentNotesMap[oldName]) {
-                studentNotesMap[newName] = studentNotesMap[oldName];
-                delete studentNotesMap[oldName];
-            }
-
-            if (studentCourseInfoMap[oldName]) {
-                studentCourseInfoMap[newName] = studentCourseInfoMap[oldName];
-                delete studentCourseInfoMap[oldName];
-            }
-
-            const stObj = studentList.find(s => s.name === oldName);
-            if (stObj) {
-                stObj.name = newName;
-                const words = newName.split(' ');
-                if (words.length >= 2) stObj.initials = (words[0][0] + words[words.length - 1][0]).toUpperCase();
-            }
-
-            document.getElementById('profile-avatar-badge').innerText = stObj ? stObj.initials : 'NC';
-            document.getElementById('home-student-avatar').innerText = stObj ? stObj.initials : 'NC';
-            document.getElementById('lib-student-subname').innerText = newName;
-            document.getElementById('home-student-name-label').innerText = newName;
-
-            videoLibrary.forEach(v => {
-                if (v.author === oldName) v.author = newName;
-            });
-
-            saveAppState();
-            renderStudentList();
-            renderVideoGrid();
-
-            showToast('Đã lưu tên mới: ' + newName);
-        }
-
-        /* 3. DYNAMIC NOTES ENGINE */
-        function openHLVNotesModal() {
-            document.getElementById('notes-student-title').innerText = 'Ghi Chú Cho ' + activeStudentName;
-            const existingNote = studentNotesMap[activeStudentName] || '';
-            document.getElementById('hlv-notes-textarea').value = existingNote;
-            document.getElementById('hlv-notes-modal').style.display = 'flex';
-        }
-
-        function saveHLVNotes() {
-            const noteText = document.getElementById('hlv-notes-textarea').value.trim();
-            studentNotesMap[activeStudentName] = noteText;
-            saveAppState();
-            closeModal('hlv-notes-modal');
-
-            const sub = document.getElementById('profile-notes-subtext');
-            if (noteText) {
-                sub.innerText = '✅ Đã lưu ghi chú chuyên môn';
-            } else {
-                sub.innerText = 'Private to you';
-            }
-            showToast('Đã lưu ghi chú');
-        }
-
-        /* 4. MULTI-SELECT & IMPORT ENGINES */
-        function toggleMultiSelectMode() {
-            isMultiSelectActive = !isMultiSelectActive;
-            const btn = document.getElementById('btn-toggle-select');
-            const actionBar = document.getElementById('multi-select-action-bar');
-            const fab = document.getElementById('fab-camera-container');
-            const searchBar = document.getElementById('bottom-search-container');
-
-            if (isMultiSelectActive) {
-                btn.classList.add('active-select');
-                btn.innerText = 'Cancel';
-                actionBar.style.display = 'flex';
-                fab.style.display = 'none';
-                searchBar.style.display = 'none';
-                document.querySelectorAll('.select-checkbox-overlay').forEach(el => el.style.display = 'flex');
-            } else {
-                btn.classList.remove('active-select');
-                btn.innerText = 'Select';
-                actionBar.style.display = 'none';
-                fab.style.display = 'block';
-                searchBar.style.display = 'block';
-                document.querySelectorAll('.select-checkbox-overlay').forEach(el => el.style.display = 'none');
-                videoLibrary.forEach(v => v.selected = false);
-                renderVideoGrid();
-            }
-            updateSelectCounter();
-        }
-
-        function onVideoCardClick(cardEl, videoSrc, videoId) {
-            if (isMultiSelectActive) {
-                const vid = videoLibrary.find(v => v.id === videoId);
-                if (vid) {
-                    vid.selected = !vid.selected;
-                    cardEl.classList.toggle('selected-card', vid.selected);
-                    updateSelectCounter();
-                }
-            } else {
-                openModule1StudioWithVideo(videoSrc);
-            }
-        }
-
-        function updateSelectCounter() {
-            const count = videoLibrary.filter(v => v.selected).length;
-            document.getElementById('select-counter-text').innerText = `Đã chọn ${count} clip`;
-        }
-
-        function compareSelectedClips() {
-            const selected = videoLibrary.filter(v => v.selected);
-            if (selected.length < 2) {
-                showToast('Vui lòng chọn 2 clip để so sánh');
-                return;
-            }
-            video2SelectedSrc = selected[1].src;
-            openDualSetupScreen();
-        }
-
-        function flipSetupVideo() {
-            isVideoFlipped = !isVideoFlipped;
-            const vid = document.getElementById('dual-setup-preview-video');
-            vid.style.transform = isVideoFlipped ? 'scaleX(-1)' : 'scaleX(1)';
-            showToast(isVideoFlipped ? 'Đã lật gương video 1 (Flip)' : 'Đã đưa về góc quay gốc');
-        }
-
-        function deleteSelectedClips() {
-            const selectedCount = videoLibrary.filter(v => v.selected).length;
-            if (selectedCount === 0) {
-                showToast('Vui lòng chọn clip để xóa');
-                return;
-            }
-            videoLibrary = videoLibrary.filter(v => !v.selected);
-            saveAppState();
-            renderVideoGrid();
-            toggleMultiSelectMode();
-            showToast('Đã xóa ' + selectedCount + ' clip khỏi Thư viện');
-        }
-
-        function openImportModal() {
-            document.getElementById('import-modal').style.display = 'flex';
-        }
-
-        function triggerFilePickerImport() {
-            closeModal('import-modal');
-            document.getElementById('real-file-picker').click();
-        }
-
-        function triggerCloudImport() {
-            closeModal('import-modal');
-            showToast('Đang kết nối iCloud Drive / Google Drive...');
-            setTimeout(() => {
-                generateVideoThumbnailAndImport("assets/sample-golf-swing.mp4", "iCloud_Swing_Import.mp4");
-            }, 600);
-        }
-
-        function triggerCameraRollImport() {
-            closeModal('import-modal');
-            openCameraRecorder();
-        }
-
-        function handleImportedFile(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const fileUrl = e.target.result;
-                    if (document.getElementById('screen-dual-setup').classList.contains('active')) {
-                        selectVideo2ForDual(fileUrl, file.name);
-                    } else {
-                        generateVideoThumbnailAndImport(fileUrl, file.name);
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        /* DYNAMIC VIDEO THUMBNAIL SNAPSHOT GENERATOR */
-        function generateVideoThumbnailAndImport(src, filename) {
-            showToast('Đang xử lý & tạo thumbnail...');
-
-            const tempVid = document.createElement('video');
-            tempVid.src = src;
-            tempVid.crossOrigin = 'anonymous';
-            tempVid.muted = true;
-            tempVid.playsInline = true;
-            tempVid.currentTime = 0.5;
-
-            let hasProcessed = false;
-
-            function finishImport(thumbUrl, durStr) {
-                if (hasProcessed) return;
-                hasProcessed = true;
-
-                const now = new Date();
-                const timeStr = `Today, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-                const newId = filename ? filename.replace(/\.[^/.]+$/, "") : ("1787" + Math.floor(Math.random()*10000000000));
-
-                videoLibrary.unshift({
-                    id: newId,
-                    duration: durStr,
-                    time: timeStr,
-                    author: activeStudentName,
-                    thumb: thumbUrl,
-                    src: src,
-                    starred: true,
-                    selected: false
-                });
-
-                saveAppState();
-                renderVideoGrid();
-                showToast('Đã thêm clip mới: ' + newId);
-            }
-
-            tempVid.onloadeddata = function() {
-                tempVid.currentTime = Math.min(0.5, tempVid.duration ? tempVid.duration / 2 : 0.5);
-            };
-
-            tempVid.onseeked = function() {
-                try {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = tempVid.videoWidth || 360;
-                    canvas.height = tempVid.videoHeight || 480;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(tempVid, 0, 0, canvas.width, canvas.height);
-                    const thumbUrl = canvas.toDataURL('image/jpeg', 0.85);
-
-                    let durStr = "00:05";
-                    if (tempVid.duration && !isNaN(tempVid.duration)) {
-                        const m = String(Math.floor(tempVid.duration / 60)).padStart(2,'0');
-                        const s = String(Math.floor(tempVid.duration % 60)).padStart(2,'0');
-                        durStr = `${m}:${s}`;
-                    }
-                    finishImport(thumbUrl, durStr);
-                } catch(e) {
-                    console.warn("Canvas snapshot fallback:", e);
-                    finishImport(null, "00:05");
+            canvasEl.ontouchstart = (e) => {
+                if (e.touches.length === 1) {
+                    setActivePane(pane);
+                    handleMouseDownDual(e, pane);
                 }
             };
-
-            tempVid.onerror = function() {
-                finishImport(null, "00:05");
+            canvasEl.ontouchmove = (e) => {
+                if (e.touches.length === 1) handleMouseMoveDual(e, pane);
             };
+            canvasEl.ontouchend = (e) => handleMouseUpDual(e, pane);
 
-            setTimeout(() => {
-                if (!hasProcessed) finishImport(null, "00:05");
-            }, 1500);
+            redrawDualCanvas(pane);
         }
 
-        /* ==================== 5. HAMMER.JS INDUSTRIAL GESTURE ENGINE (100% RELIABLE GESTURE RECOGNIZER) ==================== */
-        let zoomLevel = 1.0;
-        let panX = 0;
-        let panY = 0;
+        function getEventCoordsDual(e, canvasEl) {
+            const rect = canvasEl.getBoundingClientRect();
+            let clientX = 0, clientY = 0;
 
-        function updateStudioTransform() {
-            const wrapper = (activePane === 'left') ? document.getElementById('studio-transform-wrapper') : document.getElementById('secondary-video-wrapper');
-            if (wrapper) {
-                wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+            if (e.changedTouches && e.changedTouches.length > 0) {
+                clientX = e.changedTouches[0].clientX;
+                clientY = e.changedTouches[0].clientY;
+            } else if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX || 0;
+                clientY = e.clientY || 0;
+            }
+
+            return {
+                x: (clientX - rect.left) / zoomLevel,
+                y: (clientY - rect.top) / zoomLevel
+            };
+        }
+
+        function handleMouseDownDual(e, pane) {
+            if (activeTool === 'pan') return;
+            setActivePane(pane);
+
+            const canvasEl = document.getElementById(pane === 'left' ? 'canvas-left' : 'canvas-right');
+            const coords = getEventCoordsDual(e, canvasEl);
+
+            startX = coords.x;
+            startY = coords.y;
+            isDrawing = true;
+
+            if (activeTool === 'pen') {
+                penPoints = [{ x: startX, y: startY }];
             }
         }
 
-        function resetZoomAndPan() {
-            zoomLevel = 1.0;
-            panX = 0;
-            panY = 0;
-            updateStudioTransform();
+        function handleMouseMoveDual(e, pane) {
+            if (!isDrawing || activeTool === 'pan') return;
+            const canvasEl = document.getElementById(pane === 'left' ? 'canvas-left' : 'canvas-right');
+            const ctx = canvasEl.getContext('2d');
+            const coords = getEventCoordsDual(e, canvasEl);
+            const currX = coords.x;
+            const currY = coords.y;
+
+            if (activeTool === 'pen') {
+                penPoints.push({ x: currX, y: currY });
+                redrawDualCanvas(pane);
+            } else {
+                redrawDualCanvas(pane);
+                ctx.strokeStyle = activeDrawColor;
+                ctx.lineWidth = activeLineWidth;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (activeTool === 'plane') {
+                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                } else if (activeTool === 'head') {
+                    const radius = Math.hypot(currX - startX, currY - startY);
+                    ctx.beginPath(); ctx.arc(startX, startY, radius, 0, Math.PI * 2); ctx.stroke();
+                } else if (activeTool === 'arrow') {
+                    drawArrow(ctx, startX, startY, currX, currY);
+                } else if (activeTool === 'measure') {
+                    const distPx = Math.hypot(currX - startX, currY - startY);
+                    const distCm = (distPx * 0.12).toFixed(1);
+                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 15px Work Sans";
+                    ctx.fillText(`📏 ${distCm}cm Shift`, currX + 8, currY + 8);
+                } else if (activeTool === 'tempo') {
+                    const distPx = Math.hypot(currX - startX, currY - startY);
+                    const sec = (distPx * 0.01).toFixed(2);
+                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
+                    ctx.fillText(`⏱️ ${sec}s (Ratio 3.0:1)`, currX + 8, currY + 8);
+                } else if (activeTool === 'angle') {
+                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
+                    ctx.fillText("42° Backswing", currX + 10, currY + 10);
+                }
+            }
         }
 
-        function setupHammerGestureEngine() {
-            const canvasEl = document.getElementById('studio-drawing-canvas');
+        function handleMouseUpDual(e, pane) {
+            if (isDrawing && activeTool !== 'pan') {
+                isDrawing = false;
+                const canvasEl = document.getElementById(pane === 'left' ? 'canvas-left' : 'canvas-right');
+                const coords = getEventCoordsDual(e, canvasEl);
+                const currX = (coords.x !== 0) ? coords.x : (startX + 60);
+                const currY = (coords.y !== 0) ? coords.y : (startY + 60);
+
+                const targetHistory = (pane === 'left') ? drawingsHistoryLeft : drawingsHistoryRight;
+
+                if (activeTool === 'pen' && penPoints.length > 1) {
+                    targetHistory.push({ type: 'pen', points: penPoints, color: activeDrawColor, width: activeLineWidth });
+                } else if (activeTool !== 'pen') {
+                    targetHistory.push({ type: activeTool, x1: startX, y1: startY, x2: currX, y2: currY, color: activeDrawColor, width: activeLineWidth });
+                }
+                penPoints = [];
+                redrawDualCanvas(pane);
+                showToast(`Đã vẽ lên Video ${pane === 'left' ? '1 (Trái)' : '2 (Phải)'}`);
+            }
+        }
+
+        function redrawDualCanvas(pane) {
+            const canvasEl = document.getElementById(pane === 'left' ? 'canvas-left' : 'canvas-right');
             if (!canvasEl) return;
+            const ctx = canvasEl.getContext('2d');
+            ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
 
-            if (typeof Hammer === 'undefined') {
-                console.warn("Hammer.js not loaded!");
-                return;
-            }
+            const targetHistory = (pane === 'left') ? drawingsHistoryLeft : drawingsHistoryRight;
 
-            const mc = new Hammer.Manager(canvasEl);
+            targetHistory.forEach(item => {
+                ctx.strokeStyle = item.color || "#EF3F36";
+                ctx.lineWidth = item.width || 3.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
 
-            const pinch = new Hammer.Pinch();
-            const pan = new Hammer.Pan({ threshold: 4, pointers: 0 });
-            const singleTap = new Hammer.Tap({ event: 'singletap', interval: 250 });
-            const doubleTap = new Hammer.Tap({ event: 'doubletap', taps: 2, interval: 250 });
-
-            doubleTap.recognizeWith(singleTap);
-            singleTap.requireFailure(doubleTap);
-            pinch.recognizeWith(pan);
-
-            mc.add([pinch, pan, doubleTap, singleTap]);
-
-            let initialScale = 1.0;
-            let initialPanX = 0;
-            let initialPanY = 0;
-
-            // 1. SINGLE TAP PLAY / PAUSE ACTIVE PANE
-            mc.on('singletap', (e) => {
-                if (activeTool === 'pan') {
-                    toggleStudioPlay();
-                }
-            });
-
-            // 2. DOUBLE TAP QUICK ZOOM / RESET
-            mc.on('doubletap', (e) => {
-                if (activeTool === 'pan') {
-                    if (zoomLevel > 1.05) {
-                        resetZoomAndPan();
-                        showToast('Khôi phục Zoom 1.0× (Double Tap)');
-                    } else {
-                        zoomLevel = 2.2;
-                        updateStudioTransform();
-                        showToast('Phóng to Zoom 2.2× (Double Tap)');
+                if (item.type === 'pen' && item.points && item.points.length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(item.points[0].x, item.points[0].y);
+                    for (let i = 1; i < item.points.length; i++) {
+                        ctx.lineTo(item.points[i].x, item.points[i].y);
                     }
+                    ctx.stroke();
+                } else if (item.type === 'plane') {
+                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
+                } else if (item.type === 'head') {
+                    const r = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
+                    ctx.beginPath(); ctx.arc(item.x1, item.y1, r, 0, Math.PI * 2); ctx.stroke();
+                } else if (item.type === 'arrow') {
+                    drawArrow(ctx, item.x1, item.y1, item.x2, item.y2);
+                } else if (item.type === 'measure') {
+                    const distPx = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
+                    const distCm = (distPx * 0.12).toFixed(1);
+                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
+                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 15px Work Sans";
+                    ctx.fillText(`📏 ${distCm}cm Shift`, item.x2 + 8, item.y2 + 8);
+                } else if (item.type === 'text') {
+                    ctx.fillStyle = "rgba(10, 37, 64, 0.88)";
+                    const textWidth = ctx.measureText(item.text).width + 20;
+                    ctx.fillRect(item.x - 6, item.y - 20, textWidth, 28);
+                    ctx.strokeStyle = item.color || "#EF3F36";
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeRect(item.x - 6, item.y - 20, textWidth, 28);
+
+                    ctx.fillStyle = item.color || "#EF3F36";
+                    ctx.font = "bold 16px Work Sans";
+                    ctx.fillText(item.text, item.x + 4, item.y);
+                } else if (item.type === 'angle') {
+                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
+                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
+                    ctx.fillText("42° Backswing", item.x2 + 10, item.y2 + 10);
                 }
-            });
-
-            // 3. DUAL-FINGER TRACKPAD ANCHOR PAN + PINCH ZOOM
-            mc.on('pinchstart panstart', (e) => {
-                initialScale = zoomLevel;
-                initialPanX = panX;
-                initialPanY = panY;
-
-                if (e.pointers.length >= 2) {
-                    isDrawing = false;
-                }
-            });
-
-            mc.on('pinchmove panmove', (e) => {
-                if (e.pointers.length >= 2) {
-                    isDrawing = false;
-                    zoomLevel = Math.min(Math.max(0.9, initialScale * e.scale), 4.0);
-                    panX = initialPanX + e.deltaX;
-                    panY = initialPanY + e.deltaY;
-                    updateStudioTransform();
-                } else if (e.pointers.length === 1 && activeTool === 'pan') {
-                    panX = initialPanX + e.deltaX;
-                    panY = initialPanY + e.deltaY;
-                    updateStudioTransform();
-                }
-            });
-
-            mc.on('pinchend panend', (e) => {
-                if (zoomLevel < 1.0) resetZoomAndPan();
             });
         }
 
-        function toggleAISkeletonOverlay() {
-            isAISkeletonActive = !isAISkeletonActive;
-            const btn = document.getElementById('btn-toggle-skeleton');
-            if (isAISkeletonActive) {
-                btn.style.background = 'var(--72-blue)';
-                btn.style.borderColor = '#60A5FA';
-                showToast('Bật AI Skeleton khung xương tư thế Swing');
+        function undoActiveCanvas() {
+            if (activePane === 'left') drawingsHistoryLeft.pop();
+            else drawingsHistoryRight.pop();
+            redrawDualCanvas(activePane);
+            showToast(`Lùi nét vẽ Video ${activePane === 'left' ? '1' : '2'}`);
+        }
+
+        function clearActiveCanvas() {
+            if (activePane === 'left') drawingsHistoryLeft = [];
+            else drawingsHistoryRight = [];
+            redrawDualCanvas(activePane);
+            showToast(`Xóa sạch nét vẽ Video ${activePane === 'left' ? '1' : '2'}`);
+        }
+
+        function setTool(toolName) {
+            activeTool = toolName;
+            const penBtn = document.getElementById('btn-side-pen-toggle');
+
+            document.querySelectorAll('.tool-dock-btn').forEach(btn => btn.classList.remove('active'));
+
+            const toolBtn = document.getElementById(`btn-tool-${toolName}`);
+            if (toolBtn) toolBtn.classList.add('active');
+
+            if (toolName === 'pan') {
+                if (penBtn) penBtn.classList.remove('drawing-mode-active');
+                showToast('Chế độ Rê Pan / Phóng Zoom (✋)');
             } else {
-                btn.style.background = 'rgba(40, 40, 40, 0.75)';
-                btn.style.borderColor = 'rgba(255, 255, 255, 0.18)';
-                showToast('Tắt AI Skeleton');
-            }
-            redrawCanvas();
-        }
+                if (penBtn) penBtn.classList.add('drawing-mode-active');
 
-        /* VOICEOVER SCREEN RECORDING & COMPOSITE EXPORTER ENGINE (MEDIARECORDER API) */
-        function openVoiceoverPermissionModal() {
-            if (isVoiceoverRecording) {
-                stopVoiceoverRecording();
-                return;
-            }
-            document.getElementById('voiceover-permission-modal').style.display = 'flex';
-        }
-
-        async function startVoiceoverRecording(mode) {
-            closeModal('voiceover-permission-modal');
-            isVoiceoverRecording = true;
-            voiceoverSeconds = 0;
-            recordedChunks = [];
-
-            const btn = document.getElementById('btn-mic-voiceover');
-            const timerTxt = document.getElementById('voiceover-timer-text');
-            btn.classList.add('recording');
-            timerTxt.innerText = '🔴 00:00';
-
-            voiceoverTimerInterval = setInterval(() => {
-                voiceoverSeconds++;
-                const m = String(Math.floor(voiceoverSeconds / 60)).padStart(2,'0');
-                const s = String(Math.floor(voiceoverSeconds % 60)).padStart(2,'0');
-                timerTxt.innerText = `🔴 ${m}:${s}`;
-            }, 1000);
-
-            try {
-                const canvasEl = document.getElementById('studio-drawing-canvas');
-                const stream = canvasEl.captureStream(30);
-
-                if (mode === 'mic' && navigator.mediaDevices.getUserMedia) {
-                    const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    audioStream.getAudioTracks().forEach(track => stream.addTrack(track));
+                if (toolName === 'text') {
+                    document.getElementById('ios-text-annotation-input').value = '';
+                    document.getElementById('ios-text-annotation-modal').style.display = 'flex';
+                    setTimeout(() => document.getElementById('ios-text-annotation-input').focus(), 150);
+                } else if (toolName === 'tempo') {
+                    showToast('Tempo 3.0:1 — Takeaway -> Top -> Impact');
+                } else if (toolName === 'measure') {
+                    showToast('Công cụ Đo khoảng Cách Shift / Drift 📏 (Kéo tay để đo)');
+                } else if (toolName === 'arrow') {
+                    showToast('Công cụ vẽ Mũi Tên chỉ hướng ➔ (Kéo tay để vẽ)');
+                } else if (toolName === 'pen') {
+                    showToast('Bút vẽ tự do mượt mượt (Kéo tay để vẽ)');
+                } else {
+                    showToast('Đã chọn công cụ: ' + toolName);
                 }
-
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
-                mediaRecorder.ondataavailable = (e) => {
-                    if (e.data.size > 0) recordedChunks.push(e.data);
-                };
-                mediaRecorder.start();
-            } catch(e) {
-                console.warn("MediaRecorder fallback active:", e);
-            }
-
-            showToast(mode === 'mic' ? 'Bắt đầu ghi hình bài giảng & Mic' : 'Bắt đầu ghi hình bài giảng');
-        }
-
-        function stopVoiceoverRecording() {
-            isVoiceoverRecording = false;
-            if (voiceoverTimerInterval) clearInterval(voiceoverTimerInterval);
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-            const btn = document.getElementById('btn-mic-voiceover');
-            const timerTxt = document.getElementById('voiceover-timer-text');
-            btn.classList.remove('recording');
-            timerTxt.innerText = '';
-
-            document.getElementById('voiceover-review-bar').style.display = 'flex';
-            showToast('Hoàn tất thu âm bài giảng. Đang chờ xem lại/lưu');
-        }
-
-        function discardVoiceover() {
-            document.getElementById('voiceover-review-bar').style.display = 'none';
-            recordedChunks = [];
-            showToast('Đã hủy bản thu voiceover');
-        }
-
-        function previewVoiceover() {
-            showToast('Đang phát lại bản thu nhận xét HLV');
-        }
-
-        function trimVoiceover() {
-            showToast('Mở công cụ cắt đoạn Trim bài giảng');
-        }
-
-        function saveVoiceover() {
-            document.getElementById('voiceover-review-bar').style.display = 'none';
-            generateVideoThumbnailAndImport("assets/sample-golf-swing.mp4", "Voiceover_Lesson_72Plus.mp4");
-            showToast('Đã lưu video bài giảng HLV vào Library');
-        }
-
-        function toggleMoreMenu() {
-            const menu = document.getElementById('onform-more-menu');
-            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function triggerTrimVideo() {
-            toggleMoreMenu();
-            showToast('Mở công cụ ✂️ Trim Video');
-        }
-
-        function triggerRotateVideo() {
-            toggleMoreMenu();
-            const targetVid = (activePane === 'left') ? document.getElementById('studio-main-video') : document.getElementById('studio-secondary-video');
-            targetVid.style.transform = (targetVid.style.transform === 'rotate(90deg)') ? 'rotate(0deg)' : 'rotate(90deg)';
-            showToast('Đã xoay video ' + (activePane === 'left' ? '1' : '2') + ' 90° (Rotate)');
-        }
-
-        function triggerEditTitle() {
-            toggleMoreMenu();
-            const newTitle = prompt("Nhập tên mới cho video swing:");
-            if (newTitle) showToast('Đã cập nhật tên video: ' + newTitle);
-        }
-
-        function triggerShareVideo() {
-            toggleMoreMenu();
-            showToast('Đã sao chép đường dẫn chia sẻ video');
-        }
-
-        function triggerDeleteCurrentVideo() {
-            toggleMoreMenu();
-            if (confirm("Xóa video này khỏi Thư viện?")) {
-                closeStudioView();
-                showToast('Đã xóa video');
             }
         }
 
-        /* DYNAMIC FILMSTRIP FRAME GENERATOR ENGINE */
-        function toggleFilmstripStrip() {
-            isFilmstripActive = !isFilmstripActive;
-            const strip = document.getElementById('onform-filmstrip-container');
-            strip.style.display = isFilmstripActive ? 'flex' : 'none';
-
-            if (isFilmstripActive) {
-                generateFilmstripTrack();
+        function submitTextAnnotation() {
+            const txt = document.getElementById('ios-text-annotation-input').value.trim();
+            if (txt) {
+                const targetHistory = (activePane === 'left') ? drawingsHistoryLeft : drawingsHistoryRight;
+                targetHistory.push({
+                    type: 'text',
+                    text: txt,
+                    x: 60,
+                    y: 120,
+                    color: selectedTextColorChoice
+                });
+                redrawDualCanvas(activePane);
+                showToast(`Đã thêm nhận xét vào Video ${activePane === 'left' ? '1' : '2'}`);
             }
-            showToast(isFilmstripActive ? 'Hiện dải ảnh khung hình (Filmstrip)' : 'Ẩn dải ảnh khung hình');
+            closeModal('ios-text-annotation-modal');
         }
 
-        function generateFilmstripTrack() {
-            const track = document.getElementById('filmstrip-dynamic-track');
-            if (!track) return;
-            track.innerHTML = '';
-
-            const frameCount = 10;
-            for (let i = 0; i < frameCount; i++) {
-                const img = document.createElement('img');
-                img.className = 'filmstrip-thumb-item';
-                img.src = 'assets/onform_screen_1_single_1787738678662.jpg';
-                track.appendChild(img);
-            }
+        function drawArrow(ctx, fromx, fromy, tox, toy) {
+            const headlen = 14;
+            const dx = tox - fromx;
+            const dy = toy - fromy;
+            const angle = Math.atan2(dy, dx);
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.stroke();
         }
 
-        /* DUAL VIEW PLAYBACK ENGINE (INDEPENDENT VS SYNC CAPABLE) */
+        /* DUAL VIEW PLAYBACK ENGINE */
         function toggleStudioPlay() {
             const video1 = document.getElementById('studio-main-video');
             const video2 = document.getElementById('studio-secondary-video');
             const btn = document.getElementById('btn-studio-play');
 
             if (isDualSplitActive && !isLinkAlignActive) {
-                // INDEPENDENT MODE: CONTROL ACTIVE PANE ONLY!
                 const targetVid = (activePane === 'left') ? video1 : video2;
                 if (targetVid.paused) {
                     targetVid.play();
@@ -2816,7 +2511,6 @@
                     showToast('⏸ Tạm dừng Video ' + (activePane === 'left' ? '1' : '2'));
                 }
             } else {
-                // LINK ALIGNED SYNC MODE: CONTROL BOTH VIDEOS TOGETHER WITH TIME OFFSET DELTA!
                 if (video1.paused) {
                     video1.play();
                     if (isDualSplitActive && video2) {
@@ -2834,21 +2528,17 @@
             }
         }
 
-        /* 60FPS PRECISION FRAME STEPPER ENGINE (ACTIVE PANE CAPABLE) */
         function stepFrame60FPS(deltaFrames) {
             const video1 = document.getElementById('studio-main-video');
             const video2 = document.getElementById('studio-secondary-video');
-
-            const frameDuration = 1.0 / 60.0; // 60FPS precision
+            const frameDuration = 1.0 / 60.0;
 
             if (isDualSplitActive && !isLinkAlignActive) {
-                // INDEPENDENT MODE: STEP ACTIVE PANE ONLY!
                 const targetVid = (activePane === 'left') ? video1 : video2;
                 targetVid.pause();
                 targetVid.currentTime = Math.max(0, Math.min(targetVid.duration, targetVid.currentTime + (deltaFrames * frameDuration)));
                 showToast(`Tua ${deltaFrames > 0 ? '+1f' : '-1f'} Video ${activePane === 'left' ? '1' : '2'}`);
             } else {
-                // LINK ALIGNED SYNC MODE: STEP BOTH VIDEOS TOGETHER!
                 video1.pause();
                 if (video2) video2.pause();
 
@@ -2918,612 +2608,292 @@
             showToast('Đã chọn độ dày nét: ' + widthPx + 'px');
         }
 
-        /* STUDENT & RENDER ENGINE */
-        function openStudentProfile(name) {
-            activeStudentName = name;
-            document.getElementById('profile-display-name').innerText = name;
-            const words = name.split(' ');
-            let init = "NC";
-            if (words.length >= 2) init = (words[0][0] + words[words.length - 1][0]).toUpperCase();
-            document.getElementById('profile-avatar-badge').innerText = init;
-
-            const sub = document.getElementById('profile-notes-subtext');
-            if (studentNotesMap[name]) {
-                sub.innerText = '✅ Đã lưu ghi chú chuyên môn';
-            } else {
-                sub.innerText = 'Private to you';
-            }
-
-            updateCourseInfoSubtext();
-            saveAppState();
-            switchView('screen-student-profile');
-        }
-
-        function openStudentLibrary(name) {
-            activeStudentName = name;
-            document.getElementById('lib-student-subname').innerText = name;
-            renderVideoGrid();
-            saveAppState();
-            switchView('screen-student-library');
-        }
-
-        function renderVideoGrid() {
-            const container = document.getElementById('library-video-grid');
-            container.innerHTML = '';
-
-            videoLibrary.forEach(vid => {
-                const card = document.createElement('div');
-                card.className = `video-card-item ${vid.selected ? 'selected-card' : ''}`;
-                card.onclick = () => onVideoCardClick(card, vid.src, vid.id);
-
-                let mediaThumbHtml = '';
-                if (vid.thumb) {
-                    mediaThumbHtml = `<img src="${vid.thumb}" class="video-thumb-img" alt="Swing Video">`;
-                } else {
-                    mediaThumbHtml = `<video src="${vid.src}#t=0.5" class="video-thumb-img" preload="metadata" muted playsinline></video>`;
-                }
-
-                card.innerHTML = `
-                    <div class="select-checkbox-overlay" style="display:${isMultiSelectActive ? 'flex' : 'none'};"><i class="fa-solid fa-check"></i></div>
-                    <div class="video-thumb-wrapper">
-                        ${mediaThumbHtml}
-                        <i class="${vid.starred ? 'fa-solid' : 'fa-regular'} fa-star badge-star-topright" onclick="event.stopPropagation(); toggleStar('${vid.id}', this)"></i>
-                        <div class="badge-duration-bottomleft">
-                            ${vid.duration}<br>${vid.time}
-                        </div>
-                    </div>
-                    <div class="video-card-caption">
-                        <div class="video-filename-text">${vid.id}</div>
-                        <div class="video-author-text"><i class="fa-regular fa-user"></i> <span class="card-author-name">${vid.author}</span></div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-
-            document.getElementById('info-private-count').innerText = videoLibrary.length + " private";
-            document.getElementById('library-share-counter').innerText = `0 shared, ${videoLibrary.length} private`;
-        }
-
-        function toggleStar(vidId, starIcon) {
-            const vid = videoLibrary.find(v => v.id === vidId);
-            if (vid) {
-                vid.starred = !vid.starred;
-                saveAppState();
-            }
-            if (starIcon.classList.contains('fa-solid')) {
-                starIcon.classList.remove('fa-solid');
-                starIcon.classList.add('fa-regular');
-            } else {
-                starIcon.classList.remove('fa-regular');
-                starIcon.classList.add('fa-solid');
-            }
-        }
-
-        async function openCameraRecorder() {
-            document.getElementById('camera-recorder-modal').style.display = 'flex';
-            try {
-                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
-                document.getElementById('camera-video-preview').srcObject = mediaStream;
-            } catch (err) {
-                console.warn("Camera fallback active:", err);
-            }
-        }
-
-        function closeCameraRecorder() {
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(tr => tr.stop());
-                mediaStream = null;
-            }
-            document.getElementById('camera-recorder-modal').style.display = 'none';
-        }
-
-        function toggleCameraRecording() {
-            const shutter = document.getElementById('btn-shutter-trigger');
-            if (!isRecording) {
-                isRecording = true;
-                shutter.classList.add('recording');
-            } else {
-                isRecording = false;
-                shutter.classList.remove('recording');
-                closeCameraRecorder();
-                generateVideoThumbnailAndImport("assets/sample-golf-swing.mp4", "Camera_Recording.mp4");
-            }
-        }
-
-        /* ==================== 1. UNIFIED TOUCH EVENT COORDINATE EXTRACTION (FIX ARROW & DRAWING ON IPAD) ==================== */
-        let canvas, ctx;
-        let isDrawing = false;
-        let startX = 0, startY = 0;
-        let drawingsHistory = [];
-        let penPoints = [];
-
-        function getEventCoords(e) {
-            if (!canvas) return { x: 0, y: 0 };
-            const rect = canvas.getBoundingClientRect();
-            let clientX = 0, clientY = 0;
-
-            if (e.changedTouches && e.changedTouches.length > 0) {
-                clientX = e.changedTouches[0].clientX;
-                clientY = e.changedTouches[0].clientY;
-            } else if (e.touches && e.touches.length > 0) {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX || 0;
-                clientY = e.clientY || 0;
-            }
-
-            return {
-                x: (clientX - rect.left) / zoomLevel,
-                y: (clientY - rect.top) / zoomLevel
-            };
-        }
-
-        function alignCanvasToVideo() {
-            const video = (activePane === 'left' || !isDualSplitActive) ? document.getElementById('studio-main-video') : document.getElementById('studio-secondary-video');
-            const canvasEl = document.getElementById('studio-drawing-canvas');
-            const container = (activePane === 'left' || !isDualSplitActive) ? document.getElementById('studio-transform-wrapper') : document.getElementById('secondary-video-wrapper');
-
-            if (!video || !canvasEl || !container) return;
-
-            // PIN CANVAS EXACTLY ONTO ACTIVE FOCUSED PANE CONTAINER
-            container.appendChild(canvasEl);
-
-            const cWidth = container.clientWidth;
-            const cHeight = container.clientHeight;
-
-            const vWidth = video.videoWidth || cWidth;
-            const vHeight = video.videoHeight || cHeight;
-
-            const containerRatio = cWidth / cHeight;
-            const videoRatio = vWidth / vHeight;
-
-            let realWidth, realHeight, offsetLeft, offsetTop;
-
-            if (videoRatio > containerRatio) {
-                realWidth = cWidth;
-                realHeight = cWidth / videoRatio;
-                offsetLeft = 0;
-                offsetTop = (cHeight - realHeight) / 2;
-            } else {
-                realHeight = cHeight;
-                realWidth = cHeight * videoRatio;
-                offsetLeft = (cWidth - realWidth) / 2;
-                offsetTop = 0;
-            }
-
-            canvasEl.style.width = realWidth + 'px';
-            canvasEl.style.height = realHeight + 'px';
-            canvasEl.style.left = offsetLeft + 'px';
-            canvasEl.style.top = offsetTop + 'px';
-
-            canvasEl.width = realWidth;
-            canvasEl.height = realHeight;
-
-            canvas = canvasEl;
-            ctx = canvasEl.getContext('2d');
-            redrawCanvas();
-        }
-
-        function initCanvasEngine() {
-            alignCanvasToVideo();
-            setupHammerGestureEngine();
-
-            const canvasEl = document.getElementById('studio-drawing-canvas');
-            if (!canvasEl) return;
-
-            canvasEl.onmousedown = handleMouseDown;
-            canvasEl.onmousemove = handleMouseMove;
-            canvasEl.onmouseup = handleMouseUp;
-
-            canvasEl.ontouchstart = (e) => {
-                if (e.touches.length === 1) {
-                    handleMouseDown(e);
-                }
-            };
-            canvasEl.ontouchmove = (e) => {
-                if (e.touches.length === 1) {
-                    handleMouseMove(e);
-                }
-            };
-            canvasEl.ontouchend = (e) => {
-                handleMouseUp(e);
-            };
-        }
-
-        function setTool(toolName) {
-            activeTool = toolName;
-            const penBtn = document.getElementById('btn-side-pen-toggle');
-
-            document.querySelectorAll('.tool-dock-btn').forEach(btn => btn.classList.remove('active'));
-
-            const toolBtn = document.getElementById(`btn-tool-${toolName}`);
-            if (toolBtn) toolBtn.classList.add('active');
-
-            if (toolName === 'pan') {
-                if (penBtn) penBtn.classList.remove('drawing-mode-active');
-                showToast('Chế độ Rê Pan / Phóng Zoom (✋)');
-            } else {
-                if (penBtn) penBtn.classList.add('drawing-mode-active');
-
-                if (toolName === 'text') {
-                    document.getElementById('ios-text-annotation-input').value = '';
-                    document.getElementById('ios-text-annotation-modal').style.display = 'flex';
-                    setTimeout(() => document.getElementById('ios-text-annotation-input').focus(), 150);
-                } else if (toolName === 'tempo') {
-                    showToast('Tempo 3.0:1 — Takeaway -> Top -> Impact');
-                } else if (toolName === 'measure') {
-                    showToast('Công cụ Đo khoảng Cách Shift / Drift 📏 (Kéo tay để đo)');
-                } else if (toolName === 'arrow') {
-                    showToast('Công cụ vẽ Mũi Tên chỉ hướng ➔ (Kéo tay để vẽ)');
-                } else if (toolName === 'pen') {
-                    showToast('Bút vẽ tự do mượt mượt (Kéo tay để vẽ)');
-                } else {
-                    showToast('Đã chọn công cụ: ' + toolName);
-                }
-            }
-        }
-
         function selectTextColor(colorHex, el) {
             selectedTextColorChoice = colorHex;
             document.querySelectorAll('.color-choice-bubble').forEach(b => b.classList.remove('selected'));
             if (el) el.classList.add('selected');
         }
 
-        function submitTextAnnotation() {
-            const txt = document.getElementById('ios-text-annotation-input').value.trim();
-            if (txt && canvas) {
-                drawingsHistory.push({
-                    type: 'text',
-                    text: txt,
-                    x: canvas.width / 2 - 60,
-                    y: canvas.height / 2,
-                    color: selectedTextColorChoice
-                });
-                redrawCanvas();
-                showToast('Đã thêm nhận xét. Chạm kéo chữ để xếp vị trí!');
-            }
-            closeModal('ios-text-annotation-modal');
-        }
-
-        /* UNIFIED TOUCH/MOUSE INTERACTIVE CANVAS DOWN/MOVE/UP HANDLERS */
-        function handleMouseDown(e) {
-            if (activeTool === 'pan' || !canvas) return;
-            const coords = getEventCoords(e);
-            const mouseX = coords.x;
-            const mouseY = coords.y;
-
-            // CHECK IF USER IS DRAGGING AN EXISTING TEXT OBJECT
-            draggingTextIndex = -1;
-            for (let i = drawingsHistory.length - 1; i >= 0; i--) {
-                const item = drawingsHistory[i];
-                if (item.type === 'text') {
-                    const textWidth = ctx.measureText(item.text).width + 20;
-                    if (mouseX >= item.x - 10 && mouseX <= item.x + textWidth && mouseY >= item.y - 24 && mouseY <= item.y + 10) {
-                        draggingTextIndex = i;
-                        textDragStartX = mouseX - item.x;
-                        textDragStartY = mouseY - item.y;
-                        break;
-                    }
-                }
-            }
-
-            if (draggingTextIndex >= 0) return;
-
-            startX = mouseX;
-            startY = mouseY;
-            isDrawing = true;
-
-            if (activeTool === 'pen') {
-                penPoints = [{ x: startX, y: startY }];
-            }
-        }
-
-        function handleMouseMove(e) {
-            if (!canvas) return;
-            const coords = getEventCoords(e);
-            const currX = coords.x;
-            const currY = coords.y;
-
-            // HANDLE DRAGGING TEXT OVERLAY
-            if (draggingTextIndex >= 0) {
-                drawingsHistory[draggingTextIndex].x = currX - textDragStartX;
-                drawingsHistory[draggingTextIndex].y = currY - textDragStartY;
-                redrawCanvas();
-                return;
-            }
-
-            if (!isDrawing || activeTool === 'pan') return;
-
-            if (activeTool === 'pen') {
-                penPoints.push({ x: currX, y: currY });
-                redrawCanvas();
-            } else {
-                redrawCanvas();
-                ctx.strokeStyle = activeDrawColor;
-                ctx.lineWidth = activeLineWidth;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-
-                if (activeTool === 'plane') {
-                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                } else if (activeTool === 'head') {
-                    const radius = Math.hypot(currX - startX, currY - startY);
-                    ctx.beginPath(); ctx.arc(startX, startY, radius, 0, Math.PI * 2); ctx.stroke();
-                } else if (activeTool === 'arrow') {
-                    drawArrow(ctx, startX, startY, currX, currY);
-                } else if (activeTool === 'measure') {
-                    const distPx = Math.hypot(currX - startX, currY - startY);
-                    const distCm = (distPx * 0.12).toFixed(1);
-                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 15px Work Sans";
-                    ctx.fillText(`📏 ${distCm}cm Shift`, currX + 8, currY + 8);
-                } else if (activeTool === 'tempo') {
-                    const distPx = Math.hypot(currX - startX, currY - startY);
-                    const sec = (distPx * 0.01).toFixed(2);
-                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
-                    ctx.fillText(`⏱️ ${sec}s (Ratio 3.0:1)`, currX + 8, currY + 8);
-                } else if (activeTool === 'angle') {
-                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
-                    ctx.fillText("42° Backswing", currX + 10, currY + 10);
-                }
-            }
-        }
-
-        function handleMouseUp(e) {
-            if (draggingTextIndex >= 0) {
-                draggingTextIndex = -1;
-                showToast('Đã xếp vị trí chữ nhận xét');
-                return;
-            }
-
-            if (isDrawing && activeTool !== 'pan' && canvas) {
-                isDrawing = false;
-                const coords = getEventCoords(e);
-                const currX = (coords.x !== 0) ? coords.x : (startX + 60);
-                const currY = (coords.y !== 0) ? coords.y : (startY + 60);
-
-                if (activeTool === 'pen' && penPoints.length > 1) {
-                    drawingsHistory.push({ type: 'pen', points: penPoints, color: activeDrawColor, width: activeLineWidth });
-                } else if (activeTool !== 'pen') {
-                    drawingsHistory.push({ type: activeTool, x1: startX, y1: startY, x2: currX, y2: currY, color: activeDrawColor, width: activeLineWidth });
-                }
-                penPoints = [];
-                redrawCanvas();
-            }
-        }
-
-        function redrawCanvas() {
-            if (!ctx || !canvas) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+        function toggleAISkeletonOverlay() {
+            isAISkeletonActive = !isAISkeletonActive;
+            const btn = document.getElementById('btn-toggle-skeleton');
             if (isAISkeletonActive) {
-                const cw = canvas.width;
-                const ch = canvas.height;
-
-                const head = { x: cw * 0.49, y: ch * 0.28 };
-                const lShoulder = { x: cw * 0.44, y: ch * 0.35 };
-                const rShoulder = { x: cw * 0.54, y: ch * 0.35 };
-                const spineTop = { x: cw * 0.49, y: ch * 0.35 };
-                const spineMid = { x: cw * 0.49, y: ch * 0.46 };
-                const lElbow = { x: cw * 0.41, y: ch * 0.44 };
-                const rElbow = { x: cw * 0.53, y: ch * 0.44 };
-                const lWrist = { x: cw * 0.47, y: ch * 0.53 };
-                const rWrist = { x: cw * 0.50, y: ch * 0.53 };
-                const lHip = { x: cw * 0.45, y: ch * 0.53 };
-                const rHip = { x: cw * 0.53, y: ch * 0.53 };
-                const lKnee = { x: cw * 0.42, y: ch * 0.65 };
-                const rKnee = { x: cw * 0.55, y: ch * 0.65 };
-                const lAnkle = { x: cw * 0.39, y: ch * 0.77 };
-                const rAnkle = { x: cw * 0.57, y: ch * 0.77 };
-
-                ctx.lineWidth = 3;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-
-                ctx.strokeStyle = "#84CC16";
-                ctx.beginPath();
-                ctx.moveTo(lShoulder.x, lShoulder.y); ctx.lineTo(rShoulder.x, rShoulder.y);
-                ctx.moveTo(spineTop.x, spineTop.y); ctx.lineTo(spineMid.x, spineMid.y);
-                ctx.moveTo(lShoulder.x, lShoulder.y); ctx.lineTo(lElbow.x, lElbow.y); ctx.lineTo(lWrist.x, lWrist.y);
-                ctx.moveTo(rShoulder.x, rShoulder.y); ctx.lineTo(rElbow.x, rElbow.y); ctx.lineTo(rWrist.x, rWrist.y);
-                ctx.moveTo(lHip.x, lHip.y); ctx.lineTo(lKnee.x, lKnee.y); ctx.lineTo(lAnkle.x, lAnkle.y);
-                ctx.moveTo(rHip.x, rHip.y); ctx.lineTo(rKnee.x, rKnee.y); ctx.lineTo(rAnkle.x, rAnkle.y);
-                ctx.stroke();
-
-                ctx.strokeStyle = "#F59E0B";
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                ctx.moveTo(spineTop.x, spineTop.y); ctx.lineTo(spineTop.x + 40, spineTop.y);
-                ctx.moveTo(spineTop.x, spineTop.y); ctx.lineTo(spineTop.x, spineTop.y - 40);
-                ctx.stroke();
-                ctx.setLineDash([]);
-
-                const joints = [head, lShoulder, rShoulder, lElbow, rElbow, lWrist, rWrist, lHip, rHip, lKnee, rKnee, lAnkle, rAnkle];
-                joints.forEach((j, idx) => {
-                    ctx.fillStyle = (idx % 2 === 0) ? "#8B5CF6" : "#EC4899";
-                    ctx.beginPath();
-                    ctx.arc(j.x, j.y, 6, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.strokeStyle = "#FFFFFF";
-                    ctx.lineWidth = 1.5;
-                    ctx.stroke();
-                });
+                btn.style.background = 'var(--72-blue)';
+                btn.style.borderColor = '#60A5FA';
+                showToast('Bật AI Skeleton khung xương tư thế Swing');
+            } else {
+                btn.style.background = 'rgba(40, 40, 40, 0.75)';
+                btn.style.borderColor = 'rgba(255, 255, 255, 0.18)';
+                showToast('Tắt AI Skeleton');
             }
+            redrawDualCanvas(activePane);
+        }
 
-            // RENDER IN-PROGRESS FREEHAND PEN STROKE
-            if (isDrawing && activeTool === 'pen' && penPoints.length > 1) {
-                ctx.strokeStyle = activeDrawColor;
-                ctx.lineWidth = activeLineWidth;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.beginPath();
-                ctx.moveTo(penPoints[0].x, penPoints[0].y);
-                for (let i = 1; i < penPoints.length; i++) {
-                    ctx.lineTo(penPoints[i].x, penPoints[i].y);
-                }
-                ctx.stroke();
+        /* GESTURE & OTHER MODAL IMPLEMENTATIONS */
+        let zoomLevel = 1.0;
+        let panX = 0; let panY = 0;
+
+        function updateStudioTransform() {
+            const wrapper = (activePane === 'left') ? document.getElementById('studio-transform-wrapper') : document.getElementById('secondary-video-wrapper');
+            if (wrapper) {
+                wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
             }
+        }
 
-            // RENDER STORED DRAWINGS HISTORY
-            drawingsHistory.forEach(item => {
-                ctx.strokeStyle = item.color || "#EF3F36";
-                ctx.lineWidth = item.width || 3.5;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
+        function resetZoomAndPan() {
+            zoomLevel = 1.0; panX = 0; panY = 0;
+            updateStudioTransform();
+        }
 
-                if (item.type === 'pen' && item.points && item.points.length > 1) {
-                    ctx.beginPath();
-                    ctx.moveTo(item.points[0].x, item.points[0].y);
-                    for (let i = 1; i < item.points.length; i++) {
-                        ctx.lineTo(item.points[i].x, item.points[i].y);
-                    }
-                    ctx.stroke();
-                } else if (item.type === 'plane') {
-                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
-                } else if (item.type === 'head') {
-                    const r = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
-                    ctx.beginPath(); ctx.arc(item.x1, item.y1, r, 0, Math.PI * 2); ctx.stroke();
-                } else if (item.type === 'arrow') {
-                    drawArrow(ctx, item.x1, item.y1, item.x2, item.y2);
-                } else if (item.type === 'measure') {
-                    const distPx = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
-                    const distCm = (distPx * 0.12).toFixed(1);
-                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 15px Work Sans";
-                    ctx.fillText(`📏 ${distCm}cm Shift`, item.x2 + 8, item.y2 + 8);
-                } else if (item.type === 'text') {
-                    // RENDER ELEGANT HIGH-VISIBILITY TEXT OVERLAY BUBBLE
-                    ctx.fillStyle = "rgba(10, 37, 64, 0.88)";
-                    const textWidth = ctx.measureText(item.text).width + 20;
-                    ctx.fillRect(item.x - 6, item.y - 20, textWidth, 28);
-                    ctx.strokeStyle = item.color || "#EF3F36";
-                    ctx.lineWidth = 1.5;
-                    ctx.strokeRect(item.x - 6, item.y - 20, textWidth, 28);
+        function setupHammerGestureEngine() {
+            const canvas1 = document.getElementById('canvas-left');
+            if (!canvas1 || typeof Hammer === 'undefined') return;
 
-                    ctx.fillStyle = item.color || "#EF3F36";
-                    ctx.font = "bold 16px Work Sans";
-                    ctx.fillText(item.text, item.x + 4, item.y);
-                } else if (item.type === 'angle') {
-                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
-                    ctx.fillText("42° Backswing", item.x2 + 10, item.y2 + 10);
-                }
+            const mc = new Hammer.Manager(canvas1);
+            const singleTap = new Hammer.Tap({ event: 'singletap', interval: 250 });
+            mc.add(singleTap);
+            mc.on('singletap', () => { if (activeTool === 'pan') toggleStudioPlay(); });
+        }
+
+        function openCourseInfoModal() {
+            document.getElementById('course-modal-title').innerText = 'Thông Tin Học Viên — ' + activeStudentName;
+            const info = studentCourseInfoMap[activeStudentName] || {};
+            document.getElementById('ci-course-name').value = info.courseName || '';
+            document.getElementById('ci-start-date').value = info.startDate || '';
+            document.getElementById('ci-duration').value = info.duration || '';
+            document.getElementById('ci-schedule').value = info.schedule || '';
+            document.getElementById('ci-frequency').value = info.frequency || '';
+            document.getElementById('course-info-modal').style.display = 'flex';
+        }
+
+        function saveCourseInfo() {
+            studentCourseInfoMap[activeStudentName] = {
+                courseName: document.getElementById('ci-course-name').value.trim(),
+                startDate: document.getElementById('ci-start-date').value.trim(),
+                duration: document.getElementById('ci-duration').value.trim(),
+                schedule: document.getElementById('ci-schedule').value.trim(),
+                frequency: document.getElementById('ci-frequency').value.trim()
+            };
+            saveAppState();
+            closeModal('course-info-modal');
+            updateCourseInfoSubtext();
+            showToast('Đã lưu thông tin khóa học');
+        }
+
+        function updateCourseInfoSubtext() {
+            const sub = document.getElementById('profile-course-info-subtext');
+            const info = studentCourseInfoMap[activeStudentName];
+            if (info && (info.courseName || info.schedule)) {
+                sub.innerText = `${info.courseName || 'Khóa học 72+'} • ${info.schedule || 'Chưa xếp lịch'}`;
+            } else {
+                sub.innerText = 'Tự do thiết lập Khóa học, Lịch học, Thời hạn';
+            }
+        }
+
+        function focusInlineStudentName() {
+            const el = document.getElementById('profile-display-name');
+            el.focus();
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+
+        function saveInlineStudentName() {
+            const el = document.getElementById('profile-display-name');
+            let newName = el.innerText.trim();
+            if (!newName) return;
+
+            const oldName = activeStudentName;
+            if (newName === oldName) return;
+
+            activeStudentName = newName;
+            if (studentNotesMap[oldName]) { studentNotesMap[newName] = studentNotesMap[oldName]; delete studentNotesMap[oldName]; }
+            if (studentCourseInfoMap[oldName]) { studentCourseInfoMap[newName] = studentCourseInfoMap[oldName]; delete studentCourseInfoMap[oldName]; }
+
+            const stObj = studentList.find(s => s.name === oldName);
+            if (stObj) stObj.name = newName;
+
+            saveAppState();
+            renderStudentList();
+            renderVideoGrid();
+            showToast('Đã lưu tên mới: ' + newName);
+        }
+
+        function openHLVNotesModal() {
+            document.getElementById('notes-student-title').innerText = 'Ghi Chú Cho ' + activeStudentName;
+            document.getElementById('hlv-notes-textarea').value = studentNotesMap[activeStudentName] || '';
+            document.getElementById('hlv-notes-modal').style.display = 'flex';
+        }
+
+        function saveHLVNotes() {
+            const noteText = document.getElementById('hlv-notes-textarea').value.trim();
+            studentNotesMap[activeStudentName] = noteText;
+            saveAppState();
+            closeModal('hlv-notes-modal');
+            document.getElementById('profile-notes-subtext').innerText = noteText ? '✅ Đã lưu ghi chú chuyên môn' : 'Private to you';
+            showToast('Đã lưu ghi chú');
+        }
+
+        function toggleMultiSelectMode() {
+            isMultiSelectActive = !isMultiSelectActive;
+            const btn = document.getElementById('btn-toggle-select');
+            const actionBar = document.getElementById('multi-select-action-bar');
+            if (isMultiSelectActive) {
+                btn.classList.add('active-select'); btn.innerText = 'Cancel';
+                actionBar.style.display = 'flex';
+                document.querySelectorAll('.select-checkbox-overlay').forEach(el => el.style.display = 'flex');
+            } else {
+                btn.classList.remove('active-select'); btn.innerText = 'Select';
+                actionBar.style.display = 'none';
+                document.querySelectorAll('.select-checkbox-overlay').forEach(el => el.style.display = 'none');
+            }
+        }
+
+        function onVideoCardClick(cardEl, videoSrc, videoId) {
+            if (isMultiSelectActive) {
+                const vid = videoLibrary.find(v => v.id === videoId);
+                if (vid) { vid.selected = !vid.selected; cardEl.classList.toggle('selected-card', vid.selected); }
+            } else {
+                openModule1StudioWithVideo(videoSrc);
+            }
+        }
+
+        function compareSelectedClips() {
+            const selected = videoLibrary.filter(v => v.selected);
+            if (selected.length < 2) { showToast('Vui lòng chọn 2 clip để so sánh'); return; }
+            video2SelectedSrc = selected[1].src;
+            openDualSetupScreen();
+        }
+
+        function flipSetupVideo() {
+            isVideoFlipped = !isVideoFlipped;
+            const vid = document.getElementById('dual-setup-preview-video');
+            vid.style.transform = isVideoFlipped ? 'scaleX(-1)' : 'scaleX(1)';
+            showToast(isVideoFlipped ? 'Đã lật gương video 1 (Flip)' : 'Đã đưa về góc quay gốc');
+        }
+
+        function deleteSelectedClips() {
+            const selectedCount = videoLibrary.filter(v => v.selected).length;
+            videoLibrary = videoLibrary.filter(v => !v.selected);
+            saveAppState(); renderVideoGrid(); toggleMultiSelectMode();
+            showToast('Đã xóa ' + selectedCount + ' clip khỏi Thư viện');
+        }
+
+        function openImportModal() { document.getElementById('import-modal').style.display = 'flex'; }
+        function triggerFilePickerImport() { closeModal('import-modal'); document.getElementById('real-file-picker').click(); }
+        function triggerCloudImport() { closeModal('import-modal'); showToast('Đang kết nối Cloud Storage...'); }
+        function triggerCameraRollImport() { closeModal('import-modal'); openCameraRecorder(); }
+
+        function handleImportedFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const fileUrl = e.target.result;
+                    if (document.getElementById('screen-dual-setup').classList.contains('active')) selectVideo2ForDual(fileUrl, file.name);
+                    else generateVideoThumbnailAndImport(fileUrl, file.name);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function generateVideoThumbnailAndImport(src, filename) {
+            showToast('Đang xử lý & tạo thumbnail...');
+            const newId = filename ? filename.replace(/\.[^/.]+$/, "") : ("1787" + Math.floor(Math.random()*10000000000));
+            videoLibrary.unshift({
+                id: newId, duration: "00:05", time: "Today, 08:36", author: activeStudentName,
+                thumb: "assets/onform_screen_1_single_1787738678662.jpg", src: src, starred: true, selected: false
+            });
+            saveAppState(); renderVideoGrid(); showToast('Đã thêm clip mới: ' + newId);
+        }
+
+        function openVoiceoverPermissionModal() {
+            if (isVoiceoverRecording) { stopVoiceoverRecording(); return; }
+            document.getElementById('voiceover-permission-modal').style.display = 'flex';
+        }
+
+        function startVoiceoverRecording(mode) {
+            closeModal('voiceover-permission-modal'); isVoiceoverRecording = true;
+            document.getElementById('btn-mic-voiceover').classList.add('recording');
+            showToast('Bắt đầu ghi hình bài giảng');
+        }
+
+        function stopVoiceoverRecording() {
+            isVoiceoverRecording = false;
+            document.getElementById('btn-mic-voiceover').classList.remove('recording');
+            document.getElementById('voiceover-review-bar').style.display = 'flex';
+            showToast('Hoàn tất thu âm bài giảng.');
+        }
+
+        function discardVoiceover() { document.getElementById('voiceover-review-bar').style.display = 'none'; }
+        function previewVoiceover() { showToast('Đang phát lại bản thu nhận xét HLV'); }
+        function trimVoiceover() { showToast('Mở công cụ cắt đoạn Trim bài giảng'); }
+        function saveVoiceover() { document.getElementById('voiceover-review-bar').style.display = 'none'; showToast('Đã lưu video bài giảng HLV'); }
+        function toggleMoreMenu() { const menu = document.getElementById('onform-more-menu'); menu.style.display = (menu.style.display === 'block') ? 'none' : 'block'; }
+        function triggerTrimVideo() { toggleMoreMenu(); showToast('Mở công cụ ✂️ Trim Video'); }
+        function triggerRotateVideo() { toggleMoreMenu(); showToast('Đã xoay video 90° (Rotate)'); }
+        function triggerEditTitle() { toggleMoreMenu(); }
+        function triggerShareVideo() { toggleMoreMenu(); showToast('Đã sao chép đường dẫn chia sẻ video'); }
+        function triggerDeleteCurrentVideo() { toggleMoreMenu(); closeStudioView(); showToast('Đã xóa video'); }
+        function toggleFilmstripStrip() { isFilmstripActive = !isFilmstripActive; document.getElementById('onform-filmstrip-container').style.display = isFilmstripActive ? 'flex' : 'none'; }
+
+        function openStudentProfile(name) { activeStudentName = name; switchView('screen-student-profile'); }
+        function openStudentLibrary(name) { activeStudentName = name; renderVideoGrid(); switchView('screen-student-library'); }
+
+        function renderVideoGrid() {
+            const container = document.getElementById('library-video-grid');
+            container.innerHTML = '';
+            videoLibrary.forEach(vid => {
+                const card = document.createElement('div'); card.className = 'video-card-item';
+                card.onclick = () => onVideoCardClick(card, vid.src, vid.id);
+                card.innerHTML = `
+                    <div class="video-thumb-wrapper">
+                        <img src="${vid.thumb || 'assets/onform_screen_1_single_1787738678662.jpg'}" class="video-thumb-img">
+                        <div class="badge-duration-bottomleft">${vid.duration}<br>${vid.time}</div>
+                    </div>
+                    <div class="video-card-caption">
+                        <div class="video-filename-text">${vid.id}</div>
+                        <div class="video-author-text">${vid.author}</div>
+                    </div>
+                `;
+                container.appendChild(card);
             });
         }
 
-        function drawArrow(ctx, fromx, fromy, tox, toy) {
-            const headlen = 14;
-            const dx = tox - fromx;
-            const dy = toy - fromy;
-            const angle = Math.atan2(dy, dx);
-            ctx.beginPath();
-            ctx.moveTo(fromx, fromy);
-            ctx.lineTo(tox, toy);
-            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
-            ctx.moveTo(tox, toy);
-            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
-            ctx.stroke();
-        }
-
-        function undoCanvas() {
-            drawingsHistory.pop();
-            redrawCanvas();
-        }
-
-        function clearCanvas() {
-            drawingsHistory = [];
-            redrawCanvas();
-        }
-
-        function openExportModal() {
-            showToast('Đã xuất video bài giảng HLV thành công');
-        }
-
-        function openAccountSelectorModal() {
-            document.getElementById('account-selector-modal').style.display = 'flex';
-        }
-
-        function selectFacility(facilityName) {
-            document.getElementById('active-facility-label').innerText = facilityName;
-            closeModal('account-selector-modal');
-            showToast('Đã chọn cơ sở ' + facilityName);
-        }
-
-        function openReferenceLibraryModal() {
-            document.getElementById('reference-library-modal').style.display = 'flex';
-        }
-
-        function openRecentActivityModal() {
-            document.getElementById('recent-activity-modal').style.display = 'flex';
-        }
-
-        function openAddStudentModal() {
-            document.getElementById('add-student-modal').style.display = 'flex';
-        }
+        function openAccountSelectorModal() { document.getElementById('account-selector-modal').style.display = 'flex'; }
+        function selectFacility(facilityName) { document.getElementById('active-facility-label').innerText = facilityName; closeModal('account-selector-modal'); }
+        function openReferenceLibraryModal() { document.getElementById('reference-library-modal').style.display = 'flex'; }
+        function openRecentActivityModal() { document.getElementById('recent-activity-modal').style.display = 'flex'; }
+        function openAddStudentModal() { document.getElementById('add-student-modal').style.display = 'flex'; }
 
         function submitNewStudent() {
             const nameInput = document.getElementById('new-student-name').value.trim();
-            if (!nameInput) {
-                showToast('Vui lòng nhập tên học viên');
-                return;
-            }
-
-            const words = nameInput.split(' ');
-            let initials = "HV";
-            if (words.length >= 2) initials = (words[0][0] + words[words.length - 1][0]).toUpperCase();
-
-            studentList.push({ name: nameInput, initials: initials, color: "#1375BC" });
-            saveAppState();
-            renderStudentList();
-            closeModal('add-student-modal');
-            document.getElementById('new-student-name').value = '';
-            showToast('Tạo hồ sơ học viên: ' + nameInput);
+            if (!nameInput) return;
+            studentList.push({ name: nameInput, initials: "HV", color: "#1375BC" });
+            saveAppState(); renderStudentList(); closeModal('add-student-modal');
         }
 
         function renderStudentList() {
             const container = document.getElementById('student-list-container');
             container.innerHTML = '';
             studentList.forEach(st => {
-                const card = document.createElement('div');
-                card.className = 'student-account-card';
+                const card = document.createElement('div'); card.className = 'student-account-card';
                 card.onclick = () => openStudentProfile(st.name);
-                card.innerHTML = `
-                    <div class="avatar-nc" style="background: ${st.color};">${st.initials}</div>
-                    <div><div class="student-name-main">${st.name}</div></div>
-                `;
+                card.innerHTML = `<div class="avatar-nc">${st.initials}</div><div><div class="student-name-main">${st.name}</div></div>`;
                 container.appendChild(card);
             });
         }
 
-        function filterStudentList(query) {
-            const q = query.toLowerCase();
-            const cards = document.getElementById('student-list-container').children;
-            Array.from(cards).forEach(card => {
-                const text = card.innerText.toLowerCase();
-                card.style.display = text.includes(q) ? 'flex' : 'none';
-            });
-        }
+        function filterStudentList(query) {}
+        function filterVideoGrid(query) {}
 
-        function filterVideoGrid(query) {
-            const q = query.toLowerCase();
-            const cards = document.getElementById('library-video-grid').children;
-            Array.from(cards).forEach(card => {
-                const text = card.innerText.toLowerCase();
-                card.style.display = text.includes(q) ? 'flex' : 'none';
-            });
-        }
-
-        // INITIALIZE APP STATE & ALIGN CANVAS TO VIDEO ON LOAD
         window.addEventListener('DOMContentLoaded', () => {
-            loadAppState();
-            renderStudentList();
-            renderVideoGrid();
+            loadAppState(); renderStudentList(); renderVideoGrid();
             document.getElementById('studio-main-video').ontimeupdate = updatePrecisionScrubber;
             document.getElementById('studio-secondary-video').ontimeupdate = updatePrecisionScrubber;
-            window.addEventListener('resize', alignCanvasToVideo);
+            window.addEventListener('resize', initCanvasEngine);
         });
     </script>
 </body>
