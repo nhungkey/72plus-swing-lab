@@ -664,7 +664,7 @@
         .onform-top-left, .onform-top-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .onform-circle-btn {
@@ -681,6 +681,12 @@
             justify-content: center;
             cursor: pointer;
             transition: transform 0.15s ease;
+        }
+
+        .onform-circle-btn.active-mode {
+            background: var(--72-blue);
+            border-color: #60A5FA;
+            box-shadow: 0 0 14px rgba(19, 117, 188, 0.8);
         }
 
         .onform-circle-btn:active {
@@ -757,6 +763,20 @@
 
         #studio-video-container.dual-split-active #secondary-video-wrapper {
             display: flex !important;
+        }
+
+        /* SUPERIMPOSE OVERLAY BLEND MODE (OFFICIAL ONFORM OVERLAY SPEC) */
+        #studio-video-container.superimpose-overlay-active {
+            display: flex !important;
+        }
+
+        #studio-video-container.superimpose-overlay-active #secondary-video-wrapper {
+            display: flex !important;
+            position: absolute !important;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 80;
         }
 
         #studio-transform-wrapper, #secondary-video-wrapper {
@@ -854,9 +874,11 @@
             border-radius: 26px;
             padding: 12px;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             z-index: 1150;
             box-shadow: 0 10px 30px rgba(0,0,0,0.85);
+            max-height: 75vh;
+            overflow-y: auto;
         }
 
         .tool-dock-btn {
@@ -877,6 +899,26 @@
             background: var(--72-blue);
             color: #FFFFFF;
             border: 1px solid #60A5FA;
+        }
+
+        /* COLOR & THICKNESS SELECTION DOCK ITEMS */
+        .palette-color-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #FFFFFF;
+            cursor: pointer;
+        }
+
+        .palette-color-dot.active {
+            box-shadow: 0 0 10px #FFFFFF;
+            transform: scale(1.2);
+        }
+
+        .thickness-dot {
+            border-radius: 50%;
+            background: #FFFFFF;
+            cursor: pointer;
         }
 
         /* 3. BOTTOM ONFORM PLAYER CONTROL DOCK MATCHING ONFORM SCREENSHOT EXACTLY */
@@ -990,7 +1032,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 16px;
             width: 100%;
         }
 
@@ -999,10 +1041,10 @@
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.22);
             color: #FFFFFF;
-            padding: 10px 20px;
+            padding: 10px 16px;
             border-radius: 24px;
             font-family: 'Raleway', sans-serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 800;
             cursor: pointer;
         }
@@ -1531,13 +1573,15 @@
                 <div class="onform-top-left">
                     <button class="onform-circle-btn" onclick="closeStudioView()" title="Thoát Studio"><i class="fa-solid fa-xmark"></i></button>
                     <button class="onform-circle-btn" id="btn-toggle-skeleton" onclick="toggleAISkeletonOverlay()" title="Bật/tắt AI Skeleton 🧍"><i class="fa-solid fa-child-reaching"></i></button>
+                    <!-- OFFICIAL ONFORM SPEC: SUPERIMPOSE OVERLAY BUTTON (TWO STACKED BOXES) -->
+                    <button class="onform-circle-btn" id="btn-toggle-superimpose" onclick="toggleSuperimposeOverlay()" title="Chế độ Chồng Hình Video (Superimpose Overlay 🔲)"><i class="fa-solid fa-layer-group"></i></button>
                 </div>
 
                 <div class="onform-center-btn-group">
                     <button class="onform-mic-btn" id="btn-mic-voiceover" onclick="openVoiceoverPermissionModal()" title="Thu âm bài giảng HLV">
                         <i class="fa-solid fa-microphone"></i> <span id="voiceover-timer-text" style="font-size:0.85rem;"></span>
                     </button>
-                    <button class="onform-dual-compare-btn" onclick="openDualSetupScreen()" title="Thêm video 2 để so sánh (Ảnh 1)">
+                    <button class="onform-dual-compare-btn" onclick="openDualSetupScreen()" title="Thêm video 2 để so sánh (Compare)">
                         <i class="fa-solid fa-table-columns"></i>
                     </button>
                 </div>
@@ -1583,17 +1627,40 @@
                 <!-- RIGHT FLOATING PEN TOOL (A BUTTON ONLY) -->
                 <button class="onform-side-tool-right" id="btn-side-pen-toggle" onclick="event.stopPropagation(); toggleDrawingToolsDock();" title="Bút vẽ & Kẻ đường kỹ thuật"><i class="fa-solid fa-pen-nib"></i></button>
 
-                <!-- FLOATING TOOLBOX DOCK -->
+                <!-- OFFICIAL ONFORM SPEC: ADVANCED FLOATING TOOLBOX DOCK -->
                 <div id="floating-tool-dock" onclick="event.stopPropagation();">
                     <button class="tool-dock-btn active" id="btn-tool-pan" onclick="setTool('pan')" title="Chế độ Rê Pan 1 Ngón / Phóng Zoom (✋)"><i class="fa-solid fa-hand"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-plane" onclick="setTool('plane')" title="Đường Plane Line"><i class="fa-solid fa-ruler-combined"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-head" onclick="setTool('head')" title="Vòng tròn Head Box"><i class="fa-regular fa-circle"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-angle" onclick="setTool('angle')" title="Đo góc nghiêng °"><i class="fa-solid fa-compass"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-arrow" onclick="setTool('arrow')" title="Mũi tên chỉ hướng ➔"><i class="fa-solid fa-arrow-trend-up"></i></button>
+                    <button class="tool-dock-btn" id="btn-tool-measure" onclick="setTool('measure')" title="Đo khoảng cách Shifts/Drift 📏"><i class="fa-solid fa-ruler"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-pen" onclick="setTool('pen')" title="Bút vẽ tự do"><i class="fa-solid fa-pencil"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-text" onclick="setTool('text')" title="Gõ chữ nhận xét"><i class="fa-solid fa-font"></i></button>
-                    <button class="tool-dock-btn" id="btn-tool-tempo" onclick="setTool('tempo')" title="Bấm giờ Tempo 3:1"><i class="fa-solid fa-stopwatch"></i></button>
+                    <button class="tool-dock-btn" id="btn-tool-tempo" onclick="setTool('tempo')" title="Bấm giờ Tempo 3:1 ⏱️"><i class="fa-solid fa-stopwatch"></i></button>
+
                     <div style="width:28px; height:1px; background:rgba(255,255,255,0.2); margin:4px auto;"></div>
+
+                    <!-- COLOR PALETTE SELECTOR DOCK ITEMS -->
+                    <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
+                        <div class="palette-color-dot active" style="background:#EF3F36;" onclick="setActiveDrawColor('#EF3F36', this)" title="Đỏ"></div>
+                        <div class="palette-color-dot" style="background:#1375BC;" onclick="setActiveDrawColor('#1375BC', this)" title="Xanh 72+"></div>
+                        <div class="palette-color-dot" style="background:#F59E0B;" onclick="setActiveDrawColor('#F59E0B', this)" title="Vàng Gold"></div>
+                        <div class="palette-color-dot" style="background:#10B981;" onclick="setActiveDrawColor('#10B981', this)" title="Xanh Lá"></div>
+                        <div class="palette-color-dot" style="background:#FFFFFF;" onclick="setActiveDrawColor('#FFFFFF', this)" title="Trắng"></div>
+                    </div>
+
+                    <div style="width:28px; height:1px; background:rgba(255,255,255,0.2); margin:4px auto;"></div>
+
+                    <!-- LINE THICKNESS SELECTOR DOCK ITEMS -->
+                    <div style="display:flex; gap:6px; align-items:center; justify-content:center;">
+                        <div class="thickness-dot" style="width:8px; height:8px;" onclick="setActiveLineWidth(1.5, this)" title="Nét Mảnh"></div>
+                        <div class="thickness-dot" style="width:14px; height:14px; background:#60A5FA;" onclick="setActiveLineWidth(3.5, this)" title="Nét Vừa"></div>
+                        <div class="thickness-dot" style="width:20px; height:20px;" onclick="setActiveLineWidth(6.0, this)" title="Nét Đậm"></div>
+                    </div>
+
+                    <div style="width:28px; height:1px; background:rgba(255,255,255,0.2); margin:4px auto;"></div>
+
                     <button class="tool-dock-btn" onclick="undoCanvas()" title="Lùi lại nét vừa vẽ"><i class="fa-solid fa-rotate-left"></i></button>
                     <button class="tool-dock-btn" onclick="clearCanvas()" title="Xóa sạch nét vẽ"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
@@ -1619,9 +1686,9 @@
                 <div class="onform-controls-pill-row">
                     <button class="onform-pill-ctrl" id="btn-speed-toggle" onclick="cyclePlaybackSpeed()">1×`</button>
                     
-                    <!-- INDEPENDENT VS SYNC TOGGLE SWITCH -->
-                    <button class="onform-pill-ctrl" id="btn-sync-mode-toggle" onclick="toggleSyncMode()" title="Chuyển chế độ 🔓 Độc Lập / 🔒 Đồng Bộ">
-                        <i class="fa-solid fa-lock-open"></i> <span id="sync-mode-label">🔓 Độc Lập</span>
+                    <!-- OFFICIAL ONFORM SPEC: LINK ALIGNMENT BUTTON (🔒 LINK ALIGN TIME OFFSET) -->
+                    <button class="onform-pill-ctrl" id="btn-link-align-toggle" onclick="toggleLinkAlign()" title="Khóa Đồng Bộ Điểm Đầu 2 Video (🔒 Link Alignment)">
+                        <i class="fa-solid fa-link"></i> <span id="link-align-label">🔒 Link</span>
                     </button>
 
                     <div class="onform-playback-group">
@@ -1915,10 +1982,14 @@
         let voiceoverSeconds = 0;
         let isVideoFlipped = false;
         let isDualSplitActive = false;
-        let isSyncModeActive = false; // DEFAULT INDEPENDENT MODE (🔓)
+        let isSuperimposeActive = false; // OFFICIAL ONFORM SPEC: SUPERIMPOSE OVERLAY MODE (🔲)
+        let isLinkAlignActive = false; // OFFICIAL ONFORM SPEC: LINK ALIGN TIME OFFSET (🔒)
+        let linkTimeOffsetDelta = 0; // TIME OFFSET BETWEEN VIDEO 2 AND VIDEO 1
         let activePane = 'left'; // 'left' or 'right'
         let video2SelectedSrc = "assets/sample-golf-swing.mp4";
         let currentSpeedIndex = 0;
+        let activeDrawColor = "#EF3F36"; // DEFAULT DRAW COLOR (RED)
+        let activeLineWidth = 3.5; // DEFAULT LINE THICKNESS (MEDIUM)
         let selectedTextColorChoice = "#EF3F36";
         let draggingTextIndex = -1;
         let textDragStartX = 0, textDragStartY = 0;
@@ -2000,7 +2071,9 @@
         function openModule1StudioWithVideo(videoSrc) {
             closeModal('reference-library-modal');
             isDualSplitActive = false;
+            isSuperimposeActive = false;
             document.getElementById('studio-video-container').classList.remove('dual-split-active');
+            document.getElementById('studio-video-container').classList.remove('superimpose-overlay-active');
 
             const video = document.getElementById('studio-main-video');
             video.src = videoSrc;
@@ -2037,6 +2110,46 @@
             video2.pause();
         }
 
+        /* OFFICIAL ONFORM SPEC 1: LINK ALIGN TIME OFFSET MECHANICS (🔒 LINK BUTTON) */
+        function toggleLinkAlign() {
+            isLinkAlignActive = !isLinkAlignActive;
+            const btn = document.getElementById('btn-link-align-toggle');
+            const label = document.getElementById('link-align-label');
+            const vid1 = document.getElementById('studio-main-video');
+            const vid2 = document.getElementById('studio-secondary-video');
+
+            if (isLinkAlignActive) {
+                // LOCK OFFSET DELTA BASED ON CURRENT STARTING POINTS
+                linkTimeOffsetDelta = vid2.currentTime - vid1.currentTime;
+                btn.classList.add('sync-active');
+                label.innerText = '🔒 Linked';
+                showToast(`Đã khóa mốc thời gian 2 video (Độ lệch: ${linkTimeOffsetDelta.toFixed(3)}s)`);
+            } else {
+                btn.classList.remove('sync-active');
+                label.innerText = '🔒 Link';
+                showToast('Mở khóa mốc thời gian 2 video (Mỗi clip chỉnh riêng)');
+            }
+        }
+
+        /* OFFICIAL ONFORM SPEC 2: SUPERIMPOSE OVERLAY MODE (TWO STACKED BOXES 🔲) */
+        function toggleSuperimposeOverlay() {
+            isSuperimposeActive = !isSuperimposeActive;
+            const container = document.getElementById('studio-video-container');
+            const btn = document.getElementById('btn-toggle-superimpose');
+
+            if (isSuperimposeActive) {
+                container.classList.remove('dual-split-active');
+                container.classList.add('superimpose-overlay-active');
+                btn.classList.add('active-mode');
+                showToast('Kích hoạt Chế độ Chồng Hình Video (Superimpose Overlay 50%)');
+            } else {
+                container.classList.remove('superimpose-overlay-active');
+                if (isDualSplitActive) container.classList.add('dual-split-active');
+                btn.classList.remove('active-mode');
+                showToast('Tắt Chế độ Chồng Hình Video');
+            }
+        }
+
         /* REAL DUAL SPLIT SCREEN INDEPENDENT & SYNC CONTROL ENGINE */
         function setActivePane(pane) {
             activePane = pane;
@@ -2053,22 +2166,6 @@
                 showToast('Đang chọn Video 2 (Phải) để điều khiển & vẽ');
             }
             alignCanvasToVideo();
-        }
-
-        function toggleSyncMode() {
-            isSyncModeActive = !isSyncModeActive;
-            const btn = document.getElementById('btn-sync-mode-toggle');
-            const label = document.getElementById('sync-mode-label');
-
-            if (isSyncModeActive) {
-                btn.classList.add('sync-active');
-                btn.innerHTML = '<i class="fa-solid fa-lock"></i> <span id="sync-mode-label">🔒 Đồng Bộ</span>';
-                showToast('Chế độ 🔒 Đồng Bộ: Tua & Phát 2 video cùng lúc');
-            } else {
-                btn.classList.remove('sync-active');
-                btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> <span id="sync-mode-label">🔓 Độc Lập</span>';
-                showToast('Chế độ 🔓 Độc Lập: Tua & Điều khiển riêng từng video');
-            }
         }
 
         function openDualSetupScreen() {
@@ -2127,7 +2224,7 @@
             vid2.pause();
             document.getElementById('btn-studio-play').innerHTML = '<i class="fa-solid fa-play"></i>';
 
-            showToast('Đã mở Chế độ So sánh 2 Video 🔓 Độc Lập');
+            showToast('Đã mở Chế độ So sánh 2 Video (Kéo mốc & bấm 🔒 Link)');
         }
 
         function closeModal(modalId) {
@@ -2706,7 +2803,7 @@
             const video2 = document.getElementById('studio-secondary-video');
             const btn = document.getElementById('btn-studio-play');
 
-            if (isDualSplitActive && !isSyncModeActive) {
+            if (isDualSplitActive && !isLinkAlignActive) {
                 // INDEPENDENT MODE: CONTROL ACTIVE PANE ONLY!
                 const targetVid = (activePane === 'left') ? video1 : video2;
                 if (targetVid.paused) {
@@ -2719,12 +2816,15 @@
                     showToast('⏸ Tạm dừng Video ' + (activePane === 'left' ? '1' : '2'));
                 }
             } else {
-                // SYNC MODE: CONTROL BOTH VIDEOS TOGETHER!
+                // LINK ALIGNED SYNC MODE: CONTROL BOTH VIDEOS TOGETHER WITH TIME OFFSET DELTA!
                 if (video1.paused) {
                     video1.play();
-                    if (isDualSplitActive && video2) video2.play();
+                    if (isDualSplitActive && video2) {
+                        video2.currentTime = Math.max(0, video1.currentTime + linkTimeOffsetDelta);
+                        video2.play();
+                    }
                     btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                    showToast('▶ Phát cả 2 video');
+                    showToast('▶ Phát cả 2 video (Đồng bộ 🔒 Link)');
                 } else {
                     video1.pause();
                     if (isDualSplitActive && video2) video2.pause();
@@ -2741,20 +2841,20 @@
 
             const frameDuration = 1.0 / 60.0; // 60FPS precision
 
-            if (isDualSplitActive && !isSyncModeActive) {
+            if (isDualSplitActive && !isLinkAlignActive) {
                 // INDEPENDENT MODE: STEP ACTIVE PANE ONLY!
                 const targetVid = (activePane === 'left') ? video1 : video2;
                 targetVid.pause();
                 targetVid.currentTime = Math.max(0, Math.min(targetVid.duration, targetVid.currentTime + (deltaFrames * frameDuration)));
                 showToast(`Tua ${deltaFrames > 0 ? '+1f' : '-1f'} Video ${activePane === 'left' ? '1' : '2'}`);
             } else {
-                // SYNC MODE: STEP BOTH VIDEOS TOGETHER!
+                // LINK ALIGNED SYNC MODE: STEP BOTH VIDEOS TOGETHER!
                 video1.pause();
                 if (video2) video2.pause();
 
                 video1.currentTime = Math.max(0, Math.min(video1.duration, video1.currentTime + (deltaFrames * frameDuration)));
                 if (isDualSplitActive && video2 && video2.duration) {
-                    video2.currentTime = Math.max(0, Math.min(video2.duration, video2.currentTime + (deltaFrames * frameDuration)));
+                    video2.currentTime = Math.max(0, Math.min(video2.duration, video1.currentTime + linkTimeOffsetDelta));
                 }
             }
             updatePrecisionScrubber();
@@ -2774,7 +2874,7 @@
             const video1 = document.getElementById('studio-main-video');
             const video2 = document.getElementById('studio-secondary-video');
 
-            if (isDualSplitActive && !isSyncModeActive) {
+            if (isDualSplitActive && !isLinkAlignActive) {
                 const targetVid = (activePane === 'left') ? video1 : video2;
                 if (targetVid.duration) {
                     targetVid.currentTime = (val / 100) * targetVid.duration;
@@ -2783,7 +2883,7 @@
                 if (video1.duration) {
                     video1.currentTime = (val / 100) * video1.duration;
                     if (isDualSplitActive && video2 && video2.duration) {
-                        video2.currentTime = (val / 100) * video2.duration;
+                        video2.currentTime = Math.max(0, Math.min(video2.duration, video1.currentTime + linkTimeOffsetDelta));
                     }
                 }
             }
@@ -2804,6 +2904,18 @@
         function toggleDrawingToolsDock() {
             const dock = document.getElementById('floating-tool-dock');
             dock.style.display = (dock.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function setActiveDrawColor(colorHex, el) {
+            activeDrawColor = colorHex;
+            document.querySelectorAll('.palette-color-dot').forEach(d => d.classList.remove('active'));
+            if (el) el.classList.add('active');
+            showToast('Đã chọn màu nét vẽ: ' + colorHex);
+        }
+
+        function setActiveLineWidth(widthPx, el) {
+            activeLineWidth = widthPx;
+            showToast('Đã chọn độ dày nét: ' + widthPx + 'px');
         }
 
         /* STUDENT & RENDER ENGINE */
@@ -3040,6 +3152,8 @@
                     setTimeout(() => document.getElementById('ios-text-annotation-input').focus(), 150);
                 } else if (toolName === 'tempo') {
                     showToast('Tempo 3.0:1 — Takeaway -> Top -> Impact');
+                } else if (toolName === 'measure') {
+                    showToast('Công cụ Đo khoảng Cách Shift / Drift 📏 (Kéo tay để đo)');
                 } else if (toolName === 'arrow') {
                     showToast('Công cụ vẽ Mũi Tên chỉ hướng ➔ (Kéo tay để vẽ)');
                 } else if (toolName === 'pen') {
@@ -3126,8 +3240,8 @@
                 redrawCanvas();
             } else {
                 redrawCanvas();
-                ctx.strokeStyle = "#1375BC";
-                ctx.lineWidth = 3.5;
+                ctx.strokeStyle = activeDrawColor;
+                ctx.lineWidth = activeLineWidth;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
 
@@ -3138,6 +3252,18 @@
                     ctx.beginPath(); ctx.arc(startX, startY, radius, 0, Math.PI * 2); ctx.stroke();
                 } else if (activeTool === 'arrow') {
                     drawArrow(ctx, startX, startY, currX, currY);
+                } else if (activeTool === 'measure') {
+                    const distPx = Math.hypot(currX - startX, currY - startY);
+                    const distCm = (distPx * 0.12).toFixed(1);
+                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 15px Work Sans";
+                    ctx.fillText(`📏 ${distCm}cm Shift`, currX + 8, currY + 8);
+                } else if (activeTool === 'tempo') {
+                    const distPx = Math.hypot(currX - startX, currY - startY);
+                    const sec = (distPx * 0.01).toFixed(2);
+                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
+                    ctx.fillText(`⏱️ ${sec}s (Ratio 3.0:1)`, currX + 8, currY + 8);
                 } else if (activeTool === 'angle') {
                     ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
                     ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
@@ -3160,9 +3286,9 @@
                 const currY = (coords.y !== 0) ? coords.y : (startY + 60);
 
                 if (activeTool === 'pen' && penPoints.length > 1) {
-                    drawingsHistory.push({ type: 'pen', points: penPoints, color: '#1375BC' });
+                    drawingsHistory.push({ type: 'pen', points: penPoints, color: activeDrawColor, width: activeLineWidth });
                 } else if (activeTool !== 'pen') {
-                    drawingsHistory.push({ type: activeTool, x1: startX, y1: startY, x2: currX, y2: currY, color: '#1375BC' });
+                    drawingsHistory.push({ type: activeTool, x1: startX, y1: startY, x2: currX, y2: currY, color: activeDrawColor, width: activeLineWidth });
                 }
                 penPoints = [];
                 redrawCanvas();
@@ -3229,8 +3355,8 @@
 
             // RENDER IN-PROGRESS FREEHAND PEN STROKE
             if (isDrawing && activeTool === 'pen' && penPoints.length > 1) {
-                ctx.strokeStyle = "#1375BC";
-                ctx.lineWidth = 3.5;
+                ctx.strokeStyle = activeDrawColor;
+                ctx.lineWidth = activeLineWidth;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 ctx.beginPath();
@@ -3243,8 +3369,8 @@
 
             // RENDER STORED DRAWINGS HISTORY
             drawingsHistory.forEach(item => {
-                ctx.strokeStyle = item.color || "#1375BC";
-                ctx.lineWidth = 3.5;
+                ctx.strokeStyle = item.color || "#EF3F36";
+                ctx.lineWidth = item.width || 3.5;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
 
@@ -3262,6 +3388,12 @@
                     ctx.beginPath(); ctx.arc(item.x1, item.y1, r, 0, Math.PI * 2); ctx.stroke();
                 } else if (item.type === 'arrow') {
                     drawArrow(ctx, item.x1, item.y1, item.x2, item.y2);
+                } else if (item.type === 'measure') {
+                    const distPx = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
+                    const distCm = (distPx * 0.12).toFixed(1);
+                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
+                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 15px Work Sans";
+                    ctx.fillText(`📏 ${distCm}cm Shift`, item.x2 + 8, item.y2 + 8);
                 } else if (item.type === 'text') {
                     // RENDER ELEGANT HIGH-VISIBILITY TEXT OVERLAY BUBBLE
                     ctx.fillStyle = "rgba(10, 37, 64, 0.88)";
