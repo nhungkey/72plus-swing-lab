@@ -1134,6 +1134,35 @@
             cursor: pointer;
         }
 
+        /* SLEEK IOS FLOATING TEXT OVERLAY MODAL */
+        #ios-text-annotation-modal {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(12px);
+            z-index: 2500;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .color-choice-bubble {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .color-choice-bubble.selected {
+            box-shadow: 0 0 12px #FFFFFF;
+            transform: scale(1.15);
+        }
+
         /* MODALS */
         .modal-mask {
             display: none;
@@ -1549,19 +1578,44 @@
 
             <!-- UPPER PANE: ADD VIDEO 2 -->
             <div style="flex:1; width:100%; display:flex; align-items:center; justify-content:center; border-bottom:1px dashed rgba(255,255,255,0.2);">
-                <button class="btn-gold-round" onclick="triggerFilePickerImport()">Add</button>
+                <button class="btn-gold-round" onclick="triggerFilePickerImport()">Add Video 2</button>
             </div>
 
-            <!-- LOWER PANE: CURRENT VIDEO 1 -->
+            <!-- LOWER PANE: CURRENT VIDEO 1 PRESERVED 100% -->
             <div style="flex:1; width:100%; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;">
                 <video id="dual-setup-preview-video" playsinline loop muted src="assets/sample-golf-swing.mp4" style="width:100%; height:100%; object-fit:contain;"></video>
                 <div style="position:absolute; display:flex; flex-direction:column; gap:12px; align-items:center; z-index:1100;">
-                    <button class="btn-gold-round" onclick="triggerFilePickerImport()">Change</button>
+                    <button class="btn-gold-round" onclick="triggerFilePickerImport()">Change Video 1</button>
                     <button class="btn-gold-round" onclick="flipSetupVideo()">Flip</button>
                 </div>
             </div>
         </div>
 
+    </div>
+
+    <!-- MODAL: ELEGANT IOS NATIVE FLOATING TEXT ANNOTATION INPUT MODAL -->
+    <div id="ios-text-annotation-modal">
+        <div class="modal-content-card" style="border: 1px solid rgba(255,255,255,0.25); background: rgba(20, 20, 20, 0.96); backdrop-filter: blur(24px);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.1rem; color:#FFFFFF;">Gõ Nhận Xét Kỹ Thuật HLV</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color:#94A3B8; font-size:1.2rem;" onclick="closeModal('ios-text-annotation-modal')"></i>
+            </div>
+            
+            <input type="text" id="ios-text-annotation-input" class="input-form-field" placeholder="Ví dụ: Giữ góc xương sống 42°, vai mở rộng..." style="border-radius:14px; background:rgba(255,255,255,0.12); font-size:1rem;">
+
+            <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size:0.84rem; font-weight:700; color:#94A3B8;">Màu chữ:</span>
+                <div class="color-choice-bubble selected" style="background:#EF3F36;" onclick="selectTextColor('#EF3F36', this)"></div>
+                <div class="color-choice-bubble" style="background:#1375BC;" onclick="selectTextColor('#1375BC', this)"></div>
+                <div class="color-choice-bubble" style="background:#F59E0B;" onclick="selectTextColor('#F59E0B', this)"></div>
+                <div class="color-choice-bubble" style="background:#FFFFFF;" onclick="selectTextColor('#FFFFFF', this)"></div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:6px;">
+                <button class="btn-submit-add" style="flex:1;" onclick="submitTextAnnotation()">Thêm Nhận Xét Nét Căng</button>
+                <button class="btn-submit-add" style="background:#64748B; flex:1;" onclick="closeModal('ios-text-annotation-modal')">Hủy</button>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL: IOS VOICEOVER PERMISSION ACTION SHEET (SCREENSHOT 2) -->
@@ -1766,6 +1820,9 @@
         let voiceoverSeconds = 0;
         let isVideoFlipped = false;
         let currentSpeedIndex = 0;
+        let selectedTextColorChoice = "#EF3F36";
+        let draggingTextIndex = -1;
+        let textDragStartX = 0, textDragStartY = 0;
         const playbackSpeeds = [1.0, 0.5, 0.25, 2.0];
 
         /* 💾 LOCALSTORAGE PERSISTENCE */
@@ -1876,19 +1933,26 @@
             video.pause();
         }
 
+        /* FIX 3: PRESERVE CURRENT VIDEO 1 WHEN CLICKING DUAL COMPARE BUTTON */
         function openDualSetupScreen() {
+            const currentStudioVid = document.getElementById('studio-main-video');
+            const previewVid = document.getElementById('dual-setup-preview-video');
+            if (currentStudioVid && currentStudioVid.src) {
+                previewVid.src = currentStudioVid.src; // PRESERVE CURRENT JUNIOR GOLFER VIDEO 1!
+            }
+
             const dualSetupOverlay = document.getElementById('screen-dual-setup');
             dualSetupOverlay.classList.add('active');
 
             const tabbar = document.getElementById('mobile-bottom-tabbar');
             tabbar.style.display = 'none';
+            showToast('Đang so sánh với Video 1 hiện tại');
         }
 
         function confirmDualSetupDone() {
             const dualSetupOverlay = document.getElementById('screen-dual-setup');
             dualSetupOverlay.classList.remove('active');
-            openModule1StudioWithVideo('assets/sample-golf-swing.mp4');
-            showToast('Đã ghép 2 video so sánh');
+            showToast('Đã mở chế độ so sánh 2 video');
         }
 
         function closeModal(modalId) {
@@ -2623,11 +2687,12 @@
             }
         }
 
-        /* ==================== PERFECT CANVAS ALIGNMENT ENGINE (MATCHES VIDEO BOUNDING BOX 100%) ==================== */
+        /* ==================== 1. SMOOTH FREEHAND PEN & DRAGGABLE TEXT OVERLAY ENGINE ==================== */
         let canvas, ctx;
         let isDrawing = false;
         let startX = 0, startY = 0;
         let drawingsHistory = [];
+        let penPoints = [];
 
         function alignCanvasToVideo() {
             const video = document.getElementById('studio-main-video');
@@ -2678,24 +2743,22 @@
             const canvasEl = document.getElementById('studio-drawing-canvas');
             if (!canvasEl) return;
 
-            canvasEl.onmousedown = startDraw;
-            canvasEl.onmousemove = drawMove;
-            canvasEl.onmouseup = stopDraw;
+            canvasEl.onmousedown = handleMouseDown;
+            canvasEl.onmousemove = handleMouseMove;
+            canvasEl.onmouseup = handleMouseUp;
 
             canvasEl.ontouchstart = (e) => {
-                if (e.touches.length === 1 && activeTool !== 'pan') {
-                    startDraw(e.touches[0]);
+                if (e.touches.length === 1) {
+                    handleMouseDown(e.touches[0]);
                 }
             };
             canvasEl.ontouchmove = (e) => {
-                if (e.touches.length === 1 && activeTool !== 'pan') {
-                    drawMove(e.touches[0]);
+                if (e.touches.length === 1) {
+                    handleMouseMove(e.touches[0]);
                 }
             };
             canvasEl.ontouchend = (e) => {
-                if (activeTool !== 'pan') {
-                    stopDraw(e);
-                }
+                handleMouseUp(e);
             };
         }
 
@@ -2714,62 +2777,137 @@
             } else {
                 if (penBtn) penBtn.classList.add('drawing-mode-active');
 
+                /* FIX 2: REPLACE UGLY NATIVE PROMPT WITH ELEGANT IOS TEXT OVERLAY MODAL */
                 if (toolName === 'text') {
-                    const txt = prompt("Gõ chữ nhận xét kỹ thuật:");
-                    if (txt && canvas) {
-                        drawingsHistory.push({ type: 'text', text: txt, x: canvas.width / 2, y: canvas.height / 2, color: '#EF3F36' });
-                        redrawCanvas();
-                    }
+                    document.getElementById('ios-text-annotation-input').value = '';
+                    document.getElementById('ios-text-annotation-modal').style.display = 'flex';
+                    setTimeout(() => document.getElementById('ios-text-annotation-input').focus(), 150);
                 } else if (toolName === 'tempo') {
                     showToast('Tempo 3.0:1 — Takeaway -> Top -> Impact');
+                } else if (toolName === 'pen') {
+                    showToast('Bút vẽ tự do mượt mượt (Chạm kéo để vẽ)');
                 } else {
-                    showToast('Đã chọn bút vẽ: ' + toolName);
+                    showToast('Đã chọn công cụ: ' + toolName);
                 }
             }
         }
 
-        function startDraw(e) {
-            if (activeTool === 'pan' || !canvas) return;
-            const rect = canvas.getBoundingClientRect();
-            startX = (e.clientX - rect.left) / zoomLevel;
-            startY = (e.clientY - rect.top) / zoomLevel;
-            isDrawing = true;
+        function selectTextColor(colorHex, el) {
+            selectedTextColorChoice = colorHex;
+            document.querySelectorAll('.color-choice-bubble').forEach(b => b.classList.remove('selected'));
+            if (el) el.classList.add('selected');
         }
 
-        function drawMove(e) {
-            if (!isDrawing || activeTool === 'pan' || !canvas) return;
+        function submitTextAnnotation() {
+            const txt = document.getElementById('ios-text-annotation-input').value.trim();
+            if (txt && canvas) {
+                drawingsHistory.push({
+                    type: 'text',
+                    text: txt,
+                    x: canvas.width / 2 - 60,
+                    y: canvas.height / 2,
+                    color: selectedTextColorChoice
+                });
+                redrawCanvas();
+                showToast('Đã thêm nhận xét. Bạn có thể vuốt di chuyển chữ đến vị trí mong muốn!');
+            }
+            closeModal('ios-text-annotation-modal');
+        }
+
+        /* INTERACTIVE CANVAS DOWN/MOVE/UP HANDLERS FOR SMOOTH PEN DRAWING & DRAGGABLE TEXT */
+        function handleMouseDown(e) {
+            if (activeTool === 'pan' || !canvas) return;
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left) / zoomLevel;
+            const mouseY = (e.clientY - rect.top) / zoomLevel;
+
+            // CHECK IF USER IS DRAGGING AN EXISTING TEXT OBJECT
+            draggingTextIndex = -1;
+            for (let i = drawingsHistory.length - 1; i >= 0; i--) {
+                const item = drawingsHistory[i];
+                if (item.type === 'text') {
+                    const textWidth = ctx.measureText(item.text).width + 20;
+                    if (mouseX >= item.x - 10 && mouseX <= item.x + textWidth && mouseY >= item.y - 24 && mouseY <= item.y + 10) {
+                        draggingTextIndex = i;
+                        textDragStartX = mouseX - item.x;
+                        textDragStartY = mouseY - item.y;
+                        break;
+                    }
+                }
+            }
+
+            if (draggingTextIndex >= 0) return;
+
+            startX = mouseX;
+            startY = mouseY;
+            isDrawing = true;
+
+            if (activeTool === 'pen') {
+                penPoints = [{ x: startX, y: startY }];
+            }
+        }
+
+        function handleMouseMove(e) {
+            if (!canvas) return;
             const rect = canvas.getBoundingClientRect();
             const currX = (e.clientX - rect.left) / zoomLevel;
             const currY = (e.clientY - rect.top) / zoomLevel;
 
-            redrawCanvas();
-            ctx.strokeStyle = "#1375BC";
-            ctx.lineWidth = 3;
+            // HANDLE DRAGGING TEXT OVERLAY
+            if (draggingTextIndex >= 0) {
+                drawingsHistory[draggingTextIndex].x = currX - textDragStartX;
+                drawingsHistory[draggingTextIndex].y = currY - textDragStartY;
+                redrawCanvas();
+                return;
+            }
 
-            if (activeTool === 'plane') {
-                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-            } else if (activeTool === 'head') {
-                const radius = Math.hypot(currX - startX, currY - startY);
-                ctx.beginPath(); ctx.arc(startX, startY, radius, 0, Math.PI * 2); ctx.stroke();
-            } else if (activeTool === 'arrow') {
-                drawArrow(ctx, startX, startY, currX, currY);
-            } else if (activeTool === 'angle') {
-                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
-                ctx.fillText("42° Backswing", currX + 10, currY + 10);
-            } else if (activeTool === 'pen') {
-                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                startX = currX; startY = currY;
+            if (!isDrawing || activeTool === 'pan') return;
+
+            if (activeTool === 'pen') {
+                penPoints.push({ x: currX, y: currY });
+                redrawCanvas();
+            } else {
+                redrawCanvas();
+                ctx.strokeStyle = "#1375BC";
+                ctx.lineWidth = 3.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (activeTool === 'plane') {
+                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                } else if (activeTool === 'head') {
+                    const radius = Math.hypot(currX - startX, currY - startY);
+                    ctx.beginPath(); ctx.arc(startX, startY, radius, 0, Math.PI * 2); ctx.stroke();
+                } else if (activeTool === 'arrow') {
+                    drawArrow(ctx, startX, startY, currX, currY);
+                } else if (activeTool === 'angle') {
+                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
+                    ctx.fillText("42° Backswing", currX + 10, currY + 10);
+                }
             }
         }
 
-        function stopDraw(e) {
+        function handleMouseUp(e) {
+            if (draggingTextIndex >= 0) {
+                draggingTextIndex = -1;
+                showToast('Đã xếp vị trí chữ nhận xét');
+                return;
+            }
+
             if (isDrawing && activeTool !== 'pan' && canvas) {
                 isDrawing = false;
                 const rect = canvas.getBoundingClientRect();
                 const currX = (e && e.clientX) ? ((e.clientX - rect.left) / zoomLevel) : startX + 50;
                 const currY = (e && e.clientY) ? ((e.clientY - rect.top) / zoomLevel) : startY + 50;
-                drawingsHistory.push({ type: activeTool, x1: startX, y1: startY, x2: currX, y2: currY, color: '#1375BC' });
+
+                if (activeTool === 'pen' && penPoints.length > 1) {
+                    drawingsHistory.push({ type: 'pen', points: penPoints, color: '#1375BC' });
+                } else if (activeTool !== 'pen') {
+                    drawingsHistory.push({ type: activeTool, x1: startX, y1: startY, x2: currX, y2: currY, color: '#1375BC' });
+                }
+                penPoints = [];
+                redrawCanvas();
             }
         }
 
@@ -2798,6 +2936,8 @@
                 const rAnkle = { x: cw * 0.57, y: ch * 0.77 };
 
                 ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
 
                 ctx.strokeStyle = "#84CC16";
                 ctx.beginPath();
@@ -2829,23 +2969,55 @@
                 });
             }
 
+            // RENDER IN-PROGRESS FREEHAND PEN STROKE
+            if (isDrawing && activeTool === 'pen' && penPoints.length > 1) {
+                ctx.strokeStyle = "#1375BC";
+                ctx.lineWidth = 3.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.beginPath();
+                ctx.moveTo(penPoints[0].x, penPoints[0].y);
+                for (let i = 1; i < penPoints.length; i++) {
+                    ctx.lineTo(penPoints[i].x, penPoints[i].y);
+                }
+                ctx.stroke();
+            }
+
+            // RENDER STORED DRAWINGS HISTORY
             drawingsHistory.forEach(item => {
                 ctx.strokeStyle = item.color || "#1375BC";
-                ctx.lineWidth = 3;
-                if (item.type === 'plane') {
+                ctx.lineWidth = 3.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (item.type === 'pen' && item.points && item.points.length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(item.points[0].x, item.points[0].y);
+                    for (let i = 1; i < item.points.length; i++) {
+                        ctx.lineTo(item.points[i].x, item.points[i].y);
+                    }
+                    ctx.stroke();
+                } else if (item.type === 'plane') {
                     ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
                 } else if (item.type === 'head') {
                     const r = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
                     ctx.beginPath(); ctx.arc(item.x1, item.y1, r, 0, Math.PI * 2); ctx.stroke();
                 } else if (item.type === 'text') {
-                    ctx.fillStyle = "#EF3F36"; ctx.font = "bold 18px Work Sans";
-                    ctx.fillText(item.text, item.x, item.y);
+                    // RENDER ELEGANT HIGH-VISIBILITY TEXT OVERLAY BUBBLE
+                    ctx.fillStyle = "rgba(10, 37, 64, 0.88)";
+                    const textWidth = ctx.measureText(item.text).width + 20;
+                    ctx.fillRect(item.x - 6, item.y - 20, textWidth, 28);
+                    ctx.strokeStyle = item.color || "#EF3F36";
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeRect(item.x - 6, item.y - 20, textWidth, 28);
+
+                    ctx.fillStyle = item.color || "#EF3F36";
+                    ctx.font = "bold 16px Work Sans";
+                    ctx.fillText(item.text, item.x + 4, item.y);
                 } else if (item.type === 'angle') {
                     ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
                     ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
                     ctx.fillText("42° Backswing", item.x2 + 10, item.y2 + 10);
-                } else if (item.type === 'pen') {
-                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
                 }
             });
         }
