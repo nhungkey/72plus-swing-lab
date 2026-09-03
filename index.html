@@ -746,12 +746,13 @@
             cursor: pointer;
         }
 
-        /* REAL DUAL SPLIT SCREEN CONTAINER STYLING */
+        /* REAL DUAL SPLIT SCREEN CONTAINER STYLING WITH ACTIVE PANE HIGHLIGHT */
         #studio-video-container.dual-split-active {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2px;
-            background: #111827;
+            gap: 4px;
+            background: #000000;
+            padding: 4px;
         }
 
         #studio-video-container.dual-split-active #secondary-video-wrapper {
@@ -766,14 +767,41 @@
             align-items: center;
             justify-content: center;
             transform-origin: center center;
-            transition: transform 0.05s ease-out;
+            transition: transform 0.05s ease-out, border-color 0.2s ease;
             overflow: hidden;
+            border: 2px solid transparent;
+            border-radius: 12px;
+        }
+
+        /* ACTIVE PANE FOCUS HIGHLIGHT BORDER */
+        #studio-transform-wrapper.pane-focused, #secondary-video-wrapper.pane-focused {
+            border-color: var(--72-blue) !important;
+            box-shadow: inset 0 0 16px rgba(19, 117, 188, 0.6);
+        }
+
+        .pane-label-badge {
+            display: none;
+            position: absolute;
+            top: 72px;
+            left: 14px;
+            background: rgba(10, 37, 64, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #FFFFFF;
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 14px;
+            z-index: 110;
+        }
+
+        #studio-video-container.dual-split-active .pane-label-badge {
+            display: block;
         }
 
         #secondary-video-wrapper {
             display: none;
             background: #000000;
-            border-left: 2px solid var(--72-blue);
         }
 
         #studio-main-video, #studio-secondary-video {
@@ -962,7 +990,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 26px;
+            gap: 20px;
             width: 100%;
         }
 
@@ -977,6 +1005,12 @@
             font-size: 1rem;
             font-weight: 800;
             cursor: pointer;
+        }
+
+        .onform-pill-ctrl.sync-active {
+            background: var(--72-blue);
+            border-color: #60A5FA;
+            color: #FFFFFF;
         }
 
         .onform-playback-group {
@@ -1534,13 +1568,15 @@
             <!-- 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT + PERFECT CANVAS ALIGNMENT WRAPPER (REAL DUAL SPLIT CAPABLE) -->
             <div id="studio-video-container">
                 <!-- PANE 1: MAIN VIDEO (JUNIOR GOLFER CLIP) -->
-                <div id="studio-transform-wrapper">
+                <div id="studio-transform-wrapper" class="pane-focused" onclick="setActivePane('left')">
+                    <div class="pane-label-badge">VIDEO 1 (TRÁI)</div>
                     <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4" onloadedmetadata="alignCanvasToVideo()"></video>
                     <canvas id="studio-drawing-canvas"></canvas>
                 </div>
 
                 <!-- PANE 2: SECONDARY COMPARISON VIDEO (RORY MCILROY / NELLY KORDA / SELECTED VIDEO 2) -->
-                <div id="secondary-video-wrapper">
+                <div id="secondary-video-wrapper" onclick="setActivePane('right')">
+                    <div class="pane-label-badge" style="background:#0EA5E9;">VIDEO 2 (PHẢI)</div>
                     <video id="studio-secondary-video" playsinline loop muted src="assets/sample-golf-swing.mp4"></video>
                 </div>
 
@@ -1583,6 +1619,11 @@
                 <div class="onform-controls-pill-row">
                     <button class="onform-pill-ctrl" id="btn-speed-toggle" onclick="cyclePlaybackSpeed()">1×`</button>
                     
+                    <!-- INDEPENDENT VS SYNC TOGGLE SWITCH -->
+                    <button class="onform-pill-ctrl" id="btn-sync-mode-toggle" onclick="toggleSyncMode()" title="Chuyển chế độ 🔓 Độc Lập / 🔒 Đồng Bộ">
+                        <i class="fa-solid fa-lock-open"></i> <span id="sync-mode-label">🔓 Độc Lập</span>
+                    </button>
+
                     <div class="onform-playback-group">
                         <button class="onform-play-ctrl" onclick="stepFrame60FPS(-1)" title="Lùi 1 frame (-1f)"><i class="fa-solid fa-backward-step"></i></button>
                         <button class="onform-play-ctrl main-play" id="btn-studio-play" onclick="toggleStudioPlay()"><i class="fa-solid fa-pause"></i></button>
@@ -1874,6 +1915,8 @@
         let voiceoverSeconds = 0;
         let isVideoFlipped = false;
         let isDualSplitActive = false;
+        let isSyncModeActive = false; // DEFAULT INDEPENDENT MODE (🔓)
+        let activePane = 'left'; // 'left' or 'right'
         let video2SelectedSrc = "assets/sample-golf-swing.mp4";
         let currentSpeedIndex = 0;
         let selectedTextColorChoice = "#EF3F36";
@@ -1994,7 +2037,40 @@
             video2.pause();
         }
 
-        /* REAL DUAL SPLIT SCREEN ENGINE FIX (SIDE-BY-SIDE VIDEO 1 & VIDEO 2) */
+        /* REAL DUAL SPLIT SCREEN INDEPENDENT & SYNC CONTROL ENGINE */
+        function setActivePane(pane) {
+            activePane = pane;
+            const leftPane = document.getElementById('studio-transform-wrapper');
+            const rightPane = document.getElementById('secondary-video-wrapper');
+
+            if (pane === 'left') {
+                leftPane.classList.add('pane-focused');
+                rightPane.classList.remove('pane-focused');
+                showToast('Đang chọn Video 1 (Trái) để điều khiển & vẽ');
+            } else {
+                rightPane.classList.add('pane-focused');
+                leftPane.classList.remove('pane-focused');
+                showToast('Đang chọn Video 2 (Phải) để điều khiển & vẽ');
+            }
+            alignCanvasToVideo();
+        }
+
+        function toggleSyncMode() {
+            isSyncModeActive = !isSyncModeActive;
+            const btn = document.getElementById('btn-sync-mode-toggle');
+            const label = document.getElementById('sync-mode-label');
+
+            if (isSyncModeActive) {
+                btn.classList.add('sync-active');
+                btn.innerHTML = '<i class="fa-solid fa-lock"></i> <span id="sync-mode-label">🔒 Đồng Bộ</span>';
+                showToast('Chế độ 🔒 Đồng Bộ: Tua & Phát 2 video cùng lúc');
+            } else {
+                btn.classList.remove('sync-active');
+                btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> <span id="sync-mode-label">🔓 Độc Lập</span>';
+                showToast('Chế độ 🔓 Độc Lập: Tua & Điều khiển riêng từng video');
+            }
+        }
+
         function openDualSetupScreen() {
             const currentStudioVid = document.getElementById('studio-main-video');
             const previewVid1 = document.getElementById('dual-setup-preview-video');
@@ -2044,13 +2120,14 @@
 
             setTool('pan');
             resetZoomAndPan();
+            setActivePane('left');
             setTimeout(initCanvasEngine, 150);
 
-            vid1.play().catch(e => console.warn(e));
-            vid2.play().catch(e => console.warn(e));
-            document.getElementById('btn-studio-play').innerHTML = '<i class="fa-solid fa-pause"></i>';
+            vid1.pause();
+            vid2.pause();
+            document.getElementById('btn-studio-play').innerHTML = '<i class="fa-solid fa-play"></i>';
 
-            showToast('Đã kích hoạt chế độ so sánh 2 video song song!');
+            showToast('Đã mở Chế độ So sánh 2 Video 🔓 Độc Lập');
         }
 
         function closeModal(modalId) {
@@ -2373,7 +2450,7 @@
         let panY = 0;
 
         function updateStudioTransform() {
-            const wrapper = document.getElementById('studio-transform-wrapper');
+            const wrapper = (activePane === 'left') ? document.getElementById('studio-transform-wrapper') : document.getElementById('secondary-video-wrapper');
             if (wrapper) {
                 wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
             }
@@ -2412,7 +2489,7 @@
             let initialPanX = 0;
             let initialPanY = 0;
 
-            // 1. SINGLE TAP PLAY / PAUSE
+            // 1. SINGLE TAP PLAY / PAUSE ACTIVE PANE
             mc.on('singletap', (e) => {
                 if (activeTool === 'pan') {
                     toggleStudioPlay();
@@ -2573,9 +2650,9 @@
 
         function triggerRotateVideo() {
             toggleMoreMenu();
-            const vid = document.getElementById('studio-main-video');
-            vid.style.transform = (vid.style.transform === 'rotate(90deg)') ? 'rotate(0deg)' : 'rotate(90deg)';
-            showToast('Đã xoay video 90° (Rotate)');
+            const targetVid = (activePane === 'left') ? document.getElementById('studio-main-video') : document.getElementById('studio-secondary-video');
+            targetVid.style.transform = (targetVid.style.transform === 'rotate(90deg)') ? 'rotate(0deg)' : 'rotate(90deg)';
+            showToast('Đã xoay video ' + (activePane === 'left' ? '1' : '2') + ' 90° (Rotate)');
         }
 
         function triggerEditTitle() {
@@ -2623,42 +2700,69 @@
             }
         }
 
+        /* DUAL VIEW PLAYBACK ENGINE (INDEPENDENT VS SYNC CAPABLE) */
         function toggleStudioPlay() {
             const video1 = document.getElementById('studio-main-video');
             const video2 = document.getElementById('studio-secondary-video');
             const btn = document.getElementById('btn-studio-play');
 
-            if (video1.paused) {
-                video1.play();
-                if (isDualSplitActive && video2) video2.play();
-                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                showToast('▶ Phát video');
+            if (isDualSplitActive && !isSyncModeActive) {
+                // INDEPENDENT MODE: CONTROL ACTIVE PANE ONLY!
+                const targetVid = (activePane === 'left') ? video1 : video2;
+                if (targetVid.paused) {
+                    targetVid.play();
+                    btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    showToast('▶ Phát Video ' + (activePane === 'left' ? '1' : '2'));
+                } else {
+                    targetVid.pause();
+                    btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                    showToast('⏸ Tạm dừng Video ' + (activePane === 'left' ? '1' : '2'));
+                }
             } else {
-                video1.pause();
-                if (isDualSplitActive && video2) video2.pause();
-                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
-                showToast('⏸ Tạm dừng video');
+                // SYNC MODE: CONTROL BOTH VIDEOS TOGETHER!
+                if (video1.paused) {
+                    video1.play();
+                    if (isDualSplitActive && video2) video2.play();
+                    btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    showToast('▶ Phát cả 2 video');
+                } else {
+                    video1.pause();
+                    if (isDualSplitActive && video2) video2.pause();
+                    btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                    showToast('⏸ Tạm dừng cả 2 video');
+                }
             }
         }
 
-        /* 60FPS PRECISION FRAME STEPPER ENGINE */
+        /* 60FPS PRECISION FRAME STEPPER ENGINE (ACTIVE PANE CAPABLE) */
         function stepFrame60FPS(deltaFrames) {
             const video1 = document.getElementById('studio-main-video');
             const video2 = document.getElementById('studio-secondary-video');
-            video1.pause();
-            if (isDualSplitActive && video2) video2.pause();
 
             const frameDuration = 1.0 / 60.0; // 60FPS precision
-            video1.currentTime = Math.max(0, Math.min(video1.duration, video1.currentTime + (deltaFrames * frameDuration)));
-            if (isDualSplitActive && video2 && video2.duration) {
-                video2.currentTime = Math.max(0, Math.min(video2.duration, video2.currentTime + (deltaFrames * frameDuration)));
+
+            if (isDualSplitActive && !isSyncModeActive) {
+                // INDEPENDENT MODE: STEP ACTIVE PANE ONLY!
+                const targetVid = (activePane === 'left') ? video1 : video2;
+                targetVid.pause();
+                targetVid.currentTime = Math.max(0, Math.min(targetVid.duration, targetVid.currentTime + (deltaFrames * frameDuration)));
+                showToast(`Tua ${deltaFrames > 0 ? '+1f' : '-1f'} Video ${activePane === 'left' ? '1' : '2'}`);
+            } else {
+                // SYNC MODE: STEP BOTH VIDEOS TOGETHER!
+                video1.pause();
+                if (video2) video2.pause();
+
+                video1.currentTime = Math.max(0, Math.min(video1.duration, video1.currentTime + (deltaFrames * frameDuration)));
+                if (isDualSplitActive && video2 && video2.duration) {
+                    video2.currentTime = Math.max(0, Math.min(video2.duration, video2.currentTime + (deltaFrames * frameDuration)));
+                }
             }
             updatePrecisionScrubber();
         }
 
         function updatePrecisionScrubber() {
-            const video = document.getElementById('studio-main-video');
-            if (video.duration) {
+            const video = (activePane === 'left' || !isDualSplitActive) ? document.getElementById('studio-main-video') : document.getElementById('studio-secondary-video');
+            if (video && video.duration) {
                 const pct = (video.currentTime / video.duration) * 100;
                 document.getElementById('studio-scrubber').value = pct;
                 const sec = video.currentTime.toFixed(3);
@@ -2670,13 +2774,20 @@
             const video1 = document.getElementById('studio-main-video');
             const video2 = document.getElementById('studio-secondary-video');
 
-            if (video1.duration) {
-                video1.currentTime = (val / 100) * video1.duration;
-                if (isDualSplitActive && video2 && video2.duration) {
-                    video2.currentTime = (val / 100) * video2.duration;
+            if (isDualSplitActive && !isSyncModeActive) {
+                const targetVid = (activePane === 'left') ? video1 : video2;
+                if (targetVid.duration) {
+                    targetVid.currentTime = (val / 100) * targetVid.duration;
                 }
-                updatePrecisionScrubber();
+            } else {
+                if (video1.duration) {
+                    video1.currentTime = (val / 100) * video1.duration;
+                    if (isDualSplitActive && video2 && video2.duration) {
+                        video2.currentTime = (val / 100) * video2.duration;
+                    }
+                }
             }
+            updatePrecisionScrubber();
         }
 
         function cyclePlaybackSpeed() {
@@ -2837,10 +2948,14 @@
         }
 
         function alignCanvasToVideo() {
-            const video = document.getElementById('studio-main-video');
+            const video = (activePane === 'left' || !isDualSplitActive) ? document.getElementById('studio-main-video') : document.getElementById('studio-secondary-video');
             const canvasEl = document.getElementById('studio-drawing-canvas');
-            const container = document.getElementById('studio-video-container');
+            const container = (activePane === 'left' || !isDualSplitActive) ? document.getElementById('studio-transform-wrapper') : document.getElementById('secondary-video-wrapper');
+
             if (!video || !canvasEl || !container) return;
+
+            // PIN CANVAS EXACTLY ONTO ACTIVE FOCUSED PANE CONTAINER
+            container.appendChild(canvasEl);
 
             const cWidth = container.clientWidth;
             const cHeight = container.clientHeight;
@@ -3275,6 +3390,7 @@
             renderStudentList();
             renderVideoGrid();
             document.getElementById('studio-main-video').ontimeupdate = updatePrecisionScrubber;
+            document.getElementById('studio-secondary-video').ontimeupdate = updatePrecisionScrubber;
             window.addEventListener('resize', alignCanvasToVideo);
         });
     </script>
