@@ -746,10 +746,20 @@
             cursor: pointer;
         }
 
-        #studio-transform-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* REAL DUAL SPLIT SCREEN CONTAINER STYLING */
+        #studio-video-container.dual-split-active {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            background: #111827;
+        }
+
+        #studio-video-container.dual-split-active #secondary-video-wrapper {
+            display: flex !important;
+        }
+
+        #studio-transform-wrapper, #secondary-video-wrapper {
+            position: relative;
             width: 100%;
             height: 100%;
             display: flex;
@@ -757,9 +767,16 @@
             justify-content: center;
             transform-origin: center center;
             transition: transform 0.05s ease-out;
+            overflow: hidden;
         }
 
-        #studio-main-video {
+        #secondary-video-wrapper {
+            display: none;
+            background: #000000;
+            border-left: 2px solid var(--72-blue);
+        }
+
+        #studio-main-video, #studio-secondary-video {
             width: 100%;
             height: 100%;
             object-fit: contain;
@@ -1473,7 +1490,7 @@
             </button>
         </div>
 
-        <!-- ==================== 100% STANDALONE FULLSCREEN OVERLAY: STUDIO 1-CLIP ==================== -->
+        <!-- ==================== 100% STANDALONE FULLSCREEN OVERLAY: STUDIO 1-CLIP / DUAL SPLIT VIEW ==================== -->
         <div id="screen-studio">
             <!-- 1. TOP OVERLAY BAR -->
             <div class="onform-top-overlay-bar">
@@ -1514,11 +1531,17 @@
                 <button class="btn-review-pill" style="background:var(--72-blue); border-color:#60A5FA;" onclick="saveVoiceover()">Save</button>
             </div>
 
-            <!-- 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT + PERFECT CANVAS ALIGNMENT WRAPPER -->
+            <!-- 2. FULLSCREEN MOBILE ADAPTIVE VIDEO VIEWPORT + PERFECT CANVAS ALIGNMENT WRAPPER (REAL DUAL SPLIT CAPABLE) -->
             <div id="studio-video-container">
+                <!-- PANE 1: MAIN VIDEO (JUNIOR GOLFER CLIP) -->
                 <div id="studio-transform-wrapper">
                     <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4" onloadedmetadata="alignCanvasToVideo()"></video>
                     <canvas id="studio-drawing-canvas"></canvas>
+                </div>
+
+                <!-- PANE 2: SECONDARY COMPARISON VIDEO (RORY MCILROY / NELLY KORDA / SELECTED VIDEO 2) -->
+                <div id="secondary-video-wrapper">
+                    <video id="studio-secondary-video" playsinline loop muted src="assets/sample-golf-swing.mp4"></video>
                 </div>
 
                 <!-- RIGHT FLOATING PEN TOOL (A BUTTON ONLY) -->
@@ -1530,7 +1553,7 @@
                     <button class="tool-dock-btn" id="btn-tool-plane" onclick="setTool('plane')" title="Đường Plane Line"><i class="fa-solid fa-ruler-combined"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-head" onclick="setTool('head')" title="Vòng tròn Head Box"><i class="fa-regular fa-circle"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-angle" onclick="setTool('angle')" title="Đo góc nghiêng °"><i class="fa-solid fa-compass"></i></button>
-                    <button class="tool-dock-btn" id="btn-tool-arrow" onclick="setTool('arrow')" title="Mũi tên chỉ hướng"><i class="fa-solid fa-arrow-trend-up"></i></button>
+                    <button class="tool-dock-btn" id="btn-tool-arrow" onclick="setTool('arrow')" title="Mũi tên chỉ hướng ➔"><i class="fa-solid fa-arrow-trend-up"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-pen" onclick="setTool('pen')" title="Bút vẽ tự do"><i class="fa-solid fa-pencil"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-text" onclick="setTool('text')" title="Gõ chữ nhận xét"><i class="fa-solid fa-font"></i></button>
                     <button class="tool-dock-btn" id="btn-tool-tempo" onclick="setTool('tempo')" title="Bấm giờ Tempo 3:1"><i class="fa-solid fa-stopwatch"></i></button>
@@ -1569,28 +1592,59 @@
             </div>
         </div>
 
-        <!-- ==================== VIEW 5: ADD SECOND VIDEO COMPARISON SCREEN (SCREENSHOT 1) ==================== -->
+        <!-- ==================== VIEW 5: ADD SECOND VIDEO COMPARISON SCREEN (REAL DUAL PICKER) ==================== -->
         <div id="screen-dual-setup">
             <div style="width:100%; display:flex; justify-content:space-between; align-items:center; z-index:1100;">
-                <span style="font-weight:700; color:#FFFFFF;">Thêm Video So Sánh</span>
-                <button class="btn-gold-round" style="padding:6px 18px;" onclick="confirmDualSetupDone()">Done</button>
+                <span style="font-weight:700; color:#FFFFFF;">So Sánh 2 Video Song Song</span>
+                <button class="btn-gold-round" style="padding:6px 18px;" onclick="confirmDualSetupDone()">Bắt Đầu So Sánh</button>
             </div>
 
-            <!-- UPPER PANE: ADD VIDEO 2 -->
-            <div style="flex:1; width:100%; display:flex; align-items:center; justify-content:center; border-bottom:1px dashed rgba(255,255,255,0.2);">
-                <button class="btn-gold-round" onclick="triggerFilePickerImport()">Add Video 2</button>
+            <!-- UPPER PANE: VIDEO 2 PREVIEW / ADD BUTTON -->
+            <div style="flex:1; width:100%; position:relative; display:flex; align-items:center; justify-content:center; border-bottom:2px solid var(--72-blue); background:#000000; overflow:hidden;">
+                <video id="dual-setup-preview-video-2" playsinline loop muted src="assets/sample-golf-swing.mp4" style="width:100%; height:100%; object-fit:contain;"></video>
+                <div style="position:absolute; display:flex; flex-direction:column; gap:12px; align-items:center; z-index:1100;">
+                    <button class="btn-gold-round" onclick="openDualVideoPickerModal()">+ Chọn Video 2 So Sánh</button>
+                </div>
             </div>
 
             <!-- LOWER PANE: CURRENT VIDEO 1 PRESERVED 100% -->
-            <div style="flex:1; width:100%; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <div style="flex:1; width:100%; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#000000;">
                 <video id="dual-setup-preview-video" playsinline loop muted src="assets/sample-golf-swing.mp4" style="width:100%; height:100%; object-fit:contain;"></video>
                 <div style="position:absolute; display:flex; flex-direction:column; gap:12px; align-items:center; z-index:1100;">
-                    <button class="btn-gold-round" onclick="triggerFilePickerImport()">Change Video 1</button>
-                    <button class="btn-gold-round" onclick="flipSetupVideo()">Flip</button>
+                    <button class="btn-gold-round" style="background:#059669;" onclick="flipSetupVideo()">Lật Gương Video 1 (Flip)</button>
                 </div>
             </div>
         </div>
 
+    </div>
+
+    <!-- MODAL: DUAL VIDEO 2 PICKER MODAL -->
+    <div id="dual-video-picker-modal" class="modal-mask">
+        <div class="modal-content-card" style="max-height:80vh; overflow-y:auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-family:'Raleway'; font-weight:800; font-size:1.15rem; color:#FFFFFF;">Chọn Video 2 Để So Sánh</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; color:#94A3B8; font-size:1.2rem;" onclick="closeModal('dual-video-picker-modal')"></i>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div class="form-label-text">1. Mẫu PGA/LPGA Pros Chuẩn:</div>
+                <div class="import-option-card" onclick="selectVideo2ForDual('assets/sample-golf-swing.mp4', 'Rory McIlroy 60FPS Driver')">
+                    <div class="import-option-icon"><i class="fa-solid fa-circle-play"></i></div>
+                    <div><div style="font-weight:700; color:#FFFFFF;">Rory McIlroy — Driver 60FPS</div><div style="font-size:0.8rem; color:#94A3B8;">Chuẩn nhịp Tempo 3.0:1</div></div>
+                </div>
+                <div class="import-option-card" onclick="selectVideo2ForDual('assets/sample-golf-swing.mp4', 'Nelly Korda 60FPS Iron')">
+                    <div class="import-option-icon" style="background:#EF3F36;"><i class="fa-solid fa-circle-play"></i></div>
+                    <div><div style="font-weight:700; color:#FFFFFF;">Nelly Korda — Iron 60FPS</div><div style="font-size:0.8rem; color:#94A3B8;">Chuẩn Plane Line</div></div>
+                </div>
+
+                <div class="form-label-text" style="margin-top:6px;">2. Hoặc Tải File Từ Máy:</div>
+                <div class="import-option-card" onclick="closeModal('dual-video-picker-modal'); triggerFilePickerImport();">
+                    <div class="import-option-icon" style="background:#10B981;"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                    <div><div style="font-weight:700; color:#FFFFFF;">Chọn từ Thư viện iPad/Photos</div><div style="font-size:0.8rem; color:#94A3B8;">Tải clip từ thiết bị cá nhân</div></div>
+                </div>
+            </div>
+            <button class="btn-submit-add" style="background:#64748B; margin-top:8px;" onclick="closeModal('dual-video-picker-modal')">Đóng</button>
+        </div>
     </div>
 
     <!-- MODAL: ELEGANT IOS NATIVE FLOATING TEXT ANNOTATION INPUT MODAL -->
@@ -1819,6 +1873,8 @@
         let voiceoverTimerInterval = null;
         let voiceoverSeconds = 0;
         let isVideoFlipped = false;
+        let isDualSplitActive = false;
+        let video2SelectedSrc = "assets/sample-golf-swing.mp4";
         let currentSpeedIndex = 0;
         let selectedTextColorChoice = "#EF3F36";
         let draggingTextIndex = -1;
@@ -1900,6 +1956,9 @@
 
         function openModule1StudioWithVideo(videoSrc) {
             closeModal('reference-library-modal');
+            isDualSplitActive = false;
+            document.getElementById('studio-video-container').classList.remove('dual-split-active');
+
             const video = document.getElementById('studio-main-video');
             video.src = videoSrc;
             
@@ -1929,16 +1988,18 @@
             const tabbar = document.getElementById('mobile-bottom-tabbar');
             tabbar.style.display = 'grid';
 
-            const video = document.getElementById('studio-main-video');
-            video.pause();
+            const video1 = document.getElementById('studio-main-video');
+            const video2 = document.getElementById('studio-secondary-video');
+            video1.pause();
+            video2.pause();
         }
 
-        /* FIX 3: PRESERVE CURRENT VIDEO 1 WHEN CLICKING DUAL COMPARE BUTTON */
+        /* REAL DUAL SPLIT SCREEN ENGINE FIX (SIDE-BY-SIDE VIDEO 1 & VIDEO 2) */
         function openDualSetupScreen() {
             const currentStudioVid = document.getElementById('studio-main-video');
-            const previewVid = document.getElementById('dual-setup-preview-video');
+            const previewVid1 = document.getElementById('dual-setup-preview-video');
             if (currentStudioVid && currentStudioVid.src) {
-                previewVid.src = currentStudioVid.src; // PRESERVE CURRENT JUNIOR GOLFER VIDEO 1!
+                previewVid1.src = currentStudioVid.src; // PRESERVE CURRENT VIDEO 1!
             }
 
             const dualSetupOverlay = document.getElementById('screen-dual-setup');
@@ -1946,13 +2007,50 @@
 
             const tabbar = document.getElementById('mobile-bottom-tabbar');
             tabbar.style.display = 'none';
-            showToast('Đang so sánh với Video 1 hiện tại');
+        }
+
+        function openDualVideoPickerModal() {
+            document.getElementById('dual-video-picker-modal').style.display = 'flex';
+        }
+
+        function selectVideo2ForDual(videoSrc, title) {
+            video2SelectedSrc = videoSrc;
+            const previewVid2 = document.getElementById('dual-setup-preview-video-2');
+            if (previewVid2) previewVid2.src = videoSrc;
+            closeModal('dual-video-picker-modal');
+            showToast('Đã chọn Video 2: ' + title);
         }
 
         function confirmDualSetupDone() {
             const dualSetupOverlay = document.getElementById('screen-dual-setup');
             dualSetupOverlay.classList.remove('active');
-            showToast('Đã mở chế độ so sánh 2 video');
+
+            isDualSplitActive = true;
+            const container = document.getElementById('studio-video-container');
+            container.classList.add('dual-split-active');
+
+            const vid1 = document.getElementById('studio-main-video');
+            const vid2 = document.getElementById('studio-secondary-video');
+
+            const previewVid1 = document.getElementById('dual-setup-preview-video');
+            if (previewVid1 && previewVid1.src) vid1.src = previewVid1.src;
+            vid2.src = video2SelectedSrc;
+
+            const studioOverlay = document.getElementById('screen-studio');
+            studioOverlay.classList.add('active');
+
+            const tabbar = document.getElementById('mobile-bottom-tabbar');
+            tabbar.style.display = 'none';
+
+            setTool('pan');
+            resetZoomAndPan();
+            setTimeout(initCanvasEngine, 150);
+
+            vid1.play().catch(e => console.warn(e));
+            vid2.play().catch(e => console.warn(e));
+            document.getElementById('btn-studio-play').innerHTML = '<i class="fa-solid fa-pause"></i>';
+
+            showToast('Đã kích hoạt chế độ so sánh 2 video song song!');
         }
 
         function closeModal(modalId) {
@@ -2135,6 +2233,7 @@
                 showToast('Vui lòng chọn 2 clip để so sánh');
                 return;
             }
+            video2SelectedSrc = selected[1].src;
             openDualSetupScreen();
         }
 
@@ -2142,7 +2241,7 @@
             isVideoFlipped = !isVideoFlipped;
             const vid = document.getElementById('dual-setup-preview-video');
             vid.style.transform = isVideoFlipped ? 'scaleX(-1)' : 'scaleX(1)';
-            showToast(isVideoFlipped ? 'Đã lật gương video (Flip)' : 'Đã đưa về góc quay gốc');
+            showToast(isVideoFlipped ? 'Đã lật gương video 1 (Flip)' : 'Đã đưa về góc quay gốc');
         }
 
         function deleteSelectedClips() {
@@ -2186,7 +2285,11 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const fileUrl = e.target.result;
-                    generateVideoThumbnailAndImport(fileUrl, file.name);
+                    if (document.getElementById('screen-dual-setup').classList.contains('active')) {
+                        selectVideo2ForDual(fileUrl, file.name);
+                    } else {
+                        generateVideoThumbnailAndImport(fileUrl, file.name);
+                    }
                 };
                 reader.readAsDataURL(file);
             }
@@ -2521,14 +2624,18 @@
         }
 
         function toggleStudioPlay() {
-            const video = document.getElementById('studio-main-video');
+            const video1 = document.getElementById('studio-main-video');
+            const video2 = document.getElementById('studio-secondary-video');
             const btn = document.getElementById('btn-studio-play');
-            if (video.paused) {
-                video.play();
+
+            if (video1.paused) {
+                video1.play();
+                if (isDualSplitActive && video2) video2.play();
                 btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
                 showToast('▶ Phát video');
             } else {
-                video.pause();
+                video1.pause();
+                if (isDualSplitActive && video2) video2.pause();
                 btn.innerHTML = '<i class="fa-solid fa-play"></i>';
                 showToast('⏸ Tạm dừng video');
             }
@@ -2536,10 +2643,16 @@
 
         /* 60FPS PRECISION FRAME STEPPER ENGINE */
         function stepFrame60FPS(deltaFrames) {
-            const video = document.getElementById('studio-main-video');
-            video.pause();
+            const video1 = document.getElementById('studio-main-video');
+            const video2 = document.getElementById('studio-secondary-video');
+            video1.pause();
+            if (isDualSplitActive && video2) video2.pause();
+
             const frameDuration = 1.0 / 60.0; // 60FPS precision
-            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + (deltaFrames * frameDuration)));
+            video1.currentTime = Math.max(0, Math.min(video1.duration, video1.currentTime + (deltaFrames * frameDuration)));
+            if (isDualSplitActive && video2 && video2.duration) {
+                video2.currentTime = Math.max(0, Math.min(video2.duration, video2.currentTime + (deltaFrames * frameDuration)));
+            }
             updatePrecisionScrubber();
         }
 
@@ -2554,9 +2667,14 @@
         }
 
         function onScrubberInput(val) {
-            const video = document.getElementById('studio-main-video');
-            if (video.duration) {
-                video.currentTime = (val / 100) * video.duration;
+            const video1 = document.getElementById('studio-main-video');
+            const video2 = document.getElementById('studio-secondary-video');
+
+            if (video1.duration) {
+                video1.currentTime = (val / 100) * video1.duration;
+                if (isDualSplitActive && video2 && video2.duration) {
+                    video2.currentTime = (val / 100) * video2.duration;
+                }
                 updatePrecisionScrubber();
             }
         }
@@ -2564,8 +2682,10 @@
         function cyclePlaybackSpeed() {
             currentSpeedIndex = (currentSpeedIndex + 1) % playbackSpeeds.length;
             const spd = playbackSpeeds[currentSpeedIndex];
-            const video = document.getElementById('studio-main-video');
-            video.playbackRate = spd;
+            const video1 = document.getElementById('studio-main-video');
+            const video2 = document.getElementById('studio-secondary-video');
+            video1.playbackRate = spd;
+            if (video2) video2.playbackRate = spd;
             document.getElementById('btn-speed-toggle').innerText = `${spd}×`;
             showToast(`Tốc độ phát: ${spd}×`);
         }
@@ -2687,12 +2807,34 @@
             }
         }
 
-        /* ==================== 1. SMOOTH FREEHAND PEN & DRAGGABLE TEXT OVERLAY ENGINE ==================== */
+        /* ==================== 1. UNIFIED TOUCH EVENT COORDINATE EXTRACTION (FIX ARROW & DRAWING ON IPAD) ==================== */
         let canvas, ctx;
         let isDrawing = false;
         let startX = 0, startY = 0;
         let drawingsHistory = [];
         let penPoints = [];
+
+        function getEventCoords(e) {
+            if (!canvas) return { x: 0, y: 0 };
+            const rect = canvas.getBoundingClientRect();
+            let clientX = 0, clientY = 0;
+
+            if (e.changedTouches && e.changedTouches.length > 0) {
+                clientX = e.changedTouches[0].clientX;
+                clientY = e.changedTouches[0].clientY;
+            } else if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX || 0;
+                clientY = e.clientY || 0;
+            }
+
+            return {
+                x: (clientX - rect.left) / zoomLevel,
+                y: (clientY - rect.top) / zoomLevel
+            };
+        }
 
         function alignCanvasToVideo() {
             const video = document.getElementById('studio-main-video');
@@ -2749,12 +2891,12 @@
 
             canvasEl.ontouchstart = (e) => {
                 if (e.touches.length === 1) {
-                    handleMouseDown(e.touches[0]);
+                    handleMouseDown(e);
                 }
             };
             canvasEl.ontouchmove = (e) => {
                 if (e.touches.length === 1) {
-                    handleMouseMove(e.touches[0]);
+                    handleMouseMove(e);
                 }
             };
             canvasEl.ontouchend = (e) => {
@@ -2777,15 +2919,16 @@
             } else {
                 if (penBtn) penBtn.classList.add('drawing-mode-active');
 
-                /* FIX 2: REPLACE UGLY NATIVE PROMPT WITH ELEGANT IOS TEXT OVERLAY MODAL */
                 if (toolName === 'text') {
                     document.getElementById('ios-text-annotation-input').value = '';
                     document.getElementById('ios-text-annotation-modal').style.display = 'flex';
                     setTimeout(() => document.getElementById('ios-text-annotation-input').focus(), 150);
                 } else if (toolName === 'tempo') {
                     showToast('Tempo 3.0:1 — Takeaway -> Top -> Impact');
+                } else if (toolName === 'arrow') {
+                    showToast('Công cụ vẽ Mũi Tên chỉ hướng ➔ (Kéo tay để vẽ)');
                 } else if (toolName === 'pen') {
-                    showToast('Bút vẽ tự do mượt mượt (Chạm kéo để vẽ)');
+                    showToast('Bút vẽ tự do mượt mượt (Kéo tay để vẽ)');
                 } else {
                     showToast('Đã chọn công cụ: ' + toolName);
                 }
@@ -2809,17 +2952,17 @@
                     color: selectedTextColorChoice
                 });
                 redrawCanvas();
-                showToast('Đã thêm nhận xét. Bạn có thể vuốt di chuyển chữ đến vị trí mong muốn!');
+                showToast('Đã thêm nhận xét. Chạm kéo chữ để xếp vị trí!');
             }
             closeModal('ios-text-annotation-modal');
         }
 
-        /* INTERACTIVE CANVAS DOWN/MOVE/UP HANDLERS FOR SMOOTH PEN DRAWING & DRAGGABLE TEXT */
+        /* UNIFIED TOUCH/MOUSE INTERACTIVE CANVAS DOWN/MOVE/UP HANDLERS */
         function handleMouseDown(e) {
             if (activeTool === 'pan' || !canvas) return;
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = (e.clientX - rect.left) / zoomLevel;
-            const mouseY = (e.clientY - rect.top) / zoomLevel;
+            const coords = getEventCoords(e);
+            const mouseX = coords.x;
+            const mouseY = coords.y;
 
             // CHECK IF USER IS DRAGGING AN EXISTING TEXT OBJECT
             draggingTextIndex = -1;
@@ -2849,9 +2992,9 @@
 
         function handleMouseMove(e) {
             if (!canvas) return;
-            const rect = canvas.getBoundingClientRect();
-            const currX = (e.clientX - rect.left) / zoomLevel;
-            const currY = (e.clientY - rect.top) / zoomLevel;
+            const coords = getEventCoords(e);
+            const currX = coords.x;
+            const currY = coords.y;
 
             // HANDLE DRAGGING TEXT OVERLAY
             if (draggingTextIndex >= 0) {
@@ -2897,9 +3040,9 @@
 
             if (isDrawing && activeTool !== 'pan' && canvas) {
                 isDrawing = false;
-                const rect = canvas.getBoundingClientRect();
-                const currX = (e && e.clientX) ? ((e.clientX - rect.left) / zoomLevel) : startX + 50;
-                const currY = (e && e.clientY) ? ((e.clientY - rect.top) / zoomLevel) : startY + 50;
+                const coords = getEventCoords(e);
+                const currX = (coords.x !== 0) ? coords.x : (startX + 60);
+                const currY = (coords.y !== 0) ? coords.y : (startY + 60);
 
                 if (activeTool === 'pen' && penPoints.length > 1) {
                     drawingsHistory.push({ type: 'pen', points: penPoints, color: '#1375BC' });
@@ -3002,6 +3145,8 @@
                 } else if (item.type === 'head') {
                     const r = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
                     ctx.beginPath(); ctx.arc(item.x1, item.y1, r, 0, Math.PI * 2); ctx.stroke();
+                } else if (item.type === 'arrow') {
+                    drawArrow(ctx, item.x1, item.y1, item.x2, item.y2);
                 } else if (item.type === 'text') {
                     // RENDER ELEGANT HIGH-VISIBILITY TEXT OVERLAY BUBBLE
                     ctx.fillStyle = "rgba(10, 37, 64, 0.88)";
@@ -3023,7 +3168,7 @@
         }
 
         function drawArrow(ctx, fromx, fromy, tox, toy) {
-            const headlen = 10;
+            const headlen = 14;
             const dx = tox - fromx;
             const dy = toy - fromy;
             const angle = Math.atan2(dy, dx);
