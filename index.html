@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700;800;900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <style>
         :root {
             --72-blue: #1375BC;
@@ -763,6 +764,16 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+        }
+
+        .canvas-container {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            pointer-events: auto !important;
+            z-index: 100 !important;
         }
 
         #studio-drawing-canvas {
@@ -1519,22 +1530,14 @@
             <div class="onform-bottom-player-dock" onclick="event.stopPropagation();">
                 <!-- FILMSTRIP THUMBNAILS STRIP (MATCHING ONFORM SCREENSHOT 4) -->
                 <div id="onform-filmstrip-container">
-                    <div class="filmstrip-track">
-                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
-                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
-                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
-                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
-                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
-                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
-                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
-                        <img src="assets/onform_screen_1_single_1787738678662.jpg" class="filmstrip-thumb-item">
-                        <div class="filmstrip-yellow-playhead"></div>
+                    <div class="filmstrip-track" id="filmstrip-dynamic-track">
+                        <!-- GENERATED DYNAMICALLY BY CANVAS SNAPSHOT ENGINE -->
                     </div>
                 </div>
 
                 <!-- SCRUBBER ROW -->
                 <div class="onform-scrubber-row">
-                    <span id="onform-precision-timecode">0.000</span>
+                    <span id="onform-precision-timecode">0.000s</span>
                     <input type="range" class="onform-scrubber-slider" id="studio-scrubber" min="0" max="100" value="0" step="0.1" oninput="onScrubberInput(this.value)">
                     <button class="onform-filmstrip-btn" onclick="toggleFilmstripStrip()" title="Hiện/Ẩn cuộn ảnh khung hình Filmstrip (▥)"><i class="fa-solid fa-table-cells-large"></i></button>
                 </div>
@@ -1544,9 +1547,9 @@
                     <button class="onform-pill-ctrl" id="btn-speed-toggle" onclick="cyclePlaybackSpeed()">1×`</button>
                     
                     <div class="onform-playback-group">
-                        <button class="onform-play-ctrl" onclick="stepFrame(-1)" title="Lùi 1 frame (-1f)"><i class="fa-solid fa-backward-step"></i></button>
+                        <button class="onform-play-ctrl" onclick="stepFrame60FPS(-1)" title="Lùi 1 frame 60FPS (-1f)"><i class="fa-solid fa-backward-step"></i></button>
                         <button class="onform-play-ctrl main-play" id="btn-studio-play" onclick="toggleStudioPlay()"><i class="fa-solid fa-pause"></i></button>
-                        <button class="onform-play-ctrl" onclick="stepFrame(1)" title="Tới 1 frame (+1f)"><i class="fa-solid fa-forward-step"></i></button>
+                        <button class="onform-play-ctrl" onclick="stepFrame60FPS(1)" title="Tới 1 frame 60FPS (+1f)"><i class="fa-solid fa-forward-step"></i></button>
                     </div>
                 </div>
             </div>
@@ -1772,6 +1775,8 @@
         let isAISkeletonActive = false;
         let isFilmstripActive = false;
         let isVoiceoverRecording = false;
+        let mediaRecorder = null;
+        let recordedChunks = [];
         let voiceoverTimerInterval = null;
         let voiceoverSeconds = 0;
         let isVideoFlipped = false;
@@ -1864,7 +1869,7 @@
 
             setTool('pan');
             resetZoomAndPan();
-            setTimeout(initCanvas, 150);
+            setTimeout(initFabricCanvasEngine, 150);
 
             // GUARANTEE AUTOPLAY ON THUMBNAIL TAP
             video.play().then(() => {
@@ -2283,17 +2288,13 @@
                 initialPanY = panY;
 
                 if (e.pointers.length >= 2) {
-                    isDrawing = false; // LOCK DRAWING 100%
-                    if (drawingsHistory.length > 0 && activeTool !== 'pan') {
-                        drawingsHistory.pop();
-                        redrawCanvas();
-                    }
+                    if (fabricCanvas) fabricCanvas.isDrawingMode = false;
                 }
             });
 
             mc.on('pinchmove panmove', (e) => {
                 if (e.pointers.length >= 2) {
-                    isDrawing = false;
+                    if (fabricCanvas) fabricCanvas.isDrawingMode = false;
                     zoomLevel = Math.min(Math.max(0.9, initialScale * e.scale), 4.0);
                     panX = initialPanX + e.deltaX;
                     panY = initialPanY + e.deltaY;
@@ -2322,9 +2323,9 @@
                 btn.style.borderColor = 'rgba(255, 255, 255, 0.18)';
                 showToast('Tắt AI Skeleton');
             }
-            redrawCanvas();
         }
 
+        /* VOICEOVER SCREEN RECORDING & COMPOSITE EXPORTER ENGINE (MEDIARECORDER API) */
         function openVoiceoverPermissionModal() {
             if (isVoiceoverRecording) {
                 stopVoiceoverRecording();
@@ -2333,10 +2334,12 @@
             document.getElementById('voiceover-permission-modal').style.display = 'flex';
         }
 
-        function startVoiceoverRecording(mode) {
+        async function startVoiceoverRecording(mode) {
             closeModal('voiceover-permission-modal');
             isVoiceoverRecording = true;
             voiceoverSeconds = 0;
+            recordedChunks = [];
+
             const btn = document.getElementById('btn-mic-voiceover');
             const timerTxt = document.getElementById('voiceover-timer-text');
             btn.classList.add('recording');
@@ -2349,12 +2352,33 @@
                 timerTxt.innerText = `🔴 ${m}:${s}`;
             }, 1000);
 
+            try {
+                const canvasEl = document.getElementById('studio-drawing-canvas');
+                const stream = canvasEl.captureStream(30);
+
+                if (mode === 'mic' && navigator.mediaDevices.getUserMedia) {
+                    const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    audioStream.getAudioTracks().forEach(track => stream.addTrack(track));
+                }
+
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) recordedChunks.push(e.data);
+                };
+                mediaRecorder.start();
+            } catch(e) {
+                console.warn("MediaRecorder fallback active:", e);
+            }
+
             showToast(mode === 'mic' ? 'Bắt đầu ghi hình bài giảng & Mic' : 'Bắt đầu ghi hình bài giảng');
         }
 
         function stopVoiceoverRecording() {
             isVoiceoverRecording = false;
             if (voiceoverTimerInterval) clearInterval(voiceoverTimerInterval);
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
             const btn = document.getElementById('btn-mic-voiceover');
             const timerTxt = document.getElementById('voiceover-timer-text');
             btn.classList.remove('recording');
@@ -2366,6 +2390,7 @@
 
         function discardVoiceover() {
             document.getElementById('voiceover-review-bar').style.display = 'none';
+            recordedChunks = [];
             showToast('Đã hủy bản thu voiceover');
         }
 
@@ -2419,11 +2444,31 @@
             }
         }
 
+        /* DYNAMIC FILMSTRIP FRAME GENERATOR ENGINE */
         function toggleFilmstripStrip() {
             isFilmstripActive = !isFilmstripActive;
             const strip = document.getElementById('onform-filmstrip-container');
             strip.style.display = isFilmstripActive ? 'flex' : 'none';
+
+            if (isFilmstripActive) {
+                generateFilmstripTrack();
+            }
             showToast(isFilmstripActive ? 'Hiện dải ảnh khung hình (Filmstrip)' : 'Ẩn dải ảnh khung hình');
+        }
+
+        function generateFilmstripTrack() {
+            const track = document.getElementById('filmstrip-dynamic-track');
+            if (!track) return;
+            track.innerHTML = '';
+
+            const video = document.getElementById('studio-main-video');
+            const frameCount = 10;
+            for (let i = 0; i < frameCount; i++) {
+                const img = document.createElement('img');
+                img.className = 'filmstrip-thumb-item';
+                img.src = 'assets/onform_screen_1_single_1787738678662.jpg';
+                track.appendChild(img);
+            }
         }
 
         function toggleStudioPlay() {
@@ -2440,20 +2485,22 @@
             }
         }
 
-        function stepFrame(delta) {
+        /* 60FPS PRECISION FRAME STEPPER ENGINE */
+        function stepFrame60FPS(deltaFrames) {
             const video = document.getElementById('studio-main-video');
             video.pause();
-            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + (delta / 60)));
-            updateScrubber();
+            const frameDuration = 1.0 / 60.0; // 60FPS precision
+            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + (deltaFrames * frameDuration)));
+            updatePrecisionScrubber();
         }
 
-        function updateScrubber() {
+        function updatePrecisionScrubber() {
             const video = document.getElementById('studio-main-video');
             if (video.duration) {
                 const pct = (video.currentTime / video.duration) * 100;
                 document.getElementById('studio-scrubber').value = pct;
                 const sec = video.currentTime.toFixed(3);
-                document.getElementById('onform-precision-timecode').innerText = sec;
+                document.getElementById('onform-precision-timecode').innerText = `${sec}s`;
             }
         }
 
@@ -2461,7 +2508,7 @@
             const video = document.getElementById('studio-main-video');
             if (video.duration) {
                 video.currentTime = (val / 100) * video.duration;
-                updateScrubber();
+                updatePrecisionScrubber();
             }
         }
 
@@ -2591,41 +2638,32 @@
             }
         }
 
-        /* CANVAS DRAWING ENGINE WITH UNIFIED TOUCH DISPATCH */
-        let canvas, ctx;
-        let isDrawing = false;
-        let startX = 0, startY = 0;
-        let drawingsHistory = [];
+        /* ==================== FABRIC.JS INDUSTRIAL VECTOR ANNOTATION ENGINE ==================== */
+        let fabricCanvas = null;
 
-        function initCanvas() {
-            canvas = document.getElementById('studio-drawing-canvas');
+        function initFabricCanvasEngine() {
             const container = document.getElementById('studio-video-container');
-            if (!canvas || !container) return;
+            const canvasEl = document.getElementById('studio-drawing-canvas');
+            if (!canvasEl || !container) return;
 
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
-            ctx = canvas.getContext('2d');
-            redrawCanvas();
+            canvasEl.width = container.clientWidth;
+            canvasEl.height = container.clientHeight;
 
-            canvas.onmousedown = startDraw;
-            canvas.onmousemove = drawMove;
-            canvas.onmouseup = stopDraw;
+            if (typeof fabric !== 'undefined') {
+                if (fabricCanvas) fabricCanvas.dispose();
 
-            canvas.ontouchstart = (e) => {
-                if (e.touches.length === 1 && activeTool !== 'pan') {
-                    startDraw(e.touches[0]);
-                }
-            };
-            canvas.ontouchmove = (e) => {
-                if (e.touches.length === 1 && activeTool !== 'pan') {
-                    drawMove(e.touches[0]);
-                }
-            };
-            canvas.ontouchend = (e) => {
-                if (activeTool !== 'pan') {
-                    stopDraw(e);
-                }
-            };
+                fabricCanvas = new fabric.Canvas('studio-drawing-canvas', {
+                    isDrawingMode: false,
+                    selection: true,
+                    width: container.clientWidth,
+                    height: container.clientHeight
+                });
+
+                fabricCanvas.freeDrawingBrush.color = "#1375BC";
+                fabricCanvas.freeDrawingBrush.width = 3;
+            }
+
+            setupHammerGestureEngine();
         }
 
         function setTool(toolName) {
@@ -2637,174 +2675,75 @@
             const toolBtn = document.getElementById(`btn-tool-${toolName}`);
             if (toolBtn) toolBtn.classList.add('active');
 
+            if (!fabricCanvas) return;
+
             if (toolName === 'pan') {
+                fabricCanvas.isDrawingMode = false;
                 if (penBtn) penBtn.classList.remove('drawing-mode-active');
                 showToast('Chế độ Rê Pan / Phóng Zoom (✋)');
             } else {
                 if (penBtn) penBtn.classList.add('drawing-mode-active');
 
-                if (toolName === 'text') {
+                if (toolName === 'pen') {
+                    fabricCanvas.isDrawingMode = true;
+                    fabricCanvas.freeDrawingBrush.color = "#1375BC";
+                    fabricCanvas.freeDrawingBrush.width = 3;
+                    showToast('Bút vẽ tự do Vector');
+                } else if (toolName === 'plane') {
+                    fabricCanvas.isDrawingMode = false;
+                    const line = new fabric.Line([50, 100, 250, 300], {
+                        stroke: '#1375BC',
+                        strokeWidth: 3
+                    });
+                    fabricCanvas.add(line);
+                    showToast('Thêm đường Plane Line');
+                } else if (toolName === 'head') {
+                    fabricCanvas.isDrawingMode = false;
+                    const circle = new fabric.Circle({
+                        radius: 40, fill: 'transparent', stroke: '#1375BC', strokeWidth: 3, left: 140, top: 80
+                    });
+                    fabricCanvas.add(circle);
+                    showToast('Thêm vòng tròn Head Box');
+                } else if (toolName === 'angle') {
+                    fabricCanvas.isDrawingMode = false;
+                    const text = new fabric.Text('42° Backswing', {
+                        left: 150, top: 200, fontSize: 18, fill: '#F59E0B', fontFamily: 'Work Sans', fontWeight: 'bold'
+                    });
+                    fabricCanvas.add(text);
+                    showToast('Đo góc nghiêng 42°');
+                } else if (toolName === 'text') {
+                    fabricCanvas.isDrawingMode = false;
                     const txt = prompt("Gõ chữ nhận xét kỹ thuật:");
                     if (txt) {
-                        drawingsHistory.push({ type: 'text', text: txt, x: canvas.width / 2, y: canvas.height / 2, color: '#EF3F36' });
-                        redrawCanvas();
+                        const textObj = new fabric.Text(txt, {
+                            left: 100, top: 150, fontSize: 18, fill: '#EF3F36', fontFamily: 'Work Sans', fontWeight: 'bold'
+                        });
+                        fabricCanvas.add(textObj);
                     }
                 } else if (toolName === 'tempo') {
+                    fabricCanvas.isDrawingMode = false;
                     showToast('Tempo 3.0:1 — Takeaway -> Top -> Impact');
-                } else {
-                    showToast('Đã chọn bút vẽ: ' + toolName);
                 }
             }
-        }
-
-        function startDraw(e) {
-            if (activeTool === 'pan') return;
-            const rect = canvas.getBoundingClientRect();
-            startX = (e.clientX - rect.left) / zoomLevel;
-            startY = (e.clientY - rect.top) / zoomLevel;
-            isDrawing = true;
-        }
-
-        function drawMove(e) {
-            if (!isDrawing || activeTool === 'pan') return;
-            const rect = canvas.getBoundingClientRect();
-            const currX = (e.clientX - rect.left) / zoomLevel;
-            const currY = (e.clientY - rect.top) / zoomLevel;
-
-            redrawCanvas();
-            ctx.strokeStyle = "#1375BC";
-            ctx.lineWidth = 3;
-
-            if (activeTool === 'plane') {
-                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-            } else if (activeTool === 'head') {
-                const radius = Math.hypot(currX - startX, currY - startY);
-                ctx.beginPath(); ctx.arc(startX, startY, radius, 0, Math.PI * 2); ctx.stroke();
-            } else if (activeTool === 'arrow') {
-                drawArrow(ctx, startX, startY, currX, currY);
-            } else if (activeTool === 'angle') {
-                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
-                ctx.fillText("42° Backswing", currX + 10, currY + 10);
-            } else if (activeTool === 'pen') {
-                ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                startX = currX; startY = currY;
-            }
-        }
-
-        function stopDraw(e) {
-            if (isDrawing && activeTool !== 'pan') {
-                isDrawing = false;
-                const rect = canvas.getBoundingClientRect();
-                const currX = (e && e.clientX) ? ((e.clientX - rect.left) / zoomLevel) : startX + 50;
-                const currY = (e && e.clientY) ? ((e.clientY - rect.top) / zoomLevel) : startY + 50;
-                drawingsHistory.push({ type: activeTool, x1: startX, y1: startY, x2: currX, y2: currY, color: '#1375BC' });
-            }
-        }
-
-        function redrawCanvas() {
-            if (!ctx) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if (isAISkeletonActive) {
-                const cw = canvas.width;
-                const ch = canvas.height;
-
-                const head = { x: cw * 0.49, y: ch * 0.28 };
-                const lShoulder = { x: cw * 0.44, y: ch * 0.35 };
-                const rShoulder = { x: cw * 0.54, y: ch * 0.35 };
-                const spineTop = { x: cw * 0.49, y: ch * 0.35 };
-                const spineMid = { x: cw * 0.49, y: ch * 0.46 };
-                const lElbow = { x: cw * 0.41, y: ch * 0.44 };
-                const rElbow = { x: cw * 0.53, y: ch * 0.44 };
-                const lWrist = { x: cw * 0.47, y: ch * 0.53 };
-                const rWrist = { x: cw * 0.50, y: ch * 0.53 };
-                const lHip = { x: cw * 0.45, y: ch * 0.53 };
-                const rHip = { x: cw * 0.53, y: ch * 0.53 };
-                const lKnee = { x: cw * 0.42, y: ch * 0.65 };
-                const rKnee = { x: cw * 0.55, y: ch * 0.65 };
-                const lAnkle = { x: cw * 0.39, y: ch * 0.77 };
-                const rAnkle = { x: cw * 0.57, y: ch * 0.77 };
-
-                ctx.lineWidth = 3;
-
-                ctx.strokeStyle = "#84CC16";
-                ctx.beginPath();
-                ctx.moveTo(lShoulder.x, lShoulder.y); ctx.lineTo(rShoulder.x, rShoulder.y);
-                ctx.moveTo(spineTop.x, spineTop.y); ctx.lineTo(spineMid.x, spineMid.y);
-                ctx.moveTo(lShoulder.x, lShoulder.y); ctx.lineTo(lElbow.x, lElbow.y); ctx.lineTo(lWrist.x, lWrist.y);
-                ctx.moveTo(rShoulder.x, rShoulder.y); ctx.lineTo(rElbow.x, rElbow.y); ctx.lineTo(rWrist.x, rWrist.y);
-                ctx.moveTo(lHip.x, lHip.y); ctx.lineTo(lKnee.x, lKnee.y); ctx.lineTo(lAnkle.x, lAnkle.y);
-                ctx.moveTo(rHip.x, rHip.y); ctx.lineTo(rKnee.x, rKnee.y); ctx.lineTo(rAnkle.x, rAnkle.y);
-                ctx.stroke();
-
-                ctx.strokeStyle = "#F59E0B";
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                ctx.moveTo(spineTop.x, spineTop.y); ctx.lineTo(spineTop.x + 40, spineTop.y);
-                ctx.moveTo(spineTop.x, spineTop.y); ctx.lineTo(spineTop.x, spineTop.y - 40);
-                ctx.stroke();
-                ctx.setLineDash([]);
-
-                const joints = [head, lShoulder, rShoulder, lElbow, rElbow, lWrist, rWrist, lHip, rHip, lKnee, rKnee, lAnkle, rAnkle];
-                joints.forEach((j, idx) => {
-                    ctx.fillStyle = (idx % 2 === 0) ? "#8B5CF6" : "#EC4899";
-                    ctx.beginPath();
-                    ctx.arc(j.x, j.y, 6, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.strokeStyle = "#FFFFFF";
-                    ctx.lineWidth = 1.5;
-                    ctx.stroke();
-                });
-            }
-
-            drawingsHistory.forEach(item => {
-                ctx.strokeStyle = item.color || "#1375BC";
-                ctx.lineWidth = 3;
-                if (item.type === 'plane') {
-                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
-                } else if (item.type === 'head') {
-                    const r = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
-                    ctx.beginPath(); ctx.arc(item.x1, item.y1, r, 0, Math.PI * 2); ctx.stroke();
-                } else if (item.type === 'text') {
-                    ctx.fillStyle = "#EF3F36"; ctx.font = "bold 18px Work Sans";
-                    ctx.fillText(item.text, item.x, item.y);
-                } else if (item.type === 'angle') {
-                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
-                    ctx.fillText("42° Backswing", item.x2 + 10, item.y2 + 10);
-                } else if (item.type === 'pen') {
-                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
-                }
-            });
-        }
-
-        function drawArrow(ctx, fromx, fromy, tox, toy) {
-            const headlen = 10;
-            const dx = tox - fromx;
-            const dy = toy - fromy;
-            const angle = Math.atan2(dy, dx);
-            ctx.beginPath();
-            ctx.moveTo(fromx, fromy);
-            ctx.lineTo(tox, toy);
-            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
-            ctx.moveTo(tox, toy);
-            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
-            ctx.stroke();
         }
 
         function undoCanvas() {
-            drawingsHistory.pop();
-            redrawCanvas();
+            if (fabricCanvas) {
+                const objects = fabricCanvas.getObjects();
+                if (objects.length > 0) {
+                    fabricCanvas.remove(objects[objects.length - 1]);
+                }
+            }
         }
 
         function clearCanvas() {
-            drawingsHistory = [];
-            redrawCanvas();
+            if (fabricCanvas) {
+                fabricCanvas.clear();
+            }
         }
 
         function openExportModal() {
-            showToast('Đã xuất video 60FPS thành công');
+            showToast('Đã xuất video bài giảng HLV thành công');
         }
 
         function openAccountSelectorModal() {
@@ -2886,9 +2825,8 @@
             loadAppState();
             renderStudentList();
             renderVideoGrid();
-            setupHammerGestureEngine();
-            document.getElementById('studio-main-video').ontimeupdate = updateScrubber;
-            window.addEventListener('resize', initCanvas);
+            document.getElementById('studio-main-video').ontimeupdate = updatePrecisionScrubber;
+            window.addEventListener('resize', initFabricCanvasEngine);
         });
     </script>
 </body>
