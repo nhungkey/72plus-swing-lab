@@ -2360,6 +2360,15 @@
             fCanvas.setWidth(vWidth);
             fCanvas.setHeight(vHeight);
 
+            // Enforce canvas clip path to strict video bounds
+            fCanvas.clipPath = new fabric.Rect({
+                left: 0,
+                top: 0,
+                width: vWidth,
+                height: vHeight,
+                absolutePositioned: true
+            });
+
             const wrapperEl = fCanvas.wrapperEl;
             if (wrapperEl) {
                 wrapperEl.style.position = 'absolute';
@@ -2367,6 +2376,8 @@
                 wrapperEl.style.top = topOffset + 'px';
                 wrapperEl.style.width = vWidth + 'px';
                 wrapperEl.style.height = vHeight + 'px';
+                wrapperEl.style.overflow = 'hidden';
+                wrapperEl.style.borderRadius = '4px';
             }
 
             fCanvas.renderAll();
@@ -2374,6 +2385,7 @@
 
         let isFabricDrawingShape = false;
         let fabricShapeStartPos = { x: 0, y: 0 };
+        let fabricMouseDownPos = { x: 0, y: 0, time: 0 };
         let tempFabricObject = null;
 
         function getActiveFabricCanvas() {
@@ -2382,11 +2394,18 @@
 
         function bindFabricEvents(fCanvas, pane) {
             fCanvas.on('mouse:down', function(o) {
+                const pointer = fCanvas.getPointer(o.e);
+                fabricMouseDownPos = { x: pointer.x, y: pointer.y, time: Date.now() };
+
+                // Prevent drawing outside the video frame bounds
+                if (pointer.x < 0 || pointer.x > fCanvas.width || pointer.y < 0 || pointer.y > fCanvas.height) {
+                    return;
+                }
+
                 if (activeTool === 'pan') return;
                 setActivePane(pane);
                 if (activeTool === 'pen') return;
 
-                const pointer = fCanvas.getPointer(o.e);
                 isFabricDrawingShape = true;
                 fabricShapeStartPos = { x: pointer.x, y: pointer.y };
 
@@ -2446,10 +2465,19 @@
             });
 
             fCanvas.on('mouse:up', function(o) {
+                const pointer = fCanvas.getPointer(o.e);
+                const dist = Math.hypot(pointer.x - fabricMouseDownPos.x, pointer.y - fabricMouseDownPos.y);
+                const duration = Date.now() - fabricMouseDownPos.time;
+
+                // SINGLE TAP TO TOGGLE PLAY/PAUSE EVEN IN DRAWING MODES
+                if (dist < 8 && duration < 350 && !o.target) {
+                    togglePanePlay(pane);
+                }
+
                 if (isFabricDrawingShape) {
                     isFabricDrawingShape = false;
                     tempFabricObject = null;
-                    showToast(`Đã vẽ lên Video ${pane === 'left' ? '1 (Trái)' : '2 (Phải)'}`);
+                    showToast(`Đã vẽ lên Video ${pane === 'left' ? '1 (Trái/Trên)' : '2 (Phải/Dưới)'}`);
                 }
             });
         }
