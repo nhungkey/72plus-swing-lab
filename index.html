@@ -770,13 +770,77 @@
             width: 100%;
             height: 100%;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transform-origin: center center;
-            transition: transform 0.05s ease-out, border-color 0.2s ease;
+            flex-direction: column;
+            background: #000000;
             overflow: hidden;
             border: 2px solid transparent;
             border-radius: 12px;
+        }
+
+        .video-canvas-viewport {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .video-canvas-viewport video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .pane-control-dock {
+            width: 100%;
+            background: rgba(10, 37, 64, 0.95);
+            backdrop-filter: var(--ios-blur);
+            border-top: 1px solid rgba(255, 255, 255, 0.16);
+            padding: 6px 12px 8px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 200;
+        }
+
+        .filmstrip-track-wrapper {
+            width: 100%;
+            height: 38px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: none;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .filmstrip-track-wrapper.show {
+            display: flex;
+        }
+
+        .pane-scrubber-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .pane-precision-timecode {
+            font-family: 'Work Sans', monospace;
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: #FDE047;
+            min-width: 54px;
+        }
+
+        .pane-controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
         }
 
         #studio-transform-wrapper.pane-focused, #secondary-video-wrapper.pane-focused {
@@ -1595,22 +1659,66 @@
                 <button class="btn-review-pill" style="background:var(--72-blue); border-color:#60A5FA;" onclick="saveVoiceover()">Save</button>
             </div>
 
-            <!-- 2. FULLSCREEN VIEWPORT WITH DUAL INDEPENDENT CANVASES & OVERLAY PLAY BUTTONS -->
+            <!-- 2. FULLSCREEN VIEWPORT WITH TWO INDEPENDENT VIDEO COMPONENT PANES -->
             <div id="studio-video-container">
-                <!-- PANE 1: MAIN VIDEO 1 (LEFT) -->
-                <div id="studio-transform-wrapper" class="pane-focused" onclick="setActivePane('left')">
-                    <div class="pane-label-badge">VIDEO 1 (TRÁI)</div>
-                    <button class="pane-quick-play-btn" id="btn-pane1-play" onclick="event.stopPropagation(); togglePanePlay('left');"><i class="fa-solid fa-play"></i></button>
-                    <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4" onloadedmetadata="initCanvasEngine()"></video>
-                    <canvas id="canvas-left" class="studio-drawing-canvas-instance"></canvas>
+                <!-- COMPONENT PANE 1: MAIN VIDEO 1 (TRÁI / TRÊN) -->
+                <div id="studio-transform-wrapper" class="pane-focused video-editor-component-pane" onclick="setActivePane('left')">
+                    <div class="pane-label-badge">VIDEO 1 (TRÁI/TRÊN)</div>
+                    
+                    <div class="video-canvas-viewport">
+                        <video id="studio-main-video" playsinline loop muted src="assets/sample-golf-swing.mp4" onloadedmetadata="initCanvasEngine()"></video>
+                        <canvas id="canvas-left" class="studio-drawing-canvas-instance"></canvas>
+                    </div>
+
+                    <!-- STANDALONE PANE 1 CONTROL DOCK -->
+                    <div class="pane-control-dock" onclick="event.stopPropagation();">
+                        <div class="filmstrip-track-wrapper" id="filmstrip-wrapper-1">
+                            <div class="filmstrip-track" id="filmstrip-track-1"></div>
+                        </div>
+                        <div class="pane-scrubber-row">
+                            <span class="pane-precision-timecode" id="timecode-pane-1">0.000s</span>
+                            <input type="range" class="onform-scrubber-slider" id="scrubber-pane-1" min="0" max="100" value="0" step="0.1" oninput="onPaneScrubberInput('left', this.value)">
+                            <button class="onform-filmstrip-btn" onclick="togglePaneFilmstrip('left')" title="Hiện/Ẩn cuộn ảnh Filmstrip (▥)"><i class="fa-solid fa-table-cells-large"></i></button>
+                        </div>
+                        <div class="pane-controls-row">
+                            <button class="onform-pill-ctrl" id="btn-speed-pane-1" onclick="cyclePaneSpeed('left')">1×</button>
+                            <div class="onform-playback-group">
+                                <button class="onform-play-ctrl" onclick="stepPaneFrame('left', -1)" title="Lùi 1 frame (-1f)"><i class="fa-solid fa-backward-step"></i></button>
+                                <button class="onform-play-ctrl main-play" id="btn-play-pane-1" onclick="togglePanePlay('left')"><i class="fa-solid fa-pause"></i></button>
+                                <button class="onform-play-ctrl" onclick="stepPaneFrame('left', 1)" title="Tới 1 frame (+1f)"><i class="fa-solid fa-forward-step"></i></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- PANE 2: SECONDARY VIDEO 2 (RIGHT) -->
-                <div id="secondary-video-wrapper" onclick="setActivePane('right')">
-                    <div class="pane-label-badge" style="background:#0EA5E9;">VIDEO 2 (PHẢI)</div>
-                    <button class="pane-quick-play-btn" id="btn-pane2-play" onclick="event.stopPropagation(); togglePanePlay('right');"><i class="fa-solid fa-play"></i></button>
-                    <video id="studio-secondary-video" playsinline loop muted src="assets/sample-golf-swing.mp4" onloadedmetadata="initCanvasEngine()"></video>
-                    <canvas id="canvas-right" class="studio-drawing-canvas-instance"></canvas>
+                <!-- COMPONENT PANE 2: SECONDARY VIDEO 2 (PHẢI / DƯỚI) -->
+                <div id="secondary-video-wrapper" class="video-editor-component-pane" onclick="setActivePane('right')">
+                    <div class="pane-label-badge" style="background:#0EA5E9;">VIDEO 2 (PHẢI/DƯỚI)</div>
+                    
+                    <div class="video-canvas-viewport">
+                        <video id="studio-secondary-video" playsinline loop muted src="assets/sample-golf-swing.mp4" onloadedmetadata="initCanvasEngine()"></video>
+                        <canvas id="canvas-right" class="studio-drawing-canvas-instance"></canvas>
+                    </div>
+
+                    <!-- STANDALONE PANE 2 CONTROL DOCK -->
+                    <div class="pane-control-dock" onclick="event.stopPropagation();">
+                        <div class="filmstrip-track-wrapper" id="filmstrip-wrapper-2">
+                            <div class="filmstrip-track" id="filmstrip-track-2"></div>
+                        </div>
+                        <div class="pane-scrubber-row">
+                            <span class="pane-precision-timecode" id="timecode-pane-2">0.000s</span>
+                            <input type="range" class="onform-scrubber-slider" id="scrubber-pane-2" min="0" max="100" value="0" step="0.1" oninput="onPaneScrubberInput('right', this.value)">
+                            <button class="onform-filmstrip-btn" onclick="togglePaneFilmstrip('right')" title="Hiện/Ẩn cuộn ảnh Filmstrip (▥)"><i class="fa-solid fa-table-cells-large"></i></button>
+                        </div>
+                        <div class="pane-controls-row">
+                            <button class="onform-pill-ctrl" id="btn-speed-pane-2" onclick="cyclePaneSpeed('right')">1×</button>
+                            <div class="onform-playback-group">
+                                <button class="onform-play-ctrl" onclick="stepPaneFrame('right', -1)" title="Lùi 1 frame (-1f)"><i class="fa-solid fa-backward-step"></i></button>
+                                <button class="onform-play-ctrl main-play" id="btn-play-pane-2" onclick="togglePanePlay('right')"><i class="fa-solid fa-play"></i></button>
+                                <button class="onform-play-ctrl" onclick="stepPaneFrame('right', 1)" title="Tới 1 frame (+1f)"><i class="fa-solid fa-forward-step"></i></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- RIGHT FLOATING PEN TOOL -->
@@ -1652,33 +1760,6 @@
 
                     <button class="tool-dock-btn" onclick="undoActiveCanvas()" title="Lùi lại nét vừa vẽ trên video hiện tại"><i class="fa-solid fa-rotate-left"></i></button>
                     <button class="tool-dock-btn" onclick="clearActiveCanvas()" title="Xóa sạch nét vẽ trên video hiện tại"><i class="fa-solid fa-trash-can"></i></button>
-                </div>
-            </div>
-
-            <!-- 3. BOTTOM ONFORM PLAYER CONTROL DOCK -->
-            <div class="onform-bottom-player-dock" onclick="event.stopPropagation();">
-                <div id="onform-filmstrip-container">
-                    <div class="filmstrip-track" id="filmstrip-dynamic-track"></div>
-                </div>
-
-                <div class="onform-scrubber-row">
-                    <span id="onform-precision-timecode">0.000s</span>
-                    <input type="range" class="onform-scrubber-slider" id="studio-scrubber" min="0" max="100" value="0" step="0.1" oninput="onScrubberInput(this.value)">
-                    <button class="onform-filmstrip-btn" onclick="toggleFilmstripStrip()" title="Hiện/Ẩn cuộn ảnh khung hình Filmstrip (▥)"><i class="fa-solid fa-table-cells-large"></i></button>
-                </div>
-
-                <div class="onform-controls-pill-row">
-                    <button class="onform-pill-ctrl" id="btn-speed-toggle" onclick="cyclePlaybackSpeed()">1×`</button>
-                    
-                    <button class="onform-pill-ctrl" id="btn-link-align-toggle" onclick="toggleLinkAlign()" title="Khóa Đồng Bộ Điểm Đầu 2 Video (🔒 Link Alignment)">
-                        <i class="fa-solid fa-link"></i> <span id="link-align-label">🔒 Link</span>
-                    </button>
-
-                    <div class="onform-playback-group">
-                        <button class="onform-play-ctrl" onclick="stepFrame60FPS(-1)" title="Lùi 1 frame (-1f)"><i class="fa-solid fa-backward-step"></i></button>
-                        <button class="onform-play-ctrl main-play" id="btn-studio-play" onclick="toggleStudioPlay()"><i class="fa-solid fa-pause"></i></button>
-                        <button class="onform-play-ctrl" onclick="stepFrame60FPS(1)" title="Tới 1 frame (+1f)"><i class="fa-solid fa-forward-step"></i></button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -2499,92 +2580,144 @@
             ctx.stroke();
         }
 
-        /* DUAL VIEW PLAYBACK ENGINE */
-        function toggleStudioPlay() {
-            const video1 = document.getElementById('studio-main-video');
-            const video2 = document.getElementById('studio-secondary-video');
-            const btn = document.getElementById('btn-studio-play');
+        /* STANDALONE PANE PLAYBACK & TIME SEEKING ENGINE */
+        let paneSpeedIndexLeft = 2; // Default 1x
+        let paneSpeedIndexRight = 2; // Default 1x
+        const paneSpeeds = [0.1, 0.25, 1.0, 1.5, 2.0];
 
-            if (isDualSplitActive && !isLinkAlignActive) {
-                const targetVid = (activePane === 'left') ? video1 : video2;
-                if (targetVid.paused) {
-                    targetVid.play();
-                    btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                    showToast('▶ Phát Video ' + (activePane === 'left' ? '1' : '2'));
-                } else {
-                    targetVid.pause();
-                    btn.innerHTML = '<i class="fa-solid fa-play"></i>';
-                    showToast('⏸ Tạm dừng Video ' + (activePane === 'left' ? '1' : '2'));
-                }
-            } else {
-                if (video1.paused) {
-                    video1.play();
-                    if (isDualSplitActive && video2) {
-                        video2.currentTime = Math.max(0, video1.currentTime + linkTimeOffsetDelta);
-                        video2.play();
+        function updatePaneTimecode(pane) {
+            const vid = (pane === 'left') ? document.getElementById('studio-main-video') : document.getElementById('studio-secondary-video');
+            const timecodeEl = (pane === 'left') ? document.getElementById('timecode-pane-1') : document.getElementById('timecode-pane-2');
+            const scrubberEl = (pane === 'left') ? document.getElementById('scrubber-pane-1') : document.getElementById('scrubber-pane-2');
+
+            if (vid && vid.duration && !isNaN(vid.duration)) {
+                const pct = (vid.currentTime / vid.duration) * 100;
+                if (scrubberEl) scrubberEl.value = pct;
+                if (timecodeEl) timecodeEl.innerText = `${vid.currentTime.toFixed(3)}s`;
+            }
+        }
+
+        function togglePanePlay(pane) {
+            setActivePane(pane);
+            const vid1 = document.getElementById('studio-main-video');
+            const vid2 = document.getElementById('studio-secondary-video');
+            const btn1 = document.getElementById('btn-play-pane-1');
+            const btn2 = document.getElementById('btn-play-pane-2');
+
+            const targetVid = (pane === 'left') ? vid1 : vid2;
+            const targetBtn = (pane === 'left') ? btn1 : btn2;
+
+            if (isLinkAlignActive && isDualSplitActive) {
+                if (vid1.paused) {
+                    vid1.play();
+                    if (vid2) {
+                        vid2.currentTime = Math.max(0, vid1.currentTime + linkTimeOffsetDelta);
+                        vid2.play();
                     }
-                    btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                    showToast('▶ Phát cả 2 video (Đồng bộ 🔒 Link)');
+                    if (btn1) btn1.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    if (btn2) btn2.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    showToast('▶ Phát cả 2 video (🔒 Link)');
                 } else {
-                    video1.pause();
-                    if (isDualSplitActive && video2) video2.pause();
-                    btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                    vid1.pause();
+                    if (vid2) vid2.pause();
+                    if (btn1) btn1.innerHTML = '<i class="fa-solid fa-play"></i>';
+                    if (btn2) btn2.innerHTML = '<i class="fa-solid fa-play"></i>';
                     showToast('⏸ Tạm dừng cả 2 video');
                 }
-            }
-        }
-
-        function stepFrame60FPS(deltaFrames) {
-            const video1 = document.getElementById('studio-main-video');
-            const video2 = document.getElementById('studio-secondary-video');
-            const frameDuration = 1.0 / 60.0;
-
-            if (isDualSplitActive && !isLinkAlignActive) {
-                const targetVid = (activePane === 'left') ? video1 : video2;
-                targetVid.pause();
-                targetVid.currentTime = Math.max(0, Math.min(targetVid.duration, targetVid.currentTime + (deltaFrames * frameDuration)));
-                showToast(`Tua ${deltaFrames > 0 ? '+1f' : '-1f'} Video ${activePane === 'left' ? '1' : '2'}`);
             } else {
-                video1.pause();
-                if (video2) video2.pause();
-
-                video1.currentTime = Math.max(0, Math.min(video1.duration, video1.currentTime + (deltaFrames * frameDuration)));
-                if (isDualSplitActive && video2 && video2.duration) {
-                    video2.currentTime = Math.max(0, Math.min(video2.duration, video1.currentTime + linkTimeOffsetDelta));
+                if (targetVid.paused) {
+                    targetVid.play();
+                    if (targetBtn) targetBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    showToast(`▶ Phát Video ${pane === 'left' ? '1 (Trái/Trên)' : '2 (Phải/Dưới)'}`);
+                } else {
+                    targetVid.pause();
+                    if (targetBtn) targetBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                    showToast(`⏸ Tạm dừng Video ${pane === 'left' ? '1 (Trái/Trên)' : '2 (Phải/Dưới)'}`);
                 }
             }
-            updatePrecisionScrubber();
         }
 
-        function updatePrecisionScrubber() {
-            const video = (activePane === 'left' || !isDualSplitActive) ? document.getElementById('studio-main-video') : document.getElementById('studio-secondary-video');
-            if (video && video.duration) {
-                const pct = (video.currentTime / video.duration) * 100;
-                document.getElementById('studio-scrubber').value = pct;
-                const sec = video.currentTime.toFixed(3);
-                document.getElementById('onform-precision-timecode').innerText = `${sec}s`;
+        function stepPaneFrame(pane, deltaFrames) {
+            setActivePane(pane);
+            const vid1 = document.getElementById('studio-main-video');
+            const vid2 = document.getElementById('studio-secondary-video');
+            const frameDuration = 1.0 / 60.0;
+
+            if (isLinkAlignActive && isDualSplitActive) {
+                vid1.pause();
+                if (vid2) vid2.pause();
+                vid1.currentTime = Math.max(0, Math.min(vid1.duration, vid1.currentTime + (deltaFrames * frameDuration)));
+                if (vid2 && vid2.duration) {
+                    vid2.currentTime = Math.max(0, Math.min(vid2.duration, vid1.currentTime + linkTimeOffsetDelta));
+                }
+                updatePaneTimecode('left');
+                updatePaneTimecode('right');
+                showToast(`Tua đồng bộ ${deltaFrames > 0 ? '+1f' : '-1f'}`);
+            } else {
+                const targetVid = (pane === 'left') ? vid1 : vid2;
+                targetVid.pause();
+                targetVid.currentTime = Math.max(0, Math.min(targetVid.duration, targetVid.currentTime + (deltaFrames * frameDuration)));
+                updatePaneTimecode(pane);
+                showToast(`Tua ${deltaFrames > 0 ? '+1f' : '-1f'} Video ${pane === 'left' ? '1' : '2'}`);
             }
         }
 
-        function onScrubberInput(val) {
-            const video1 = document.getElementById('studio-main-video');
-            const video2 = document.getElementById('studio-secondary-video');
+        function onPaneScrubberInput(pane, val) {
+            setActivePane(pane);
+            const vid1 = document.getElementById('studio-main-video');
+            const vid2 = document.getElementById('studio-secondary-video');
 
-            if (isDualSplitActive && !isLinkAlignActive) {
-                const targetVid = (activePane === 'left') ? video1 : video2;
+            if (isLinkAlignActive && isDualSplitActive) {
+                if (vid1.duration) {
+                    vid1.currentTime = (val / 100) * vid1.duration;
+                    if (vid2 && vid2.duration) {
+                        vid2.currentTime = Math.max(0, Math.min(vid2.duration, vid1.currentTime + linkTimeOffsetDelta));
+                    }
+                }
+                updatePaneTimecode('left');
+                updatePaneTimecode('right');
+            } else {
+                const targetVid = (pane === 'left') ? vid1 : vid2;
                 if (targetVid.duration) {
                     targetVid.currentTime = (val / 100) * targetVid.duration;
                 }
-            } else {
-                if (video1.duration) {
-                    video1.currentTime = (val / 100) * video1.duration;
-                    if (isDualSplitActive && video2 && video2.duration) {
-                        video2.currentTime = Math.max(0, Math.min(video2.duration, video1.currentTime + linkTimeOffsetDelta));
-                    }
-                }
+                updatePaneTimecode(pane);
             }
-            updatePrecisionScrubber();
         }
+
+        function cyclePaneSpeed(pane) {
+            setActivePane(pane);
+            if (pane === 'left') {
+                paneSpeedIndexLeft = (paneSpeedIndexLeft + 1) % paneSpeeds.length;
+                const spd = paneSpeeds[paneSpeedIndexLeft];
+                document.getElementById('studio-main-video').playbackRate = spd;
+                document.getElementById('btn-speed-pane-1').innerText = `${spd}×`;
+                showToast(`Tốc độ Video 1: ${spd}×`);
+            } else {
+                paneSpeedIndexRight = (paneSpeedIndexRight + 1) % paneSpeeds.length;
+                const spd = paneSpeeds[paneSpeedIndexRight];
+                document.getElementById('studio-secondary-video').playbackRate = spd;
+                document.getElementById('btn-speed-pane-2').innerText = `${spd}×`;
+                showToast(`Tốc độ Video 2: ${spd}×`);
+            }
+        }
+
+        function togglePaneFilmstrip(pane) {
+            const wrapper = (pane === 'left') ? document.getElementById('filmstrip-wrapper-1') : document.getElementById('filmstrip-wrapper-2');
+            if (wrapper) {
+                wrapper.classList.toggle('show');
+                showToast(`Hiện/Ẩn Filmstrip Video ${pane === 'left' ? '1' : '2'}`);
+            }
+        }
+
+        // Auto update timecode during video playback
+        document.addEventListener('DOMContentLoaded', () => {
+            const vid1 = document.getElementById('studio-main-video');
+            const vid2 = document.getElementById('studio-secondary-video');
+
+            if (vid1) vid1.addEventListener('timeupdate', () => updatePaneTimecode('left'));
+            if (vid2) vid2.addEventListener('timeupdate', () => updatePaneTimecode('right'));
+        });
 
         function cyclePlaybackSpeed() {
             currentSpeedIndex = (currentSpeedIndex + 1) % playbackSpeeds.length;
