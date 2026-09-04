@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700;800;900&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <style>
         :root {
             --72-blue: #1375BC;
@@ -2217,216 +2218,192 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        /* DUAL CANVAS INITIALIZATION & INDEPENDENT DRAWING ENGINE */
-        let isDrawing = false;
-        let startX = 0, startY = 0;
-        let penPoints = [];
+        /* FABRIC.JS OPEN-SOURCE CANVAS ENGINE INTEGRATION */
+        let fabricCanvasLeft = null;
+        let fabricCanvasRight = null;
 
         function initCanvasEngine() {
-            setupDualCanvasInstance('canvas-left', 'left');
-            setupDualCanvasInstance('canvas-right', 'right');
+            setupFabricCanvasInstance('canvas-left', 'left');
+            setupFabricCanvasInstance('canvas-right', 'right');
             setupHammerGestureEngine();
         }
 
-        function setupDualCanvasInstance(canvasId, pane) {
+        function setupFabricCanvasInstance(canvasId, pane) {
             const canvasEl = document.getElementById(canvasId);
             const container = (pane === 'left') ? document.getElementById('studio-transform-wrapper') : document.getElementById('secondary-video-wrapper');
-            const video = (pane === 'left') ? document.getElementById('studio-main-video') : document.getElementById('studio-secondary-video');
-
-            if (!canvasEl || !container || !video) return;
+            if (!canvasEl || !container) return;
 
             const cWidth = container.clientWidth || 360;
             const cHeight = container.clientHeight || 480;
 
-            canvasEl.width = cWidth;
-            canvasEl.height = cHeight;
-
-            canvasEl.onmousedown = (e) => handleMouseDownDual(e, pane);
-            canvasEl.onmousemove = (e) => handleMouseMoveDual(e, pane);
-            canvasEl.onmouseup = (e) => handleMouseUpDual(e, pane);
-
-            canvasEl.ontouchstart = (e) => {
-                if (e.touches.length === 1) {
-                    setActivePane(pane);
-                    handleMouseDownDual(e, pane);
+            if (pane === 'left') {
+                if (!fabricCanvasLeft) {
+                    fabricCanvasLeft = new fabric.Canvas('canvas-left', { isDrawingMode: false, selection: true, preserveObjectStacking: true });
+                    bindFabricEvents(fabricCanvasLeft, 'left');
                 }
-            };
-            canvasEl.ontouchmove = (e) => {
-                if (e.touches.length === 1) handleMouseMoveDual(e, pane);
-            };
-            canvasEl.ontouchend = (e) => handleMouseUpDual(e, pane);
-
-            redrawDualCanvas(pane);
-        }
-
-        function getEventCoordsDual(e, canvasEl) {
-            const rect = canvasEl.getBoundingClientRect();
-            let clientX = 0, clientY = 0;
-
-            if (e.changedTouches && e.changedTouches.length > 0) {
-                clientX = e.changedTouches[0].clientX;
-                clientY = e.changedTouches[0].clientY;
-            } else if (e.touches && e.touches.length > 0) {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
+                fabricCanvasLeft.setWidth(cWidth);
+                fabricCanvasLeft.setHeight(cHeight);
+                fabricCanvasLeft.renderAll();
             } else {
-                clientX = e.clientX || 0;
-                clientY = e.clientY || 0;
-            }
-
-            return {
-                x: (clientX - rect.left) / zoomLevel,
-                y: (clientY - rect.top) / zoomLevel
-            };
-        }
-
-        function handleMouseDownDual(e, pane) {
-            if (activeTool === 'pan') return;
-            setActivePane(pane);
-
-            const canvasEl = document.getElementById(pane === 'left' ? 'canvas-left' : 'canvas-right');
-            const coords = getEventCoordsDual(e, canvasEl);
-
-            startX = coords.x;
-            startY = coords.y;
-            isDrawing = true;
-
-            if (activeTool === 'pen') {
-                penPoints = [{ x: startX, y: startY }];
+                if (!fabricCanvasRight) {
+                    fabricCanvasRight = new fabric.Canvas('canvas-right', { isDrawingMode: false, selection: true, preserveObjectStacking: true });
+                    bindFabricEvents(fabricCanvasRight, 'right');
+                }
+                fabricCanvasRight.setWidth(cWidth);
+                fabricCanvasRight.setHeight(cHeight);
+                fabricCanvasRight.renderAll();
             }
         }
 
-        function handleMouseMoveDual(e, pane) {
-            if (!isDrawing || activeTool === 'pan') return;
-            const canvasEl = document.getElementById(pane === 'left' ? 'canvas-left' : 'canvas-right');
-            const ctx = canvasEl.getContext('2d');
-            const coords = getEventCoordsDual(e, canvasEl);
-            const currX = coords.x;
-            const currY = coords.y;
+        let isFabricDrawingShape = false;
+        let fabricShapeStartPos = { x: 0, y: 0 };
+        let tempFabricObject = null;
 
-            if (activeTool === 'pen') {
-                penPoints.push({ x: currX, y: currY });
-                redrawDualCanvas(pane);
-            } else {
-                redrawDualCanvas(pane);
-                ctx.strokeStyle = activeDrawColor;
-                ctx.lineWidth = activeLineWidth;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
+        function getActiveFabricCanvas() {
+            return (activePane === 'left') ? fabricCanvasLeft : fabricCanvasRight;
+        }
+
+        function bindFabricEvents(fCanvas, pane) {
+            fCanvas.on('mouse:down', function(o) {
+                if (activeTool === 'pan') return;
+                setActivePane(pane);
+                if (activeTool === 'pen') return;
+
+                const pointer = fCanvas.getPointer(o.e);
+                isFabricDrawingShape = true;
+                fabricShapeStartPos = { x: pointer.x, y: pointer.y };
 
                 if (activeTool === 'plane') {
-                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
+                    tempFabricObject = new fabric.Line([pointer.x, pointer.y, pointer.x, pointer.y], {
+                        stroke: activeDrawColor,
+                        strokeWidth: activeLineWidth,
+                        selectable: true
+                    });
+                    fCanvas.add(tempFabricObject);
                 } else if (activeTool === 'head') {
-                    const radius = Math.hypot(currX - startX, currY - startY);
-                    ctx.beginPath(); ctx.arc(startX, startY, radius, 0, Math.PI * 2); ctx.stroke();
+                    tempFabricObject = new fabric.Circle({
+                        left: pointer.x,
+                        top: pointer.y,
+                        radius: 1,
+                        fill: 'transparent',
+                        stroke: activeDrawColor,
+                        strokeWidth: activeLineWidth,
+                        originX: 'center',
+                        originY: 'center',
+                        selectable: true
+                    });
+                    fCanvas.add(tempFabricObject);
                 } else if (activeTool === 'arrow') {
-                    drawArrow(ctx, startX, startY, currX, currY);
+                    tempFabricObject = createFabricArrowGroup(pointer.x, pointer.y, pointer.x, pointer.y, activeDrawColor, activeLineWidth);
+                    fCanvas.add(tempFabricObject);
                 } else if (activeTool === 'measure') {
-                    const distPx = Math.hypot(currX - startX, currY - startY);
-                    const distCm = (distPx * 0.12).toFixed(1);
-                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 15px Work Sans";
-                    ctx.fillText(`📏 ${distCm}cm Shift`, currX + 8, currY + 8);
-                } else if (activeTool === 'tempo') {
-                    const distPx = Math.hypot(currX - startX, currY - startY);
-                    const sec = (distPx * 0.01).toFixed(2);
-                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
-                    ctx.fillText(`⏱️ ${sec}s (Ratio 3.0:1)`, currX + 8, currY + 8);
-                } else if (activeTool === 'angle') {
-                    ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(currX, currY); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
-                    ctx.fillText("42° Backswing", currX + 10, currY + 10);
+                    tempFabricObject = createFabricMeasureGroup(pointer.x, pointer.y, pointer.x, pointer.y, activeDrawColor, activeLineWidth);
+                    fCanvas.add(tempFabricObject);
+                } else if (activeTool === 'tempo' || activeTool === 'angle') {
+                    tempFabricObject = createFabricLabelLineGroup(pointer.x, pointer.y, pointer.x, pointer.y, activeDrawColor, activeLineWidth, activeTool === 'angle' ? '42° Backswing' : '⏱️ 0.85s (Ratio 3.0:1)');
+                    fCanvas.add(tempFabricObject);
                 }
-            }
-        }
+            });
 
-        function handleMouseUpDual(e, pane) {
-            if (isDrawing && activeTool !== 'pan') {
-                isDrawing = false;
-                const canvasEl = document.getElementById(pane === 'left' ? 'canvas-left' : 'canvas-right');
-                const coords = getEventCoordsDual(e, canvasEl);
-                const currX = (coords.x !== 0) ? coords.x : (startX + 60);
-                const currY = (coords.y !== 0) ? coords.y : (startY + 60);
+            fCanvas.on('mouse:move', function(o) {
+                if (!isFabricDrawingShape || !tempFabricObject) return;
+                const pointer = fCanvas.getPointer(o.e);
 
-                const targetHistory = (pane === 'left') ? drawingsHistoryLeft : drawingsHistoryRight;
-
-                if (activeTool === 'pen' && penPoints.length > 1) {
-                    targetHistory.push({ type: 'pen', points: penPoints, color: activeDrawColor, width: activeLineWidth });
-                } else if (activeTool !== 'pen') {
-                    targetHistory.push({ type: activeTool, x1: startX, y1: startY, x2: currX, y2: currY, color: activeDrawColor, width: activeLineWidth });
-                }
-                penPoints = [];
-                redrawDualCanvas(pane);
-                showToast(`Đã vẽ lên Video ${pane === 'left' ? '1 (Trái)' : '2 (Phải)'}`);
-            }
-        }
-
-        function redrawDualCanvas(pane) {
-            const canvasEl = document.getElementById(pane === 'left' ? 'canvas-left' : 'canvas-right');
-            if (!canvasEl) return;
-            const ctx = canvasEl.getContext('2d');
-            ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-
-            const targetHistory = (pane === 'left') ? drawingsHistoryLeft : drawingsHistoryRight;
-
-            targetHistory.forEach(item => {
-                ctx.strokeStyle = item.color || "#EF3F36";
-                ctx.lineWidth = item.width || 3.5;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-
-                if (item.type === 'pen' && item.points && item.points.length > 1) {
-                    ctx.beginPath();
-                    ctx.moveTo(item.points[0].x, item.points[0].y);
-                    for (let i = 1; i < item.points.length; i++) {
-                        ctx.lineTo(item.points[i].x, item.points[i].y);
+                if (activeTool === 'plane' && tempFabricObject.type === 'line') {
+                    tempFabricObject.set({ x2: pointer.x, y2: pointer.y });
+                } else if (activeTool === 'head' && tempFabricObject.type === 'circle') {
+                    const radius = Math.hypot(pointer.x - fabricShapeStartPos.x, pointer.y - fabricShapeStartPos.y);
+                    tempFabricObject.set({ radius: radius });
+                } else if (activeTool === 'arrow' || activeTool === 'measure' || activeTool === 'tempo' || activeTool === 'angle') {
+                    fCanvas.remove(tempFabricObject);
+                    if (activeTool === 'arrow') {
+                        tempFabricObject = createFabricArrowGroup(fabricShapeStartPos.x, fabricShapeStartPos.y, pointer.x, pointer.y, activeDrawColor, activeLineWidth);
+                    } else if (activeTool === 'measure') {
+                        tempFabricObject = createFabricMeasureGroup(fabricShapeStartPos.x, fabricShapeStartPos.y, pointer.x, pointer.y, activeDrawColor, activeLineWidth);
+                    } else {
+                        tempFabricObject = createFabricLabelLineGroup(fabricShapeStartPos.x, fabricShapeStartPos.y, pointer.x, pointer.y, activeDrawColor, activeLineWidth, activeTool === 'angle' ? '42° Backswing' : '⏱️ 0.85s (Ratio 3.0:1)');
                     }
-                    ctx.stroke();
-                } else if (item.type === 'plane') {
-                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
-                } else if (item.type === 'head') {
-                    const r = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
-                    ctx.beginPath(); ctx.arc(item.x1, item.y1, r, 0, Math.PI * 2); ctx.stroke();
-                } else if (item.type === 'arrow') {
-                    drawArrow(ctx, item.x1, item.y1, item.x2, item.y2);
-                } else if (item.type === 'measure') {
-                    const distPx = Math.hypot(item.x2 - item.x1, item.y2 - item.y1);
-                    const distCm = (distPx * 0.12).toFixed(1);
-                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 15px Work Sans";
-                    ctx.fillText(`📏 ${distCm}cm Shift`, item.x2 + 8, item.y2 + 8);
-                } else if (item.type === 'text') {
-                    ctx.fillStyle = "rgba(10, 37, 64, 0.88)";
-                    const textWidth = ctx.measureText(item.text).width + 20;
-                    ctx.fillRect(item.x - 6, item.y - 20, textWidth, 28);
-                    ctx.strokeStyle = item.color || "#EF3F36";
-                    ctx.lineWidth = 1.5;
-                    ctx.strokeRect(item.x - 6, item.y - 20, textWidth, 28);
+                    fCanvas.add(tempFabricObject);
+                }
+                fCanvas.renderAll();
+            });
 
-                    ctx.fillStyle = item.color || "#EF3F36";
-                    ctx.font = "bold 16px Work Sans";
-                    ctx.fillText(item.text, item.x + 4, item.y);
-                } else if (item.type === 'angle') {
-                    ctx.beginPath(); ctx.moveTo(item.x1, item.y1); ctx.lineTo(item.x2, item.y2); ctx.stroke();
-                    ctx.fillStyle = "#F59E0B"; ctx.font = "bold 16px Work Sans";
-                    ctx.fillText("42° Backswing", item.x2 + 10, item.y2 + 10);
+            fCanvas.on('mouse:up', function(o) {
+                if (isFabricDrawingShape) {
+                    isFabricDrawingShape = false;
+                    tempFabricObject = null;
+                    showToast(`Đã vẽ lên Video ${pane === 'left' ? '1 (Trái)' : '2 (Phải)'}`);
                 }
             });
         }
 
+        function createFabricArrowGroup(x1, y1, x2, y2, color, width) {
+            const line = new fabric.Line([x1, y1, x2, y2], {
+                stroke: color,
+                strokeWidth: width,
+                originX: 'center',
+                originY: 'center'
+            });
+            const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+            const triangle = new fabric.Triangle({
+                left: x2,
+                top: y2,
+                pointType: 'arrow_start',
+                angle: angle + 90,
+                width: width * 3 + 6,
+                height: width * 3 + 8,
+                fill: color,
+                originX: 'center',
+                originY: 'center'
+            });
+            return new fabric.Group([line, triangle], { selectable: true });
+        }
+
+        function createFabricMeasureGroup(x1, y1, x2, y2, color, width) {
+            const line = new fabric.Line([x1, y1, x2, y2], { stroke: color, strokeWidth: width });
+            const distPx = Math.hypot(x2 - x1, y2 - y1);
+            const distCm = (distPx * 0.12).toFixed(1);
+            const text = new fabric.Text(`📏 ${distCm}cm Shift`, {
+                left: x2 + 10,
+                top: y2 + 10,
+                fontSize: 15,
+                fill: '#F59E0B',
+                fontFamily: 'Work Sans',
+                fontWeight: 'bold'
+            });
+            return new fabric.Group([line, text], { selectable: true });
+        }
+
+        function createFabricLabelLineGroup(x1, y1, x2, y2, color, width, labelStr) {
+            const line = new fabric.Line([x1, y1, x2, y2], { stroke: color, strokeWidth: width });
+            const text = new fabric.Text(labelStr, {
+                left: x2 + 10,
+                top: y2 + 10,
+                fontSize: 16,
+                fill: '#F59E0B',
+                fontFamily: 'Work Sans',
+                fontWeight: 'bold'
+            });
+            return new fabric.Group([line, text], { selectable: true });
+        }
+
         function undoActiveCanvas() {
-            if (activePane === 'left') drawingsHistoryLeft.pop();
-            else drawingsHistoryRight.pop();
-            redrawDualCanvas(activePane);
-            showToast(`Lùi nét vẽ Video ${activePane === 'left' ? '1' : '2'}`);
+            const fCanvas = getActiveFabricCanvas();
+            if (!fCanvas) return;
+            const objects = fCanvas.getObjects();
+            if (objects.length > 0) {
+                fCanvas.remove(objects[objects.length - 1]);
+                fCanvas.renderAll();
+                showToast(`Đã lùi nét vẽ trên Video ${activePane === 'left' ? '1' : '2'}`);
+            }
         }
 
         function clearActiveCanvas() {
-            if (activePane === 'left') drawingsHistoryLeft = [];
-            else drawingsHistoryRight = [];
-            redrawDualCanvas(activePane);
-            showToast(`Xóa sạch nét vẽ Video ${activePane === 'left' ? '1' : '2'}`);
+            const fCanvas = getActiveFabricCanvas();
+            if (!fCanvas) return;
+            fCanvas.clear();
+            fCanvas.renderAll();
+            showToast(`Đã xóa sạch nét vẽ trên Video ${activePane === 'left' ? '1' : '2'}`);
         }
 
         function setTool(toolName) {
@@ -2438,9 +2415,28 @@
             const toolBtn = document.getElementById(`btn-tool-${toolName}`);
             if (toolBtn) toolBtn.classList.add('active');
 
+            const leftCanvas = fabricCanvasLeft;
+            const rightCanvas = fabricCanvasRight;
+
+            [leftCanvas, rightCanvas].forEach(fc => {
+                if (!fc) return;
+                if (toolName === 'pan') {
+                    fc.isDrawingMode = false;
+                    fc.selection = true;
+                    fc.forEachObject(o => o.selectable = true);
+                } else if (toolName === 'pen') {
+                    fc.isDrawingMode = true;
+                    fc.freeDrawingBrush.color = activeDrawColor;
+                    fc.freeDrawingBrush.width = activeLineWidth;
+                } else {
+                    fc.isDrawingMode = false;
+                    fc.selection = false;
+                }
+            });
+
             if (toolName === 'pan') {
                 if (penBtn) penBtn.classList.remove('drawing-mode-active');
-                showToast('Chế độ Rê Pan / Phóng Zoom (✋)');
+                showToast('Chế độ Rê Pan / Phóng Zoom (Chạm gắp xếp chữ & nét vẽ)');
             } else {
                 if (penBtn) penBtn.classList.add('drawing-mode-active');
 
@@ -2449,13 +2445,13 @@
                     document.getElementById('ios-text-annotation-modal').style.display = 'flex';
                     setTimeout(() => document.getElementById('ios-text-annotation-input').focus(), 150);
                 } else if (toolName === 'tempo') {
-                    showToast('Tempo 3.0:1 — Takeaway -> Top -> Impact');
+                    showToast('Tempo 3.0:1 — Kéo vạch đo thời gian swing');
                 } else if (toolName === 'measure') {
-                    showToast('Công cụ Đo khoảng Cách Shift / Drift 📏 (Kéo tay để đo)');
+                    showToast('Đo khoảng cách Shift / Drift 📏 (Kéo tay để đo)');
                 } else if (toolName === 'arrow') {
-                    showToast('Công cụ vẽ Mũi Tên chỉ hướng ➔ (Kéo tay để vẽ)');
+                    showToast('Vẽ Mũi Tên chỉ hướng ➔ (Kéo tay để vẽ)');
                 } else if (toolName === 'pen') {
-                    showToast('Bút vẽ tự do mượt mượt (Kéo tay để vẽ)');
+                    showToast('Bút vẽ tự do Fabric.js (Kéo tay để vẽ)');
                 } else {
                     showToast('Đã chọn công cụ: ' + toolName);
                 }
@@ -2465,16 +2461,26 @@
         function submitTextAnnotation() {
             const txt = document.getElementById('ios-text-annotation-input').value.trim();
             if (txt) {
-                const targetHistory = (activePane === 'left') ? drawingsHistoryLeft : drawingsHistoryRight;
-                targetHistory.push({
-                    type: 'text',
-                    text: txt,
-                    x: 60,
-                    y: 120,
-                    color: selectedTextColorChoice
-                });
-                redrawDualCanvas(activePane);
-                showToast(`Đã thêm nhận xét vào Video ${activePane === 'left' ? '1' : '2'}`);
+                const fCanvas = getActiveFabricCanvas();
+                if (fCanvas) {
+                    const iText = new fabric.IText(txt, {
+                        left: 60,
+                        top: 120,
+                        fill: selectedTextColorChoice,
+                        fontSize: 22,
+                        fontFamily: 'Work Sans',
+                        fontWeight: 'bold',
+                        backgroundColor: 'rgba(10, 37, 64, 0.92)',
+                        padding: 8,
+                        rx: 10,
+                        ry: 10,
+                        selectable: true
+                    });
+                    fCanvas.add(iText);
+                    fCanvas.setActiveObject(iText);
+                    fCanvas.renderAll();
+                    showToast(`Đã thêm nhận xét kéo thả vào Video ${activePane === 'left' ? '1' : '2'}`);
+                }
             }
             closeModal('ios-text-annotation-modal');
         }
