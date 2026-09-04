@@ -2309,10 +2309,45 @@
         let fabricCanvasLeft = null;
         let fabricCanvasRight = null;
 
+        let isViewportTapListenerBoundLeft = false;
+        let isViewportTapListenerBoundRight = false;
+
         function initCanvasEngine() {
             setupFabricCanvasInstance('canvas-left', 'left');
             setupFabricCanvasInstance('canvas-right', 'right');
             setupHammerGestureEngine();
+        }
+
+        function bindViewportTapToPlay(containerId, pane) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            let tapStartTime = 0;
+            let tapStartX = 0, tapStartY = 0;
+
+            container.addEventListener('pointerdown', (e) => {
+                tapStartTime = Date.now();
+                tapStartX = e.clientX;
+                tapStartY = e.clientY;
+            }, { passive: true });
+
+            container.addEventListener('pointerup', (e) => {
+                if (e.target.closest('.pane-control-dock') || e.target.closest('.onform-top-overlay-bar') || e.target.closest('#floating-tool-dock')) {
+                    return;
+                }
+
+                const dist = Math.hypot(e.clientX - tapStartX, e.clientY - tapStartY);
+                const duration = Date.now() - tapStartTime;
+
+                if (dist < 10 && duration < 350) {
+                    const activeFC = (pane === 'left') ? fabricCanvasLeft : fabricCanvasRight;
+                    const activeObj = activeFC ? activeFC.getActiveObject() : null;
+
+                    if (!activeObj || activeTool === 'pan') {
+                        togglePanePlay(pane);
+                    }
+                }
+            });
         }
 
         function setupFabricCanvasInstance(canvasId, pane) {
@@ -2321,6 +2356,14 @@
             const viewport = container ? container.querySelector('.video-canvas-viewport') : null;
             
             if (!video || !viewport) return;
+
+            if (pane === 'left' && !isViewportTapListenerBoundLeft) {
+                bindViewportTapToPlay('studio-transform-wrapper', 'left');
+                isViewportTapListenerBoundLeft = true;
+            } else if (pane === 'right' && !isViewportTapListenerBoundRight) {
+                bindViewportTapToPlay('secondary-video-wrapper', 'right');
+                isViewportTapListenerBoundRight = true;
+            }
 
             const vpRect = viewport.getBoundingClientRect();
             let vWidth = Math.round(vpRect.width) || 360;
